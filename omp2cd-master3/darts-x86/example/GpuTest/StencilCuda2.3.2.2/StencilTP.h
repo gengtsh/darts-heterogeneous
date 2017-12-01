@@ -87,10 +87,10 @@ DEF_TP(StencilTP)
     uint32_t gpuCnt = 0;
     uint32_t cpuCnt = 0;
     
-    double gpuInitR = 0.5; 
+    double gpuInitR = 0.2; 
     double gpuStepR = 0.2;
-    double cpuInitR = 0.25;
-    double cpuStepR = 0.1;
+    double cpuInitR = 0.2;
+    double cpuStepR = 0.2;
     uint64_t lastCnt = 0;
     uint64_t nRowsGpuMax= 0;
     bool invokeStreams = false;
