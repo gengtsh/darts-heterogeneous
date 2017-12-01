@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCodeletLoop.a  CMakeFiles/CodeletLoop.dir/Codelet_loop.cpp.o
+/usr/bin/ranlib libCodeletLoop.a

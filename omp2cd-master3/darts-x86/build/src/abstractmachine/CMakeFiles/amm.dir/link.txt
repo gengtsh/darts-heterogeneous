@@ -1,0 +1,2 @@
+/usr/bin/ar qc libamm.a  CMakeFiles/amm.dir/AbstractMachine.cpp.o CMakeFiles/amm.dir/Affinity.cpp.o
+/usr/bin/ranlib libamm.a

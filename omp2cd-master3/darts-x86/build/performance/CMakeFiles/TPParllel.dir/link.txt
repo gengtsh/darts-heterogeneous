@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTPParllel.a  CMakeFiles/TPParllel.dir/TP_parallel.cpp.o
+/usr/bin/ranlib libTPParllel.a

@@ -1,0 +1,1 @@
+g++   -fpermissive -std=c++0x -Wall -O3 -lm -DNSDEBUG   CMakeFiles/abs-mac.dir/main.cpp.o  -o abs-mac  -L/lib64/libhwloc.so -rdynamic ../../src/abstractmachine/libamm.a -lhwloc -Wl,-rpath,/lib64/libhwloc.so 

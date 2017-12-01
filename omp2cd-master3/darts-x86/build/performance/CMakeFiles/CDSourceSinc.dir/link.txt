@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCDSourceSinc.a  CMakeFiles/CDSourceSinc.dir/CD_source_sinc.cpp.o
+/usr/bin/ranlib libCDSourceSinc.a

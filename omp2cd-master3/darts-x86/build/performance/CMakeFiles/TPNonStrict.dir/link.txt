@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTPNonStrict.a  CMakeFiles/TPNonStrict.dir/TP_non_strict.cpp.o
+/usr/bin/ranlib libTPNonStrict.a

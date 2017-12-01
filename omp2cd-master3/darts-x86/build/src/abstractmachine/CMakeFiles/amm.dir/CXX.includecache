@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/abstractmachine/AbstractMachine.h
+cassert
+-
+hwloc.h
+-
+stdint.h
+-
+Cluster.h
+-
+Unit.h
+-
+
+../include/abstractmachine/Affinity.h
+
+../include/abstractmachine/Cluster.h
+Unit.h
+-
+
+../include/abstractmachine/Unit.h
+
+/home/tgeng/omp2cd/omp2cd-master1/darts-x86/src/abstractmachine/AbstractMachine.cpp
+AbstractMachine.h
+-
+
+/home/tgeng/omp2cd/omp2cd-master1/darts-x86/src/abstractmachine/Affinity.cpp
+Affinity.h
+/home/tgeng/omp2cd/omp2cd-master1/darts-x86/src/abstractmachine/Affinity.h
+AbstractMachine.h
+/home/tgeng/omp2cd/omp2cd-master1/darts-x86/src/abstractmachine/AbstractMachine.h
+iostream
+-
+

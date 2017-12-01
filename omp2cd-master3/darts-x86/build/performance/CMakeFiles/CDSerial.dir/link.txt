@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCDSerial.a  CMakeFiles/CDSerial.dir/CD_serial.cpp.o
+/usr/bin/ranlib libCDSerial.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcommon.a  CMakeFiles/common.dir/Atomics.cpp.o CMakeFiles/common.dir/Lock.cpp.o CMakeFiles/common.dir/Thread.cpp.o CMakeFiles/common.dir/getClock.cpp.o CMakeFiles/common.dir/Timer.cpp.o
+/usr/bin/ranlib libcommon.a

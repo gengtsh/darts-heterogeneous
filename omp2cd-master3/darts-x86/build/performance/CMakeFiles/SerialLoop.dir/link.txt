@@ -1,0 +1,2 @@
+/usr/bin/ar qc libSerialLoop.a  CMakeFiles/SerialLoop.dir/Serial_loop.cpp.o
+/usr/bin/ranlib libSerialLoop.a

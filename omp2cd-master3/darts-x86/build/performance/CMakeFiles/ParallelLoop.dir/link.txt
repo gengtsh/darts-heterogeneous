@@ -1,0 +1,2 @@
+/usr/bin/ar qc libParallelLoop.a  CMakeFiles/ParallelLoop.dir/Para_loop.cpp.o
+/usr/bin/ranlib libParallelLoop.a
