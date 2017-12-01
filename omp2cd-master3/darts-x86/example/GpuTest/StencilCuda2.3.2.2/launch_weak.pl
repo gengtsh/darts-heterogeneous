@@ -12,6 +12,7 @@ my @threads = (
 
 my $n_iter = 30;
 my $n_reps = 20;
+my $its = 5;
 
 #my $filename = shift @ARGV;
 #$filename = "output" unless ($filename);
@@ -22,8 +23,8 @@ my $n_reps = 20;
 #   LaplaceSolverCDLoop NaiveLaplaceSolver
 
 #my @kernels = qw/Seq OMP OMPFG OMPFGV2 FineGrain FineGrainM2V2 FineGrainM2 InPlace Naive NaiveTPsPtr InPlaceTPs FineGrainTPs/; # Seq/; 
-#my @kernels = qw/StencilCudaHybrid StencilCudaGpu StencilCudaCpu/; # Seq/; 
-my @kernels = qw/StencilCudaHybrid3 /; # Seq/; 
+my @kernels = qw/StencilCudaHybrid3 StencilCudaGpu StencilCudaCpu/; # Seq/; 
+#my @kernels = qw/StencilCudaHybrid3 /; # Seq/; 
 my @outputs = ();
 my $sz_start = 25000;
 my $sz_end = 51000;
@@ -39,7 +40,7 @@ for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
             my $ker = './' . $kernel;
             if (-e $ker) {
                 open my $fh, '>>', "${kernel}_${i}_${n_cu}_${n_su}.txt" or die $!;
-                for (my $idx = 0; $idx < 10; ++$idx) {
+                for (my $idx = 0; $idx < $its; ++$idx) {
                     print $fh  `numactl --interleave=0-1 $ker $i $i $n_iter $n_reps `;
                 }
             } else {
