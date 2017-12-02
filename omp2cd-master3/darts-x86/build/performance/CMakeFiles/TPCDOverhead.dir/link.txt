@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTPCDOverhead.a  CMakeFiles/TPCDOverhead.dir/TP_CD_overhead.cpp.o
-/usr/bin/ranlib libTPCDOverhead.a

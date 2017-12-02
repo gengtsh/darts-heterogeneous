@@ -1,2 +1,0 @@
-/usr/bin/ar qc libCDParallel.a  CMakeFiles/CDParallel.dir/CD_parallel.cpp.o
-/usr/bin/ranlib libCDParallel.a

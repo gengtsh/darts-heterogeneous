@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTPStrict.a  CMakeFiles/TPStrict.dir/TP_strict.cpp.o
-/usr/bin/ranlib libTPStrict.a

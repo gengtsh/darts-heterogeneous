@@ -1,2 +1,0 @@
-/usr/bin/ar qc libscheduler.a  CMakeFiles/scheduler.dir/TPSchedPolicy.cpp.o CMakeFiles/scheduler.dir/MSchedPolicy.cpp.o
-/usr/bin/ranlib libscheduler.a

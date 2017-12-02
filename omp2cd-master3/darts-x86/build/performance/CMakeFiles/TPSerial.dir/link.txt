@@ -1,2 +1,0 @@
-/usr/bin/ar qc libTPSerial.a  CMakeFiles/TPSerial.dir/TP_serial.cpp.o
-/usr/bin/ranlib libTPSerial.a

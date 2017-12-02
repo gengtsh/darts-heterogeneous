@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcodelet.a  CMakeFiles/codelet.dir/Codelet.cpp.o CMakeFiles/codelet.dir/ThreadedProcedure.cpp.o
-/usr/bin/ranlib libcodelet.a

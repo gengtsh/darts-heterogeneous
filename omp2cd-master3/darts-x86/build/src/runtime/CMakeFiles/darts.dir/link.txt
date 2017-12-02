@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdarts.a  CMakeFiles/darts.dir/Runtime.cpp.o
-/usr/bin/ranlib libdarts.a
