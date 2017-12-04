@@ -193,6 +193,7 @@ Stencil2D4ptGpuKernelWithAllTimeStepsCD::fire(void)
 	err8 = cudaFree(d_sharedCols);
 	err11 = cudaFree(d_sharedRows);
 	
+#ifdef CUDA_ERROR_CHECKING	
 	if(err7!=cudaSuccess){
 		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_dst: "<<cudaGetErrorString(err7)<<std::endl;
 		exit(-1);
@@ -207,7 +208,7 @@ Stencil2D4ptGpuKernelWithAllTimeStepsCD::fire(void)
 		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_sharedRows: "<<cudaGetErrorString(err11)<<std::endl;
 		exit(-1);
 	}
-
+#endif
 
 	SYNC(sync);
 
