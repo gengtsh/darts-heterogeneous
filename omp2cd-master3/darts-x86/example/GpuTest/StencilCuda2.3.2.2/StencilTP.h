@@ -87,14 +87,15 @@ DEF_TP(StencilTP)
     uint32_t gpuCnt = 0;
     uint32_t cpuCnt = 0;
     
-    double gpuInitR = 0.2; 
+    double gpuInitR = 0.5; 
     double gpuStepR = 0.2;
-    double cpuInitR = 0.2;
-    double cpuStepR = 0.2;
+    double cpuInitR = 0.25;
+    double cpuStepR = 0.1;
     uint64_t lastCnt = 0;
     uint64_t nRowsGpuMax= 0;
-	uint64_t nRowsGpuBase=1000;//can change to different numbers 
-	uint64_t nRowsCpuBase=500;//can change to different numbers 
+    uint64_t nRowsGpuBase = 1000;
+    uint64_t nRowsCpuBase = 500;
+    double gpuMemMax = 0;
     bool invokeStreams = false;
     int nStream = 4 ;
 	cudaStream_t *stream ;
@@ -151,6 +152,8 @@ DEF_TP(StencilTP)
 			size_t gpu_mem_valid_t = 0;
 			cudaMemGetInfo(&gpu_mem_avail_t,&gpu_mem_total_t);
 			gpu_mem_valid_t = gpu_mem_avail_t - XMB;
+            
+            gpuMemMax =(5*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 5*GB;
 
             int tile_y = GRID_TILE_Y;
             int tile_x = NUM_THREADS;
@@ -171,11 +174,11 @@ DEF_TP(StencilTP)
 			}
 #endif		
 			
-            nRowsGpuMax =floor((gpu_mem_valid_t-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
+            nRowsGpuMax =floor((gpuMemMax-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
 			
             if (GpuRatio == 1.0){
 			//	nCPU = 0;
-			//	nGPU=std::ceil(req_size/gpu_mem_valid_t );
+			//	nGPU=std::ceil(req_size/gpuMemMax );
 			//	nRowsGpu = nRows;
 			//	nRowsCpu = 0;
 			//	gpuPos = 0;
@@ -193,7 +196,7 @@ DEF_TP(StencilTP)
 			//		Swap = Stencil2D4ptSwapCD{1,1,this,SHORTWAIT}; 
 			//	}
                 nCPU=0;
-                nGPU=std::ceil(req_size/gpu_mem_valid_t);
+                nGPU=std::ceil(req_size/gpuMemMax);
                 nRowsGpu=nRows;
                 nRowsCpu=0;
                 gpuPos=0;
@@ -209,7 +212,7 @@ DEF_TP(StencilTP)
 				if (hard == true){
 					
 				}else{
-				    if(req_size <  gpu_mem_valid_t){
+				    if(req_size <  gpuMemMax){
 						nCPU = 0;
 					    nGPU = 1;
                         nRowsGpu = nRows;
@@ -220,9 +223,9 @@ DEF_TP(StencilTP)
 					    GpuKernelWithAllTimeSteps = Stencil2D4ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
                         add(&GpuKernelWithAllTimeSteps);	
                                         
-                    }else if (req_size<2 * gpu_mem_valid_t){
+                    }else if (req_size<2 * gpuMemMax){
 						nCPU = N_CORES-1;
-                        nGPU = req_size/gpu_mem_valid_t +1 ;
+                        nGPU = req_size/gpuMemMax +1 ;
 						CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 					   // if(ts>=40){
                        // 	nRowsGpu = nRows/2;
@@ -243,13 +246,13 @@ DEF_TP(StencilTP)
 				            cudaStreamCreate(&stream[i]);
 			            }
 						
-                        //uint64_t t1=floor((gpu_mem_valid_t-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
                         //uint64_t t1 = nRowsGpuBase;
-						uint64_t t1 = nRowsGpuMax;
+                        uint64_t t1 = nRowsGpuMax;
                         uint64_t t2 = nRows*gpuInitR;
                         //nRowsGpu = t1;
                         nRowsGpu = (t2<t1)?t2:t1;
-						//uint64_t t3 = nRowsCpuBase;
+
+                        //uint64_t t3=nRowsCpuBase;
                         uint64_t t3 = nRows*cpuInitR;
                         uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
@@ -272,14 +275,14 @@ DEF_TP(StencilTP)
                         
                         CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 				
-                        //uint64_t t1=floor((gpu_mem_valid_t-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
+                        //uint64_t t1=floor((gpuMemMax-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
                         //uint64_t t1 = nRowsGpuBase;
-						uint64_t t1 = nRowsGpuMax;
+                        uint64_t t1 = nRowsGpuMax;
                         uint64_t t2= nRows*gpuInitR;
                         //nRowsGpu = t1;
                         nRowsGpu = (t2<t1)?t2:t1;
                         
-						//uint64_t t3 = nRowsCpuBase;
+                        //uint64_t t3=nRowsCpuBase;
                         uint64_t t3=nRows*cpuInitR;
                         nRowsCpu = t3;
 						nRowsLeft=nRows - nRowsGpu-nRowsCpu+4;	

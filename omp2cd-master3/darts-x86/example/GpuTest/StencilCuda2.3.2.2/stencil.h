@@ -2,8 +2,8 @@
 #define STENCIL_H_GUARD
 
 //#define VERIFICATION 
-//#define CUDA_DARTS_DEBUG
-//#define CUDA_ERROR_CHECKING
+#define CUDA_DARTS_DEBUG
+#define CUDA_ERROR_CHECKING
 //#define CUDA_CUDA_DEBUG
 
 #ifdef __cplusplus
@@ -13,7 +13,8 @@ extern "C"
 
 #define KB 1024
 #define MB 1024*1024
-#define XMB 10*MB 
+#define XMB 20*MB 
+#define GB 1024*MB
 
 //#include "util.h"
 #define SWAP(type,left,right) do { \

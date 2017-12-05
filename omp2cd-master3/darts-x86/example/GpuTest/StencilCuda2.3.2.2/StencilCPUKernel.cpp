@@ -5,7 +5,6 @@
 #include <iostream>
 //#include <math.h>
 #include <cmath>
-
 //#define DEBUG_COPY
 
 void computeInner_stencil2d_v2(double *dst,double *src,size_t n_rows,size_t n_cols){
