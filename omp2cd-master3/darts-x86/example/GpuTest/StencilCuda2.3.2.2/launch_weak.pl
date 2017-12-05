@@ -26,7 +26,7 @@ my $its = 5;
 my @kernels = qw/StencilCudaHybrid3 StencilCudaGpu StencilCudaCpu/; # Seq/; 
 #my @kernels = qw/StencilCudaHybrid3 /; # Seq/; 
 my @outputs = ();
-my $sz_start = 25000;
+my $sz_start = 1000;
 my $sz_end = 51000;
 my $sz_step = 2000;
 for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
