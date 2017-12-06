@@ -793,9 +793,9 @@ Stencil2D4ptGpuKernelHybridWithStreamsCD::fire(void)
 	dim3 dimBlock(blockDimx,blockDimy);
 //	dim3 dimGrid(gridDimx,gridDimy);
     
-    int64_t d_size = sizeof(double)*nRowsGpuBlock*nCols;
-    int64_t d_size_sharedCols = sizeof(double) * nRowsGpuBlock*gridDimx*2 ;
-    int64_t d_size_sharedRows = sizeof(double) * nCols* gridDimy*2;
+    int64_t d_size = sizeof(double)*(nRowsGpuBlock)*nCols;
+    int64_t d_size_sharedCols = sizeof(double) * (nRowsGpuBlock+3)*gridDimx*2 ;
+    int64_t d_size_sharedRows = sizeof(double) * (nCols +NUM_THREADS )* gridDimy*2;
 
 #ifdef CUDA_DARTS_DEBUG
 	size_t gpu_mem_total_t = 0;
@@ -937,6 +937,13 @@ Stencil2D4ptGpuKernelHybridWithStreamsCD::fire(void)
     }
 	
     
+#ifdef CUDA_ERROR_CHECKING
+            err3 = cudaGetLastError();
+            if(cudaSuccess != err3){
+                std::cout<<"GpuKernelWithStream multiple streams: kernel5 finish and get last error! "<<cudaGetErrorString(err3)<<std::endl;
+                exit(-1);
+            }
+#endif
 	err4 = cudaDeviceSynchronize();
     err1 = cudaFree(d_dst);
 	err2 = cudaFree(d_sharedRows);

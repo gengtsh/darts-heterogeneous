@@ -153,7 +153,8 @@ DEF_TP(StencilTP)
 			cudaMemGetInfo(&gpu_mem_avail_t,&gpu_mem_total_t);
 			gpu_mem_valid_t = gpu_mem_avail_t - XMB;
             
-            gpuMemMax =(5*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 5*GB;
+            //gpuMemMax =(5*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 5*GB;
+            gpuMemMax = gpu_mem_valid_t;
 
             int tile_y = GRID_TILE_Y;
             int tile_x = NUM_THREADS;
@@ -174,8 +175,11 @@ DEF_TP(StencilTP)
 			}
 #endif		
 			
-            nRowsGpuMax =floor((gpuMemMax-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
+            nRowsGpuMax =floor((gpuMemMax-2*nStream*(nCols+NUM_THREADS)*4) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
 			
+#ifdef CUDA_DARTS_DEBUG		
+			std::cout<<"nRowsGpuMax: "<<nRowsGpuMax<<std::endl;
+#endif
             if (GpuRatio == 1.0){
 			//	nCPU = 0;
 			//	nGPU=std::ceil(req_size/gpuMemMax );
