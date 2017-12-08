@@ -131,13 +131,14 @@ DEF_TP(StencilTP)
 
 			Swap = Stencil2D4ptSwapCD{nCPU,nCPU,this,SHORTWAIT}; 
 		}else{
-
-#ifdef CUDA_DARTS_DEBUG		
+			
 			int deviceCount;
 			cudaGetDeviceCount(&deviceCount);
-			std::cout<<"gpu device count: "<<deviceCount<<std::endl;
 			cudaDeviceProp props;
 			cudaGetDeviceProperties(&props,0);
+		
+#ifdef CUDA_DARTS_DEBUG		
+			std::cout<<"gpu device count: "<<deviceCount<<std::endl;
 			std::cout<<"shared memory per block: "<<props.sharedMemPerBlock/KB<<"KB"<<std::endl;
 			std::cout<<"registers per Block: "<<props.regsPerBlock<<std::endl;
 			std::cout<<"Threads per Block:"<<props.maxThreadsPerBlock<<std::endl;
