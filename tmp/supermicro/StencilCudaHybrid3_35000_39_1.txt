@@ -1,0 +1,5 @@
+GpuKernelHybridWithStreams: cuda deviceSynchronize: an illegal memory access was encountered
+GpuKernelHybridWithStreams: cuda deviceSynchronize: an illegal memory access was encountered
+GpuKernelHybridWithStreams: cuda deviceSynchronize: an illegal memory access was encountered
+GpuKernelHybridWithStreams: cuda deviceSynchronize: an illegal memory access was encountered
+GpuKernelHybridWithStreams: cuda deviceSynchronize: an illegal memory access was encountered
