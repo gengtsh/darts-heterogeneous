@@ -3,9 +3,13 @@
 use warnings;
 use strict;
 
+$nThreads = 32;
+$nThreads1 = $nThreads-1;
+$tb = 3;
+
 
 my @threads = ();
-for my $j(4..31){
+for my $j($tb..$nThreads1){
 	push @threads,[$j,1];
 }
 
@@ -59,7 +63,7 @@ my @kernels = qw/StencilCudaHybrid3 StencilCudaGpu StencilCudaCpu/; # Seq/;
 
 my @outputs = ();
 
-for my $i (5000, 25000, 45000) {
+for my $i (1000, 3000, 5000) {
 #for my $i (1000,2000,3000,4000,5000,6000,7000,8000,9000,10000) {
     for my $thd (@threads) {
         my ($n_cu,$n_su) = @$thd;

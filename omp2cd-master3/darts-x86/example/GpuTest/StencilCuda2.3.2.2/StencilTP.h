@@ -154,7 +154,7 @@ DEF_TP(StencilTP)
 			cudaMemGetInfo(&gpu_mem_avail_t,&gpu_mem_total_t);
 			gpu_mem_valid_t = gpu_mem_avail_t - XMB;
             
-            gpuMemMax =(3*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 3*GB;
+            gpuMemMax =(2*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 2*GB;
             //gpuMemMax = gpu_mem_valid_t;
 
             int tile_y = GRID_TILE_Y;
@@ -171,9 +171,9 @@ DEF_TP(StencilTP)
 			std::cout<<"gpu memory total: "<<gpu_mem_total_t/1024<<"KB"<<std::endl;
 			std::cout<<"gpu memory available: "<<gpu_mem_avail_t/1024<<"KB"<<std::endl;
 			std::cout<<"required memory size: "<<req_size/1024<<"KB"<<std::endl;
-            std::cout<<"3GB:"<<3*GB<<std::endl;
+            std::cout<<"3GB:"<<2*GB<<std::endl;
 			std::cout<<"gpu memory size limition: "<<gpuMemMax/GB<<"GB"<<std::endl;
-            if(req_size > 2*gpu_mem_avail_t){
+            if(req_size > 2*gpuMemMax){
 				std::cout<<"required memory size is larger than 2*gpu_mem_avail_t!"<<std::endl;
 			}
 #endif		
@@ -252,14 +252,15 @@ DEF_TP(StencilTP)
 				            cudaStreamCreate(&stream[i]);
 			            }
 						
-                        uint64_t t1 = nRowsGpuBase;
-                        //uint64_t t1 = nRowsGpuMax;
+                        //uint64_t t1 = nRowsGpuBase;
+                        uint64_t t1 = nRowsGpuMax;
                         uint64_t t2 = nRows*gpuInitR;
-                        //nRowsGpu = t1;
-                        nRowsGpu = (t2<t1)?t2:t1;
+                        nRowsGpu = t1;
+                        //nRowsGpu = (t2<t1)?t2:t1;
 
-                        uint64_t t3=nRowsCpuBase;
+                        //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3 = nRows*cpuInitR;
+						uint64_t t3 = nRowsGpu*cpuInitR;
                         uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
                         gpuPos = 0;
@@ -281,14 +282,15 @@ DEF_TP(StencilTP)
                         
                         CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 				
-						uint64_t t1 = nRowsGpuBase;
-                        //uint64_t t1 = nRowsGpuMax;
+						//uint64_t t1 = nRowsGpuBase;
+                        uint64_t t1 = nRowsGpuMax;
                         uint64_t t2= nRows*gpuInitR;
-                        //nRowsGpu = t1;
-                        nRowsGpu = (t2<t1)?t2:t1;
+                        nRowsGpu = t1;
+                        //nRowsGpu = (t2<t1)?t2:t1;
                         
-                        uint64_t t3=nRowsCpuBase;
+                        //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3=nRows*cpuInitR;
+						uint64_t t3 = nRowsGpu*cpuInitR;
                         nRowsCpu = t3;
 						nRowsLeft=nRows - nRowsGpu-nRowsCpu+4;	
 
