@@ -114,8 +114,8 @@ FIND_LIBRARY(BLAS_LIB blas)
 add_subdirectory( include )
 add_subdirectory( src )
 add_subdirectory( example )
-add_subdirectory( omp2cd-examples )
-add_subdirectory( performance )
+#add_subdirectory( omp2cd-examples )
+#add_subdirectory( performance )
 
 export(TARGETS amm codelet common darts rsmanager scheduler threadlocal FILE "${PROJECT_BINARY_DIR}/dartsLibraryDepends.cmake")
 

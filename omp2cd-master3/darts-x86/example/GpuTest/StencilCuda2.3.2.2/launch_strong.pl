@@ -3,9 +3,9 @@
 use warnings;
 use strict;
 
-$nThreads = 32;
-$nThreads1 = $nThreads-1;
-$tb = 3;
+my $nThreads = 32;
+my $nThreads1 = $nThreads-1;
+my $tb = 3;
 
 
 my @threads = ();

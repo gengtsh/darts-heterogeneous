@@ -31,6 +31,11 @@ StencilCuda2.3.2.2: (similiar to 2.3.2.1, only change on hybrid version)
     hybrid version:
     GPU and CPU can auto adjust required matrix size 
 
+
+StencilCuda2.3.2.2.p: (similiar to 2.3.2.2)
+    hybrid version:
+		add new input parameters to adjust gpu initial size and cpuRatio
+	
 StencilCuda2.4: 
 	4 small kernels, synchronize every timestep
         4 small kernels:

@@ -86,24 +86,23 @@ DEF_TP(StencilTP)
 	uint32_t nGPUInit = 0;
     uint32_t gpuCnt = 0;
     uint32_t cpuCnt = 0;
-
- 	double 	gpuInitR = 0.5; 
-	double 	cpuInitR = 0.25;
-	double 	gpuStepR = 0.2;
-	double 	cpuStepR = 0.2;
-	uint64_t	nRowsGpuBase = 1000;
-	uint64_t	nRowsCpuBase = 500;	
 	
+	double gpuInitR = 0.5; 
+    double cpuInitR = 0.25;
+	double gpuStepR = 0.2;
+    double cpuStepR = 0.2;
+    uint64_t nRowsGpuBase = 1000;
+    uint64_t nRowsCpuBase = 500;
 	
-    uint64_t lastCnt = 0;
+	uint64_t lastCnt = 0;
     uint64_t nRowsGpuMax= 0;
-    size_t gpuMemMax = 0;
+	size_t gpuMemMax = 0;
     bool invokeStreams = false;
     int nStream = 4 ;
 	cudaStream_t *stream ;
 
 
-    StencilTP(double * inimatrix,const uint64_t inim,const uint64_t inin,double * newmatrix,uint64_t ts,bool hard,double GpuRatio, Codelet *up)
+    StencilTP(double * inimatrix,const uint64_t inim,const uint64_t inin,double * newmatrix,uint64_t ts,bool hard,double GpuRatio,uint64_t nRowsGpuBase,double cpuInitR, Codelet *up)
 	:Initial(inimatrix)
 	,nRows(inim)
 	,nCols(inin)
@@ -112,6 +111,8 @@ DEF_TP(StencilTP)
 	,tsInit(ts)
     ,hard(hard)
     ,GpuRatio(GpuRatio)
+	,nRowsGpuBase(nRowsGpuBase)
+	,cpuInitR(cpuInitR)
 	,sync(1,1,this,LONGWAIT)
 	,signalUp(up)
 	{
@@ -120,8 +121,8 @@ DEF_TP(StencilTP)
 		std::cout<<"invoke TP!"<<std::endl;	
 		std::cout<<std::setprecision(18)<<std::endl;
 #endif
-
-
+	
+		
 		if(GpuRatio ==0.0){
 			nCPU = N_CORES;
 			CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
@@ -135,13 +136,13 @@ DEF_TP(StencilTP)
 
 			Swap = Stencil2D4ptSwapCD{nCPU,nCPU,this,SHORTWAIT}; 
 		}else{
-			
+
 			int deviceCount;
 			cudaGetDeviceCount(&deviceCount);
 			cudaDeviceProp props;
 			cudaGetDeviceProperties(&props,0);
-		
 #ifdef CUDA_DARTS_DEBUG		
+			
 			std::cout<<"gpu device count: "<<deviceCount<<std::endl;
 			std::cout<<"shared memory per block: "<<props.sharedMemPerBlock/KB<<"KB"<<std::endl;
 			std::cout<<"registers per Block: "<<props.regsPerBlock<<std::endl;
@@ -175,7 +176,7 @@ DEF_TP(StencilTP)
 			std::cout<<"gpu memory total: "<<gpu_mem_total_t/1024<<"KB"<<std::endl;
 			std::cout<<"gpu memory available: "<<gpu_mem_avail_t/1024<<"KB"<<std::endl;
 			std::cout<<"required memory size: "<<req_size/1024<<"KB"<<std::endl;
-            std::cout<<"3GB:"<<2*GB<<std::endl;
+            std::cout<<"2GB:"<<2*GB<<std::endl;
 			std::cout<<"gpu memory size limition: "<<gpuMemMax/GB<<"GB"<<std::endl;
             if(req_size > 2*gpuMemMax){
 				std::cout<<"required memory size is larger than 2*gpu_mem_avail_t!"<<std::endl;
@@ -256,16 +257,20 @@ DEF_TP(StencilTP)
 				            cudaStreamCreate(&stream[i]);
 			            }
 						
-                        //uint64_t t1 = nRowsGpuBase;
-                        uint64_t t1 = nRowsGpuMax;
+                        uint64_t t1 = nRowsGpuBase;
+                        //uint64_t t1 = nRowsGpuMax;
                         uint64_t t2 = nRows*gpuInitR;
                         nRowsGpu = t1;
                         //nRowsGpu = (t2<t1)?t2:t1;
 
-                        //uint64_t t3=nRowsCpuBase;
+#ifdef CUDA_DARTS_DEBUG		
+						std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<std::endl;
+						std::cout<<"cpuInitR: "<<cpuInitR<<std::endl;
+#endif		
+						//uint64_t t3=nRowsCpuBase;
                         //uint64_t t3 = nRows*cpuInitR;
-						uint64_t t3 = nRowsGpu*cpuInitR;
-                        uint64_t t4 = nRows-nRowsGpu+2;
+                        uint64_t t3 = nRowsGpu*cpuInitR;
+						uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
                         gpuPos = 0;
 						cpuPos = nRowsGpu-2;
@@ -286,16 +291,17 @@ DEF_TP(StencilTP)
                         
                         CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 				
-						//uint64_t t1 = nRowsGpuBase;
-                        uint64_t t1 = nRowsGpuMax;
+                        //uint64_t t1=floor((gpuMemMax-2*nStream*nCols) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
+                        uint64_t t1 = nRowsGpuBase;
+                        //uint64_t t1 = nRowsGpuMax;
                         uint64_t t2= nRows*gpuInitR;
                         nRowsGpu = t1;
                         //nRowsGpu = (t2<t1)?t2:t1;
                         
                         //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3=nRows*cpuInitR;
-						uint64_t t3 = nRowsGpu*cpuInitR;
-                        nRowsCpu = t3;
+                        uint64_t t3 = nRowsGpu*cpuInitR;
+						nRowsCpu = t3;
 						nRowsLeft=nRows - nRowsGpu-nRowsCpu+4;	
 
                         gpuPos = 0;
