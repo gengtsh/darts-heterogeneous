@@ -43,7 +43,7 @@ for my $i (17000){
             my $ker = './' . $kernel;
             if (-e $ker) {
 				for my $n_gb (1000,2000,4000,8000){
-					for my $n_cr (0.125,1.25,1.5){
+					for my $n_cr (0.125,0.25,0.5){
 						open my $fh, '>>', "${kernel}_${i}_${n_cu}_${n_su}_${n_gb}_${n_cr}.txt" or die $!;
                 		for (my $idx = 0; $idx < $its; ++$idx) {
                 		    print $fh  `numactl --interleave=0-1 $ker $i $i $n_iter $n_reps $n_gb $n_cr `;
