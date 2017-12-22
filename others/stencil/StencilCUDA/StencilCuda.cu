@@ -3,6 +3,7 @@ extern "C" {
 #include "conf.h"
 #include "stencil.h"
 }
+#include <stdint.h>
 #include <stdio.h>
 #define ROTATE_DOWN(val,MAX) ((val-1==-1)?MAX-1:val-1)
 #define ROTATE_UP(val,MAX) ((val+1)%MAX)
