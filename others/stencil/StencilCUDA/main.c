@@ -41,9 +41,9 @@ result_is_correct(const size_t  n_rows, const size_t  n_cols,
                   RES        = (const Array2D) res;
     bool          is_correct =   true;
     const double  epsilon    = 0.0001;
-
-    for (size_t i = 0; is_correct && i < n_rows; ++i) 
-        for (size_t j = 0; is_correct && j < n_cols; ++j) 
+	size_t i,j;
+    for (i = 0; is_correct && i < n_rows; ++i) 
+        for ( j = 0; is_correct && j < n_cols; ++j) 
             if ( !( is_correct = fabs( RES[i][j] - ORIG[i][j] ) <= epsilon ) )
                 printf("Values mismatch! [%lu,%lu]\tORIG = %5.5f != RES = %5.5f\n",
                        i, j, ORIG[i][j], RES[i][j]);
@@ -67,9 +67,10 @@ array2d_print ( double* a, const size_t n_rows, const size_t n_cols )
 {
     typedef double (*Array2D)[n_cols];
     Array2D A = (Array2D) a;
-    for (size_t i = 0; i < n_rows; ++i) 
+	size_t i,j;
+    for (i = 0; i < n_rows; ++i) 
     {
-        for (size_t j = 0; j < n_cols; ++j) 
+        for (j = 0; j < n_cols; ++j) 
 		printf("%G\t", A[i][j]);
     	printf("\n");
     }
@@ -91,8 +92,9 @@ array2d_init ( double* a, const size_t n_rows, const size_t n_cols )
 {
     typedef double (*Array2D)[n_cols];
     Array2D A = (Array2D) a;
-    for (size_t i = 0; i < n_rows; ++i) 
-        for (size_t j = 0; j < n_cols; ++j) 
+	size_t i,j;
+    for (i = 0; i < n_rows; ++i) 
+        for (j = 0; j < n_cols; ++j) 
             A[i][j] = (1+i)*j + 1.3;
 }
 
@@ -306,9 +308,10 @@ StencilSeq ( double* __restrict__ dst,    double* __restrict__ src,
     typedef double (*Array2D)[n_cols];
     volatile Array2D DST = (Array2D) dst,
             SRC = (Array2D) src;
-    for (size_t ts = 0; ts < n_tsteps; ++ts) {
-		for (size_t i = 1; i < n_rows-1; ++i) {
-            for (size_t j = 1; j < n_cols-1; ++j) {
+	size_t ts,i,j;
+    for (ts = 0; ts < n_tsteps; ++ts) {
+		for (i = 1; i < n_rows-1; ++i) {
+            for (j = 1; j < n_cols-1; ++j) {
                 DST[i][j] = (SRC[i-1][j] + SRC[i+1][j] + SRC[i][j-1] + SRC[i][j+1])/5.5;
                 //DST[i][j] = (SRC[i-1][j] + SRC[i+1][j] + SRC[i][j-1] + SRC[i][j+1])/4;
             }
@@ -360,8 +363,8 @@ int main(int argc, char *argv[])
 	uint64_t *timings= smalloc(sizeof(uint64_t)*nReps);
     outerStart = getTime();
 	
-		
-	for(size_t i=0; i<nReps;++i){
+	size_t i;	
+	for(i=0; i<nReps;++i){
 
         memcpy(InitialMatrix, OriginalMatrix, sizeof(double*)*nRows*nCols);
         memcpy(NewMatrix, OriginalMatrix, sizeof(double*)*nRows*nCols);
@@ -391,7 +394,7 @@ int main(int argc, char *argv[])
     printf("%lu * %lu, %lu, %lu, %ld, %lu, %lu, %-18.2f, %-18.2f,",
            nRows, nCols, 0UL, nthreads,nthreads, nTmSteps,nReps,innerAvg, outerAvg);
 
-	for(size_t i=0;i<nReps;++i){
+	for(i=0;i<nReps;++i){
 		printf("%lu,",timings[i]);
 	}
 	printf("\n");
