@@ -89,8 +89,8 @@ my $its = 5;
 my @kernels = qw/StencilSEQ StencilCUDA /; # Seq/;
 
 for my $i (1000,3000,5000,25000) {
-	$n_cu = 0;
-	$n_su = $nThreads ;
+	my $n_cu = 0;
+	my $n_su = $nThreads ;
     $ENV{'OMP_NUM_THREADS'} = ($n_cu+1)*$n_su;
 	for my $kernel (@kernels) {
 	    my $ker = './' . $kernel;
