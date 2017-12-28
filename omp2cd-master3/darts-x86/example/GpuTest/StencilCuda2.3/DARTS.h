@@ -64,8 +64,7 @@ public:                                                \
     name(uint32_t           dep,   uint32_t reset,     \
          ThreadedProcedure *frame, uint64_t meta,      \
          uint64_t id)                                  \
-    : Codelet(dep,reset,frame,meta)                    \
-    , _id(id)                                          \
+    : Codelet(dep,reset,frame,meta,id)                    \                                          \
     {                                                  \
     }                                                  \
     name(darts::ThreadedProcedure *frame=0)            \
@@ -73,7 +72,6 @@ public:                                                \
     , _id(0)                                           \
     {                                                  \
     }                                                  \
-    uint64_t     getID() const { return _id; }         \
     virtual void fire();                               \
 } 
 

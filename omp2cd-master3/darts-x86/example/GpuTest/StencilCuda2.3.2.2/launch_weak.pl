@@ -37,7 +37,7 @@ for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
         $ENV{'OMP_PROC_BIND'}   = 'true';
         $ENV{'OMP_NUM_THREADS'} = ($n_cu+1)*$n_su;
 		my $n_total = ($n_cu+1)*$n_su;
-        if ($n_total== 16){
+        if ($n_total <= 16){
             #$ENV{'GOMP_CPU_AFFINITY'}="0-7 16-23";
 			$ENV{'DARTS_AFFINITY'}="0-7 16-23";
         }else{
