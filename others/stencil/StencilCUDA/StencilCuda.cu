@@ -769,7 +769,7 @@ stencil2D4pt_gpu( double * __restrict__ h_dst, double* __restrict__ h_src, const
 	size_t gpu_mem_valid_t = 0;
 	cudaMemGetInfo(&gpu_mem_avail_t,&gpu_mem_total_t);
 	gpu_mem_valid_t = gpu_mem_avail_t - XMB;
-    gpuMemMax =(2*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 2*GB;
+    gpuMemMax =(2*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 2*GB - XMB;
 
     int tile_y = GRID_TILE_Y;
     int tile_x = NUM_THREADS;
@@ -894,7 +894,7 @@ stencil2D4pt_gpu( double * __restrict__ h_dst, double* __restrict__ h_src, const
 	
 	
 	}else{
-		nGPU = std::ceil(req_size/gpuMemMax); 
+		nGPU = std::ceil(req_size/gpuMemMax)+1; 
 		nRowsGpu = nRows;
 		int nStream = 4 ;
 		cudaStream_t *stream ;
