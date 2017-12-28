@@ -22,6 +22,9 @@
 #include <stdint.h>
 #include <darts.h>
 #include "getClock.h"
+//#include <cuda.h>
+//#include <cuda_runtime_api.h>
+
 using namespace darts;
 
 #define TPPUSHFULL 0
@@ -61,8 +64,7 @@ public:                                                \
     name(uint32_t           dep,   uint32_t reset,     \
          ThreadedProcedure *frame, uint64_t meta,      \
          uint64_t id)                                  \
-    : Codelet(dep,reset,frame,meta)                    \
-    , _id(id)                                          \
+    : Codelet(dep,reset,frame,meta,id)                 \  
     {                                                  \
     }                                                  \
     name(darts::ThreadedProcedure *frame=0)            \
@@ -70,7 +72,6 @@ public:                                                \
     , _id(0)                                           \
     {                                                  \
     }                                                  \
-    uint64_t     getID() const { return _id; }         \
     virtual void fire();                               \
 } 
 
@@ -96,6 +97,7 @@ struct name : public darts::Codelet                    \
 #define PLACE(clusterID, TPName,...) invoke<TPName>(frame,__VA_ARGS__)
 #define SIGNAL(field)      (*frame).field->decDep()
 #define SYNC(field)        (*frame).field.decDep()
+#define INCR(field)		   (*frame).field.incDep()
 //#define ADD(cd_name)       frame->cd_name.add()
 //#define ADD(cd_name)       frame->add(frame->cd_name)
 #define ADD(cd_name)       add(frame->cd_name)
