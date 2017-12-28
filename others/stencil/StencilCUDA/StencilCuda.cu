@@ -881,6 +881,15 @@ stencil2D4pt_gpu( double * __restrict__ h_dst, double* __restrict__ h_src, const
 			exit(-1);
 		}
 #endif
+
+	    err1 = cudaFree(d_dst);
+#ifdef CUDA_ERROR_CHECKING
+		if(err1!=cudaSuccess){
+			printf(" GpuKernelWithAllTimeSteps: cuda free d_dst:  %s \n ",cudaGetErrorString(err1));
+			
+			exit(-1);
+		}
+#endif		
 	
 	
 	
