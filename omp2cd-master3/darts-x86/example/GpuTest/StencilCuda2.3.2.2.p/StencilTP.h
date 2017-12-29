@@ -89,7 +89,9 @@ DEF_TP(StencilTP)
 	
 	double gpuInitR = 0.5; 
     double cpuInitR = 0.25;
-	double gpuStepR = 0.2;
+	double ggInitR = 0.5; 
+    double cgInitR = 0.25;
+    double gpuStepR = 0.2;
     double cpuStepR = 0.2;
     uint64_t nRowsGpuBase = 1000;
     uint64_t nRowsCpuBase = 500;
@@ -102,7 +104,7 @@ DEF_TP(StencilTP)
 	cudaStream_t *stream ;
 
 
-    StencilTP(double * inimatrix,const uint64_t inim,const uint64_t inin,double * newmatrix,uint64_t ts,bool hard,double GpuRatio,uint64_t nRowsGpuBase,double cpuInitR, Codelet *up)
+    StencilTP(double * inimatrix,const uint64_t inim,const uint64_t inin,double * newmatrix,uint64_t ts,bool hard,double GpuRatio,uint64_t nRowsGpuBase,double cgInitR, Codelet *up)
 	:Initial(inimatrix)
 	,nRows(inim)
 	,nCols(inin)
@@ -112,7 +114,7 @@ DEF_TP(StencilTP)
     ,hard(hard)
     ,GpuRatio(GpuRatio)
 	,nRowsGpuBase(nRowsGpuBase)
-	,cpuInitR(cpuInitR)
+	,cgInitR(cgInitR)
 	,sync(1,1,this,LONGWAIT)
 	,signalUp(up)
 	{
@@ -269,7 +271,7 @@ DEF_TP(StencilTP)
 #endif		
 						//uint64_t t3=nRowsCpuBase;
                         //uint64_t t3 = nRows*cpuInitR;
-                        uint64_t t3 = nRowsGpu*cpuInitR;
+                        uint64_t t3 = nRowsGpu*cgInitR;
 						uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
                         gpuPos = 0;
@@ -300,10 +302,10 @@ DEF_TP(StencilTP)
                         
                         //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3=nRows*cpuInitR;
-                        uint64_t t3 = nRowsGpu*cpuInitR;
-						nRowsCpu = t3;
-						nRowsLeft=nRows - nRowsGpu-nRowsCpu+4;	
-
+                        uint64_t t3 = nRowsGpu*cgInitR;
+						uint64_t t4 = nRows-nRowsGpu+2;
+                        nRowsCpu = (t4<=t3)?t4:t3 ;
+						nRowsLeft = (t4<=t3)?0:(nRows-nRowsGpu-nRowsCpu+4);
                         gpuPos = 0;
 						cpuPos = nRowsGpu-2;
                         

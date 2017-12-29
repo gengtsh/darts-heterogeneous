@@ -32,7 +32,7 @@ using std::vector;
 size_t g_nCU,g_nSU;
 static inline void usage(const char *name) 
 {
-	std::cout << "USAGE: " << name << "<n_rows> <n_cols> <n_timesteps> <n_reps> <nRowsGpuBase> <cpuInitR>\n";
+	std::cout << "USAGE: " << name << "<n_rows> <n_cols> <n_timesteps> <n_reps> <nRowsGpuBase> <cgInitR>\n";
 	exit(0);
 }
 
@@ -128,15 +128,15 @@ int main(int argc, char *argv[])
     nTmSteps = nReps = 1;
 
 	size_t nRowsGpuBase = 1000;
-	double cpuInitR = 0.25;
+	double cgInitR = 0.25;
 
 #ifdef CUDA_DARTS_DEBUG
-		std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<",cpuInitR: "<<cpuInitR<<std::endl;
+		std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<",cgInitR: "<<cgInitR<<std::endl;
 #endif
 //	size_t nCmpRep = 1;
     switch ( argc ) {
    
-	case 7: cpuInitR		= strtod(argv[6],NULL);
+	case 7: cgInitR		= strtod(argv[6],NULL);
     case 6: nRowsGpuBase    = strtoul(argv[5],NULL,0);
     case 5: nReps    = strtoul(argv[4],NULL,0);
     case 4: nTmSteps = strtoul(argv[3],NULL,0); 
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
     }
 
 #ifdef CUDA_DARTS_DEBUG
-		std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<",cpuInitR: "<<cpuInitR<<std::endl;
+		std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<",cgInitR: "<<cgInitR<<std::endl;
 #endif
 
     double GpuRatio = 0.6; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
             std::copy(OriginalMatrix, OriginalMatrix+nRows*nCols, NewMatrix);
 			innerStart = getTime();//start time for kernal procedure
 			rt->run(
-                launch<StencilTP>(InitialMatrix,nRows,nCols,NewMatrix,nTmSteps,hard, GpuRatio,nRowsGpuBase,cpuInitR,&Runtime::finalSignal)
+                launch<StencilTP>(InitialMatrix,nRows,nCols,NewMatrix,nTmSteps,hard, GpuRatio,nRowsGpuBase,cgInitR,&Runtime::finalSignal)
             );
 			innerStop = getTime() - innerStart;
 			innerAvg += innerStop;

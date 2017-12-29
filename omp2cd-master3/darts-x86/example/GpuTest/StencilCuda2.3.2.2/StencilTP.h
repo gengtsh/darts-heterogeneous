@@ -88,12 +88,13 @@ DEF_TP(StencilTP)
     uint32_t cpuCnt = 0;
 
  	double 	gpuInitR = 0.5; 
-	double 	cpuInitR = 0.25;
+	double 	cpuInitR = 0.5;
+	double 	ggInitR = 0.5;
+    double 	cgInitR = 1.0;
 	double 	gpuStepR = 0.2;
 	double 	cpuStepR = 0.2;
-	uint64_t	nRowsGpuBase = 1000;
-	uint64_t	nRowsCpuBase = 500;	
-	
+	uint64_t	nRowsGpuBase =2000;
+	uint64_t	nRowsCpuBase = 2000;	
 	
     uint64_t lastCnt = 0;
     uint64_t nRowsGpuMax= 0;
@@ -237,19 +238,6 @@ DEF_TP(StencilTP)
 						nCPU = N_CORES-1;
                         nGPU = req_size/gpuMemMax +1 ;
 						CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
-					   // if(ts>=40){
-                       // 	nRowsGpu = nRows/2;
-					   // 	nRowsCpu = nRows - nRowsGpu+2 ;
-					   // 	gpuPos = 0;
-					   // 	cpuPos = nRowsGpu-2;
-
-					   // 	CpuSync = Stencil2D4ptCpuSyncCD{nCPU,nCPU,this,SHORTWAIT};
-				       //     GpuKernel = Stencil2D4ptGpuKernelCD{0,1,this,GPUMETA};
-				       //     add(&GpuKernel);
-				       //     Swap = Stencil2D4ptSwapCD{2,2,this,SHORTWAIT}; 
-                       // }else{
-
-                       // }
                         invokeStreams = true;       
 					    stream = new cudaStream_t[nStream];
 			            for(int i=0;i<nStream;++i){
@@ -257,14 +245,17 @@ DEF_TP(StencilTP)
 			            }
 						
                         //uint64_t t1 = nRowsGpuBase;
-                        uint64_t t1 = nRowsGpuMax;
+                        //uint64_t t1 = nRowsGpuMax;
+                        uint64_t t1 = nRowsGpuMax*ggInitR;
                         uint64_t t2 = nRows*gpuInitR;
-                        nRowsGpu = t1;
+                        //nRowsGpu = t1;
+                        nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
                         //nRowsGpu = (t2<t1)?t2:t1;
 
                         //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3 = nRows*cpuInitR;
-						uint64_t t3 = nRowsGpu*cpuInitR;
+                        //uint64_t t3 = nRowsGpu*cpuInitR;
+                        uint64_t t3 = nRowsGpu*cgInitR;
                         uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
                         gpuPos = 0;
@@ -287,17 +278,19 @@ DEF_TP(StencilTP)
                         CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 				
 						//uint64_t t1 = nRowsGpuBase;
-                        uint64_t t1 = nRowsGpuMax;
+                        //uint64_t t1 = nRowsGpuMax;
+                        uint64_t t1 = nRowsGpuMax*ggInitR;
                         uint64_t t2= nRows*gpuInitR;
-                        nRowsGpu = t1;
+                        nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
                         //nRowsGpu = (t2<t1)?t2:t1;
                         
                         //uint64_t t3=nRowsCpuBase;
                         //uint64_t t3=nRows*cpuInitR;
-						uint64_t t3 = nRowsGpu*cpuInitR;
-                        nRowsCpu = t3;
-						nRowsLeft=nRows - nRowsGpu-nRowsCpu+4;	
-
+						//uint64_t t3 = nRowsGpu*cpuInitR;
+						uint64_t t3 = nRowsGpu*cgInitR;
+                        uint64_t t4 = nRows-nRowsGpu+2;
+                        nRowsCpu = (t4<=t3)?t4:t3 ;
+						nRowsLeft = (t4<=t3)?0:(nRows-nRowsGpu-nRowsCpu+4);
                         gpuPos = 0;
 						cpuPos = nRowsGpu-2;
                         

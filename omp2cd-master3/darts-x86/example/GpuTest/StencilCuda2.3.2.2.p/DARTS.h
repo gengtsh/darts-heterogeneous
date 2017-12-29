@@ -64,7 +64,7 @@ public:                                                \
     name(uint32_t           dep,   uint32_t reset,     \
          ThreadedProcedure *frame, uint64_t meta,      \
          uint64_t id)                                  \
-    : Codelet(dep,reset,frame,meta,id)                 \  
+    : Codelet(dep,reset,frame,meta,id)                 \
     {                                                  \
     }                                                  \
     name(darts::ThreadedProcedure *frame=0)            \
