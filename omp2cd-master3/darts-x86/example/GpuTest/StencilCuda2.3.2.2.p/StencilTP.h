@@ -262,8 +262,9 @@ DEF_TP(StencilTP)
                         uint64_t t1 = nRowsGpuBase;
                         //uint64_t t1 = nRowsGpuMax;
                         uint64_t t2 = nRows*gpuInitR;
-                        nRowsGpu = t1;
-                        //nRowsGpu = (t2<t1)?t2:t1;
+                        //nRowsGpu = t1;
+                        nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
+						//nRowsGpu = (t2<t1)?t2:t1;
 
 #ifdef CUDA_DARTS_DEBUG		
 						std::cout<<"nRowsGpuBase: "<<nRowsGpuBase<<std::endl;
@@ -297,7 +298,8 @@ DEF_TP(StencilTP)
                         uint64_t t1 = nRowsGpuBase;
                         //uint64_t t1 = nRowsGpuMax;
                         uint64_t t2= nRows*gpuInitR;
-                        nRowsGpu = t1;
+                        //nRowsGpu = t1;
+						nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
                         //nRowsGpu = (t2<t1)?t2:t1;
                         
                         //uint64_t t3=nRowsCpuBase;
