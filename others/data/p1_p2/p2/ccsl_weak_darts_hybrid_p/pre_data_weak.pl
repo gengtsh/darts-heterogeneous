@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 my @kernels = qw/StencilCudaHybrid4/;
-my @gbase = (1000,4000,8000);
+my @gbase = (1000,2000,4000,8000);
 my @ratio = (0.5,1,1.5,2);
 my @msize = (17000,19000,21000,23000,25000);
 

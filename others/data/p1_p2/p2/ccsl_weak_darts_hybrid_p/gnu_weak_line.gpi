@@ -36,7 +36,7 @@ set grid
 app_0 = 'StencilCudaHybrid4'
 app_1 = 'StencilDARTSHybrid4'
 
-gbase_list = "1000 4000 8000"
+gbase_list = "1000 2000 4000 8000"
 item1(n) = word (gbase_list,n)
 
 num_list = "17000 19000 21000 23000 25000"
