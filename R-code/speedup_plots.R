@@ -11,9 +11,14 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
     if(j == "supermicro") threads <- 39       
     
     
+    
     data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     
-    dataFrame <- data.frame(size=data$X.size, machine=j, apps=c(rep(names(data)[2], dim(data)[1]),
+    names(data) <- c("size", "Sequential", "CUDA", "DartsCpu", "DartsGpu", "DartsHybrid3")
+    
+    
+    if(j == "f4") j <- "Fatnode"
+    dataFrame <- data.frame(size=data$size, machine=j, apps=c(rep(names(data)[2], dim(data)[1]),
                                                                 rep(names(data)[3], dim(data)[1]),
                                                                 rep(names(data)[4], dim(data)[1]),
                                                                 rep(names(data)[5], dim(data)[1]),
@@ -22,7 +27,6 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
     
     df <- rbind(df, dataFrame)
 }
-
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps)) + 
     geom_line(size=1.5)+
@@ -35,14 +39,39 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps))
     theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
     # theme(axis.text.x= element_blank()) +
     theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-    theme(legend.text  = element_text(family = "Times", face="bold", size=20)) +
+    theme(legend.text  = element_text(family = "Times", face="bold", size=18)) +
     theme(legend.direction = "horizontal", 
           legend.position = "bottom",
           legend.key=element_rect(size=1),
-          legend.key.size = unit(2.5, "lines")) +
-    guides(col = guide_legend(nrow = 2)) +
+          legend.key.size = unit(2.25, "lines")) +
+    guides(col = guide_legend(nrow = 1)) +
      # facet_grid(.~machine, scales="free") +
-    facet_wrap(~machine, ncol=1, scales="free_x") +
+    facet_wrap(~machine, ncol=1, scales="free") +
     theme(strip.text = element_text(size=20))
-ggsave(paste("./speedUp-1.pdf",sep=""), Graph, device = pdf, height=18, width=9)
+ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=18, width=9)
+
+
+
+df <-  df[df$size >= 17000,]
+Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps)) + 
+    geom_line(size=1.5)+
+    geom_point(cex=3.5) +
+    xlab("Size of the Problem") + 
+    theme_bw() +
+    ylab("Speedup" ) +
+    theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
+    theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
+    theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
+    # theme(axis.text.x= element_blank()) +
+    theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
+    theme(legend.text  = element_text(family = "Times", face="bold", size=18)) +
+    theme(legend.direction = "horizontal", 
+          legend.position = "bottom",
+          legend.key=element_rect(size=1),
+          legend.key.size = unit(2.25, "lines")) +
+    guides(col = guide_legend(nrow = 1)) +
+    # facet_grid(.~machine, scales="free") +
+    facet_wrap(~machine, ncol=1, scales="free") +
+    theme(strip.text = element_text(size=20))
+ggsave(paste("./speedUpZoom.pdf",sep=""), Graph, device = pdf, height=18, width=9)
 
