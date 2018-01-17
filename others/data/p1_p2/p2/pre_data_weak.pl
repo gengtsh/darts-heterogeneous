@@ -35,7 +35,7 @@ for my $server (@servers){
 		$server_info{"GPU_L2_Cache(MB)"} = 1.25;		
 		$server_info{"CC"} = 3.5;
 		$server_info{"NumOfCE"} = 2;	
-		$server_info{"PCIe"} = "x";		
+		$server_info{"PCIe"} = 6.2;		
 	
 	}elsif ($server eq "supermicro"){
 		$server_info{"NumOfSocket"} = 2;
@@ -53,7 +53,7 @@ for my $server (@servers){
 		$server_info{"GPU_L2_Cache(MB)"} = 1.25 ;		
 		$server_info{"CC"} = 3.5;
 		$server_info{"NumOfCE"} = 2;	
-		$server_info{"PCIe"} = "x";	
+		$server_info{"PCIe"} = 6.1;	
 	
 	}elsif ($server eq "debian"){
 		$server_info{"NumOfSocket"} = 1;
