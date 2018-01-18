@@ -51,7 +51,7 @@ app_list_1 = "SEQ DARTSHybridG2GB  DARTSHybridG4GB"
 
 item1(n)  = word(app_list_1,n)
 
-bg=2
+bg=2+1
 ed=1+words(app_list_1)
 
 num_list = "31"
@@ -70,7 +70,7 @@ do for [i=1: words(num_list)]{
 	set xtics sz_start,sz_step,sz_end
 	
 	#set title server.wp.nThreads.wp.Threads.wp.exe1
-	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1) 
+	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1+1) 
 	
 	set terminal pngcairo
 	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe1.out_suffix
@@ -92,7 +92,7 @@ do for [i=1: words(num_list)]{
 	set xtics sz_start,sz_step,sz_end
 	
 	#set title server.wp.nThreads.wp.Threads.wp.exe2
-	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1) 
+	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1+1) 
 	
 	set terminal pngcairo
 	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe2.out_suffix
