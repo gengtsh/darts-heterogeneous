@@ -883,9 +883,21 @@ stencil2D4pt_gpu( double * __restrict__ h_dst, double* __restrict__ h_src, const
 #endif
 
 	    err1 = cudaFree(d_dst);
+		err2 = cudaFree(d_sharedRows);
+	    err3 = cudaFree(d_sharedCols);
 #ifdef CUDA_ERROR_CHECKING
 		if(err1!=cudaSuccess){
 			printf(" GpuKernelWithAllTimeSteps: cuda free d_dst:  %s \n ",cudaGetErrorString(err1));
+			
+			exit(-1);
+		}
+		if(err2!=cudaSuccess){
+			printf(" GpuKernelWithAllTimeSteps: cuda free d_sharedRows:  %s \n ",cudaGetErrorString(err2));
+			
+			exit(-1);
+		}
+		if(err3!=cudaSuccess){
+			printf(" GpuKernelWithAllTimeSteps: cuda free d_sharedCols:  %s \n ",cudaGetErrorString(err3));
 			
 			exit(-1);
 		}
