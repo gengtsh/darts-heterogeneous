@@ -18,7 +18,7 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
     
     data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     
-    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-Hybrid")
+    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
     
     
     if(j == "f4") j <- "Fatnode"
