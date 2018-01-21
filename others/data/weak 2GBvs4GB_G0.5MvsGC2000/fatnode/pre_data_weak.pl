@@ -13,10 +13,13 @@ print "$currpath\n";
 my @servers = qw/f4/;
 my $platform = 'darts';
 my $sw = 'weak';
-my $GC= 'G1C1_G0.5M';
+my $GC= 'G1C1';
 my $type = 'hybrid';
 my $sche = 'scatter';
+my @gcvalue = ('G0.5M','G2000');
 my @gpumem = ('2GB','4GB');
+
+
 
 #for my $server (@servers){
 #	my $fdname = $server.'_'.$sw.'_'.$GC;
@@ -74,60 +77,64 @@ for my $server (@servers){
 
 
 	for my $gmem (@gpumem){
-		my $fdname = $server.'_'.$sw.'_'.$platform.'_'.$type.'_'.$GC.'_'.$gmem.'_'.$sche;
-		my $path = "$currpath/$fdname";
-		chdir($path) or die "Can't chdir to $path $!";	
-		print "$path\n";
-		
-		my %t_exe_time;
-		my %t_speedup;
-		my %seq_exe_time;
-		my @line;
-		my @line_s;
-		my ($n_cu,$n_su) = @$thread;
-		my $tc=$n_cu+$n_su;
-		my $tc1=$tc-1;
-		my $n_rept=20;
-		my $startPos=8;
-		my $endPos = $n_rept+$startPos-1;		
-		for (my $v=$sz_start; $v<$sz_end;$v=$v+$sz_step){
-			my $value = $v;
-			for my $k (@kernels) {
-				my $filename = $k . '_' . $value . '_' . $n_cu . '_' . $n_su . '.txt';
-				unless (-e $filename) {
-					print "$filename does not exist.\n"; 
-					next;
+		for my $gcv (@gcvalue){
+			my $fdname = $server.'_'.$sw.'_'.$platform.'_'.$type.'_'.$GC.'_'.$gcv.'_'.$gmem.'_'.$sche;
+			my $path = "$currpath/$fdname";
+			chdir($path) or die "Can't chdir to $path $!";	
+			print "$path\n";
+			
+			my %t_exe_time;
+			my %t_speedup;
+			my %seq_exe_time;
+			my @line;
+			my @line_s;
+			my ($n_cu,$n_su) = @$thread;
+			my $tc=$n_cu+$n_su;
+			my $tc1=$tc-1;
+			my $n_rept=20;
+			my $startPos=8;
+			my $endPos = $n_rept+$startPos-1;		
+			for (my $v=$sz_start; $v<$sz_end;$v=$v+$sz_step){
+				my $value = $v;
+				for my $k (@kernels) {
+					my $filename = $k . '_' . $value . '_' . $n_cu . '_' . $n_su . '.txt';
+					unless (-e $filename) {
+						print "$filename does not exist.\n"; 
+						next;
+					}
+					open my $fh, '<', $filename or die "Cannot open $filename: $!";
+					print "Processing $filename...\n";
+					my @data_t;
+					while (<$fh>) {
+						chomp;
+						my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
+						my @data_s = sort{$a <=> $b}@data;
+						shift @data_s;
+						pop @data_s;
+						@data_t=(@data_t,@data_s);
+					}
+					my $avg=0;
+					$avg +=$_ for @data_t;
+					$avg /=@data_t;
+					if($k eq 'StencilSEQ'){
+						$seq_exe_time{$value} = sprintf ("%.2f",$avg);
+					}else{
+						$t_exe_time{$value}=sprintf ("%.2f",$avg);
+						$t_speedup{$value} = $seq_exe_time{$value}/sprintf ("%.2f",$avg);
+					
+					}			
 				}
-				open my $fh, '<', $filename or die "Cannot open $filename: $!";
-				print "Processing $filename...\n";
-				my @data_t;
-				while (<$fh>) {
-					chomp;
-					my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
-					my @data_s = sort{$a <=> $b}@data;
-					shift @data_s;
-					pop @data_s;
-					@data_t=(@data_t,@data_s);
-				}
-				my $avg=0;
-				$avg +=$_ for @data_t;
-				$avg /=@data_t;
-				if($k eq 'StencilSEQ'){
-					$seq_exe_time{$value} = sprintf ("%.2f",$avg);
-				}else{
-					$t_exe_time{$value}=sprintf ("%.2f",$avg);
-					$t_speedup{$value} = $seq_exe_time{$value}/sprintf ("%.2f",$avg);
+	
 				
-				}			
 			}
-
+			
+			$exe_time{$gcv.'_'.$gmem} = \%t_exe_time;
+			$speedup{$gcv.'_'.$gmem} = \%t_speedup;
+			$exe_time{'StencilSEQ'} =\%seq_exe_time;
 			
 		}
 		
-		$exe_time{$gmem} = \%t_exe_time;
-		$speedup{$gmem} = \%t_speedup;
-		$exe_time{'StencilSEQ'} =\%seq_exe_time;
-		
+
 	}
 
 	
@@ -159,17 +166,25 @@ for my $server (@servers){
 	my ($n_cu,$n_su) = @$thread;
 	my @t_exe_time;
 	my @t_speedup;
-	push @t_exe_time, ["#size","Seq",@gpumem];
-	push @t_speedup, ["#size","Seq",@gpumem];
-		
+
+	my @tmp;
+	for my $gmem (@gpumem){
+		for my $gcv (@gcvalue){
+			push @tmp,$gcv.'_'.$gmem;
+		}
+	}
+	push @t_exe_time, ["#size","Seq",@tmp];
+	push @t_speedup, ["#size","Seq",@tmp];		
 	for (my $v=$sz_start; $v<$sz_end;$v=$v+$sz_step){
 		my $value = $v;
 		my @line  = ($value,$exe_time{'StencilSEQ'}->{$value});
 		my @line_s  = ($value,1);
 		
 		for my $gmem (@gpumem){
-			push @line,$exe_time{$gmem}->{$value};
-			push @line_s,$speedup{$gmem}->{$value};
+			for my $gcv (@gcvalue){
+				push @line,$exe_time{$gcv.'_'.$gmem}->{$value};
+				push @line_s,$speedup{$gcv.'_'.$gmem}->{$value};
+			}
 		}
 		push @t_exe_time, [@line];
 		push @t_speedup, [@line_s];		

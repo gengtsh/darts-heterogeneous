@@ -1,8 +1,7 @@
 #gnuplot script RR_execution.gpi
 reset
 
-server = 'fatnode'
-server1 = 'f4'
+server = 'fatnode4'
 hwltype1 = 'compact'
 hwltype2 = 'spread'
 hwltype3 = 'scatter'
@@ -44,22 +43,21 @@ set grid
 
 
 
-#app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3"
-#app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSGpu StencilDARTSHybrid3"
-app_list_1 = "SEQ DARTS-DAWL-2GB  DARTS-DAWL-4GB"
+app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3"
+app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSGpu StencilDARTSHybrid3"
 
-
+item0(n)  = word(app_list_0,n)
 item1(n)  = word(app_list_1,n)
 
-bg=2+1
-ed=1+words(app_list_1)
+bg=2
+ed=1+words(app_list_0)
 
 num_list = "31"
 item2(n)  = word(num_list,n)
 
 do for [i=1: words(num_list)]{
 
-	set key right
+	set key left
 	#set key samplen 3
 	#set nokey
 	#set key outside
@@ -69,8 +67,8 @@ do for [i=1: words(num_list)]{
 	#set xrange [sz_start:sz_end]
 	set xtics sz_start,sz_step,sz_end
 	
-	#set title server.wp.nThreads.wp.Threads.wp.exe1
-	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1+1) 
+	set title server.wp.nThreads.wp.exe1
+	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
 	
 	set terminal pngcairo
 	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe1.out_suffix
@@ -81,7 +79,7 @@ do for [i=1: words(num_list)]{
 
 do for [i=1: words(num_list)]{
 
-	set key right
+	set key left
 	#set key samplen 3
 	#set nokey
 	#set key outside
@@ -91,8 +89,8 @@ do for [i=1: words(num_list)]{
 	#set xrange [sz_start:sz_end]
 	set xtics sz_start,sz_step,sz_end
 	
-	#set title server.wp.nThreads.wp.Threads.wp.exe2
-	plot for [j=bg:ed] server1.udl.item2(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 2+j title item1(j-bg+1+1) 
+	set title server.wp.nThreads.wp.exe2
+	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
 	
 	set terminal pngcairo
 	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe2.out_suffix
