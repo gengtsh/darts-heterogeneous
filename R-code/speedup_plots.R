@@ -1,5 +1,5 @@
 library(ggplot2)
-setwd("/home/marcos/darts-heterogeneous/others/data/weak/")
+setwd("/home/marcos/GIT/darts-heterogeneous/others/data/weak/")
 
 cbbPalette <- c("#000000", "#F0E442", "#56B4E9", "#009E73", "#E69F00", "#0072B2", "#D55E00", "#CC79A7")
 
