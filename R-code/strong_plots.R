@@ -37,31 +37,60 @@ df$App[index] <- "DARTS-DAWL"
 index <- df$App == "StencilCudaCpu"
 df$App[index] <- "DARTS-CPU"
 
-df <- df[df$machine %in% c("hive"),]
 
-Graph <- ggplot(data=df, aes(x=Threads, y=time, group=size, col=size, pch=size, linetype = size)) + 
+dfTemp <- df[df$machine %in% c("hive"),]
+Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=size, linetype = size)) + 
     geom_line(size=1.5) +
-    geom_point(cex=3.5) + 
+    geom_point(cex=3) + 
     xlab("Number of Threads") + 
     theme_bw() +
     ggtitle("Machine Hive") +
     theme(plot.title=element_text(hjust=0.5)) +
-    scale_colour_manual(values=cbbPalette) +
+    # scale_colour_manual(values=cbbPalette) +
+    scale_colour_grey() +
     ylab("Speedup(baseline: CPU-Sequence)" ) +
-    theme(plot.title = element_text(family = "Times", face="bold", size=35)) +
-    theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
-    theme(axis.text  = element_text(family = "Times", face="bold", size=30, colour = "Black")) +
+    theme(plot.title = element_text(family = "Times", face="bold", size=20)) +
+    theme(axis.title = element_text(family = "Times", face="bold", size=15)) +
+    theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
     scale_x_continuous(breaks=seq(4,40,4)) +
-    theme(axis.text.x= element_text(family = "Times", face="bold", size=30, colour = "Black", angle=0, hjust=1)) +
+    theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=0, hjust=1)) +
     theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-    theme(legend.text  = element_text(family = "Times", face="bold", size=30)) +
+    theme(legend.text  = element_text(family = "Times", face="bold", size=15)) +
+    theme(legend.direction = "horizontal", 
+          legend.position = "bottom",
+          legend.key=element_rect(size=0.1),
+          legend.key.size = unit(4, "lines")) +
+    guides(col = guide_legend(nrow = 1)) +
+    # facet_grid(sched~App, scales="free") +
+    facet_wrap(sched~App, scales="free_x",nrow = 4) +
+    theme(strip.text = element_text(size=20))
+ggsave(paste("./speedUp-strong-Hive.pdf",sep=""), Graph, device = pdf, height=12, width=6)
+    
+
+dfTemp <- df[df$machine %in% c("Fatnode"),]
+Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=size, linetype = size)) + 
+    geom_line(size=1.5) +
+    geom_point(cex=1.5) + 
+    xlab("Number of Threads") + 
+    theme_bw() +
+    ggtitle("Machine Fatnode") +
+    theme(plot.title=element_text(hjust=0.5)) +
+    # scale_colour_manual(values=cbbPalette) +
+    scale_colour_grey() +
+    ylab("Speedup(baseline: CPU-Sequence)" ) +
+    theme(plot.title = element_text(family = "Times", face="bold", size=20)) +
+    theme(axis.title = element_text(family = "Times", face="bold", size=15)) +
+    theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
+    scale_x_continuous(breaks=seq(4,40,4)) +
+    theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=0, hjust=1)) +
+    theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
+    theme(legend.text  = element_text(family = "Times", face="bold", size=15)) +
     theme(legend.direction = "horizontal", 
           legend.position = "bottom",
           legend.key=element_rect(size=0.1),
           legend.key.size = unit(5, "lines")) +
     guides(col = guide_legend(nrow = 1)) +
-    facet_grid(sched~App, scales="free") +
-    # facet_wrap(App~machine, scales="free_x",nrow = 3) +
-    theme(strip.text = element_text(size=30))
-ggsave(paste("./speedUp-strong-Hive.pdf",sep=""), Graph, device = pdf, height=10, width=15)
-    
+    # facet_grid(sched~App, scales="free") +
+    facet_wrap(sched~App, scales="free_x",nrow = 4) +
+    theme(strip.text = element_text(size=15))
+ggsave(paste("./speedUp-strong-Fatnode.pdf",sep=""), Graph, device = pdf, height=12, width=6)
