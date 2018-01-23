@@ -14,8 +14,8 @@ my @hwinfo = qw(Server_Name NumOfSocket CPU_Type CPU_Clock(GHz) CPU_Cores CPU_Th
 
 my %all_hw_info;
 
-#my @servers = qw/fatnode supermicro debian hive ccsl/;
-my @servers = qw/fatnode supermicro/;
+my @servers = qw/fatnode supermicro debian hive ccsl/;
+#my @servers = qw/fatnode supermicro/;
 
 for my $server (@servers){
 	my %server_info;
@@ -178,25 +178,46 @@ for my $server (@servers){
 				for my $ra (@ratio){
 								
 					my $filename = $k . '_' . $msz . '_' . $n_cu . '_' . $n_su .'_'.$gb.'_'.$ra. '.txt';
-					unless (-e $filename) {
-						print "$filename does not exist.\n"; 
-						next;
+					#unless (-e $filename) {
+					#	print "$filename does not exist.\n"; 
+					#	next;
+					#}
+					#open my $fh, '<', $filename or die "Cannot open $filename: $!";
+					#print "Processing $filename...\n";				
+					#my @data_t;
+					#while (<$fh>) {
+					#	chomp;
+					#	my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
+					#	my @data_s = sort{$a <=> $b}@data;
+					#	shift @data_s;
+					#	pop @data_s;
+					#	@data_t=(@data_t,@data_s);
+					#}
+					#my $avg=0;
+					#$avg +=$_ for @data_t;
+					#$avg /=@data_t;
+					#$gb_time{$ra} = sprintf ("%.2f",$avg);	
+					if ( -e $filename){
+						open my $fh, '<', $filename or die "Cannot open $filename: $!";
+						print "Processing $filename...\n";				
+						my @data_t;
+						while (<$fh>) {
+							chomp;
+							my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
+							my @data_s = sort{$a <=> $b}@data;
+							shift @data_s;
+							pop @data_s;
+							@data_t=(@data_t,@data_s);
+						}
+						my $avg=0;
+						$avg +=$_ for @data_t;
+						$avg /=@data_t;
+						$gb_time{$ra} = sprintf ("%.2f",$avg);	
+					}else{
+						print "$filename does not exist.\n";
+						$gb_time{$ra} = 0;
+					
 					}
-					open my $fh, '<', $filename or die "Cannot open $filename: $!";
-					print "Processing $filename...\n";				
-					my @data_t;
-					while (<$fh>) {
-						chomp;
-						my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
-						my @data_s = sort{$a <=> $b}@data;
-						shift @data_s;
-						pop @data_s;
-						@data_t=(@data_t,@data_s);
-					}
-					my $avg=0;
-					$avg +=$_ for @data_t;
-					$avg /=@data_t;
-					$gb_time{$ra} = sprintf ("%.2f",$avg);	
 				}
 				$msz_time{$gb} = \%gb_time;	
 			}
@@ -282,6 +303,7 @@ for my $server (@servers){
 					push @exe_msz, [$gb,$ra,$all_exe_time{$server}->{$k}->{$msz}->{$gb}->{$ra}];
 				}
 			}
+			@exe_msz = grep { $_->[2] != 0 } @exe_msz;
 			my @array = sort { $a->[2] <=> $b->[2] } @exe_msz;
 			push @exe_info_best,[@v_hw_info,$msz,$array[0][0],$array[0][1]];
 		}
