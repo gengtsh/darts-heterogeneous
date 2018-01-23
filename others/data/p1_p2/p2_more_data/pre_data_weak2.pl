@@ -305,7 +305,9 @@ for my $server (@servers){
 			}
 			@exe_msz = grep { $_->[2] != 0 } @exe_msz;
 			my @array = sort { $a->[2] <=> $b->[2] } @exe_msz;
-			push @exe_info_best,[@v_hw_info,$msz,$array[0][0],$array[0][1]];
+			if(@array){
+				push @exe_info_best,[@v_hw_info,$msz,$array[0][0],$array[0][1]];
+			}
 		}
 	}
 	
