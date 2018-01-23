@@ -268,7 +268,7 @@ DEF_TP(StencilTP)
 				        Swap = Stencil2D4ptSwapCD{2,2,this,SHORTWAIT}; 
                     }else{
 						nCPU = N_CORES-1;
-                        nGPU = 2;
+                        nGPU = req_size/gpuMemMax+1;
                         invokeStreams = true;
 					    stream = new cudaStream_t[nStream];
 			            for(int i=0;i<nStream;++i){
