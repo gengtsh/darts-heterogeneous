@@ -9,7 +9,7 @@ my $currpath = Cwd::abs_path();
 print "$currpath\n";
 
 #hw_information
-my @hwinfo = qw(Server_Name NumOfSocket CPU_Type CPU_Clock(GHz) CPU_Cores CPU_Threads  CPU_Mem(GB) CPU_L3_Cache(MB) GPU_Type GPU_Clock(GHz)  NumOfSM SP/SM  GPU_Mem(GB) GPU_L2_Cache(MB) CC NumOfCE PCIe);
+my @hwinfo = qw(Server_Name NumOfSocket CPU_Type CPU_Clock(GHz) CPU_Cores CPU_Threads  CPU_Mem(GB) CPU_L3_Cache(MB) GPU_Type GPU_Clock(GHz)  NumOfSM SP/SM  GPU_Mem(GB) Available_GPU_Mem(GB) GPU_L2_Cache(MB) CC NumOfCE PCIe);
 #print @hwinfo;
 
 my %all_hw_info;
@@ -32,6 +32,7 @@ for my $server (@servers){
 		$server_info{"NumOfSM"} =13 ;
 		$server_info{"SP/SM"} = 192;
 		$server_info{"GPU_Mem(GB)"} = 4.8;
+		$server_info{"Available_GPU_Mem")=2;
 		$server_info{"GPU_L2_Cache(MB)"} = 1.25;		
 		$server_info{"CC"} = 3.5;
 		$server_info{"NumOfCE"} = 2;	
@@ -50,6 +51,7 @@ for my $server (@servers){
 		$server_info{"NumOfSM"} =13 ;
 		$server_info{"SP/SM"} = 192;
 		$server_info{"GPU_Mem(GB)"} = 4.8;
+		$server_info{"Available_GPU_Mem")=2;
 		$server_info{"GPU_L2_Cache(MB)"} = 1.25 ;		
 		$server_info{"CC"} = 3.5;
 		$server_info{"NumOfCE"} = 2;	
@@ -68,6 +70,7 @@ for my $server (@servers){
 		$server_info{"NumOfSM"} = 14;
 		$server_info{"SP/SM"} = 192;
 		$server_info{"GPU_Mem(GB)"} = 6;
+		$server_info{"Available_GPU_Mem")=2;
 		$server_info{"GPU_L2_Cache(MB)"} = 1.5;		
 		$server_info{"CC"} = 3.5;
 		$server_info{"NumOfCE"} = 2;	
@@ -86,6 +89,7 @@ for my $server (@servers){
 		$server_info{"NumOfSM"} = 8;
 		$server_info{"SP/SM"} = 192;
 		$server_info{"GPU_Mem(GB)"} = 2;
+		$server_info{"Available_GPU_Mem")=2;
 		$server_info{"GPU_L2_Cache(MB)"} = 0.5;		
 		$server_info{"CC"} = 3;
 		$server_info{"NumOfCE"} = 1;	
@@ -104,6 +108,7 @@ for my $server (@servers){
 		$server_info{"NumOfSM"} = 15;
 		$server_info{"SP/SM"} = 192;
 		$server_info{"GPU_Mem(GB)"} = 12;
+		$server_info{"Available_GPU_Mem")=2;
 		$server_info{"GPU_L2_Cache(MB)"} =1.5 ;		
 		$server_info{"CC"} = 3.5 ;
 		$server_info{"NumOfCE"} = 2;	
@@ -113,9 +118,9 @@ for my $server (@servers){
 }
 
 my @kernels = qw/StencilCudaHybrid4/;
-my @gbase = (1000,2000,4000,8000);
-my @ratio = (0.5,1,1.5,2);
-my @msize = (17000,19000,21000,23000,25000);
+my @gbase = (1000,2000,3000,4000,5000,6000,7000,8000);
+my @ratio = (0.25,0.5,0.75,1,1.25,1.5,1.75,2);
+my @msize = (17000,18000,19000,20000,21000,22000,23000,24000,25000);
 
 
 my $strongOrweak = 'weak';
