@@ -1,7 +1,7 @@
 library(ggplot2)
 setwd("/home/marcos/GIT/darts-heterogeneous/others/data/weak/")
 
-cbbPalette <- c("#000000", "#F0E442", "#56B4E9", "#009E73", "#E69F00", "#0072B2", "#D55E00", "#CC79A7")
+cbbPalette <- c("blue", "#E69F00", "red", "#CC79A7", "", "#0072B2", "#D55E00", "#CC79A7")
 
 df <- data.frame()
 for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
@@ -32,7 +32,7 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
 df <- df[df$apps != "Sequential",]
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
-    geom_line(size=1.5,)+
+    geom_line(size=1.5) +
     geom_point(cex=3.5) +
     xlab("Size of the Problem") + 
     theme_bw() +
@@ -51,7 +51,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
           legend.key.size = unit(4, "lines")) +
     guides(col = guide_legend(nrow = 1)) +
      # facet_grid(.~machine, scales="free") +
-    facet_wrap(~machine, ncol=1, scales="free") +
+    facet_wrap(~machine, ncol=1, scales="free_x") +
     theme(strip.text = element_text(size=20))
 ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=18, width=9)
 
@@ -78,7 +78,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
           legend.key.size = unit(4, "lines")) +
     guides(col = guide_legend(nrow = 1)) +
     # facet_grid(.~machine, scales="free") +
-    facet_wrap(~machine, ncol=1, scales="free") +
+    facet_wrap(~machine, ncol=1, scales="free_x") +
     theme(strip.text = element_text(size=20))
 ggsave(paste("./speedUpZoom.pdf",sep=""), Graph, device = pdf, height=18, width=9)
 
