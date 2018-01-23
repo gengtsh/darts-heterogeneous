@@ -286,8 +286,10 @@ for my $server (@servers){
 	
 		for my $msz (@msize){
 			for my $gb (@gbase){					
-				for my $ra (@ratio){		
-					push @exe_info, [@v_hw_info,$msz,$gb,$ra,$all_exe_time{$server}->{$k}->{$msz}->{$gb}->{$ra}];	
+				for my $ra (@ratio){
+					if ($all_exe_time{$server}->{$k}->{$msz}->{$gb}->{$ra}!=0){
+						push @exe_info, [@v_hw_info,$msz,$gb,$ra,$all_exe_time{$server}->{$k}->{$msz}->{$gb}->{$ra}];	
+					}
 				}
 			}
 		}
