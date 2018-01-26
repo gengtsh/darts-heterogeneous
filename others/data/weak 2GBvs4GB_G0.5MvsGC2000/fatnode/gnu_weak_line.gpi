@@ -46,7 +46,7 @@ set grid
 
 #app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3"
 #app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSGpu StencilDARTSHybrid3"
-app_list_1 = "SEQ DARTS-DAWL-2GB-I0.5GM DARTS-DAWL-2GB-I2000 DARTS-DAWL-4GB-I0.5GM DARTS-DAWL-4GB-I2000"
+app_list_1 = "SEQ DARTS-DAWL-2GB-0.5GPUMem DARTS-DAWL-2GB-2000 DARTS-DAWL-4GB-0.5GPUMem DARTS-DAWL-4GB-2000"
 
 
 item1(n)  = word(app_list_1,n)

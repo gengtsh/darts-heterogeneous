@@ -61,19 +61,19 @@ for my $server (@servers){
 	my $thread;
 	#for my $thread (@threads) {
 		if ($server eq "f4"){
-			$thread = [31,1];
+			#$thread = [31,1];
 			$sz_end = 50000;
 		}elsif($server eq "supermicro"){
-			$thread = [39,1];
+			#$thread = [39,1];
 			$sz_end = 50000;
 		}elsif($server eq "debian"){
-			$thread = [11,1];
+			#$thread = [11,1];
 			$sz_end = 37000;
 		}elsif($server eq "hive"){
-			$thread = [11,1];
+			#$thread = [11,1];
 			$sz_end = 37000;
 		}elsif($server eq "ccsl"){
-			$thread = [7,1];
+			#$thread = [7,1];
 			$sz_end = 26000;
 		}
 		my @t_exe_time;
@@ -81,34 +81,43 @@ for my $server (@servers){
 		push @t_exe_time, ["#size",@kernels];
 		push @t_speedup, ["#size",@kernels];
 		
-		my ($n_cu,$n_su) = @$thread;
+		#my ($n_cu,$n_su) = @$thread;
 		for (my $v=$sz_start; $v<$sz_end;$v=$v+$sz_step){
 			my $value = $v;
 			my $ratio = 0;
 			my @line  = ($value);
 			my @line_s  = ($value);
 			for my $k (@kernels) {
-				my $filename = $k . '_' . $value . '_' . $n_cu . '_' . $n_su . '.txt';
-				unless (-e $filename) {
-					print "$filename does not exist.\n"; 
+				my @files = glob("$k\_$value*");
+				#print @files,"\n";
+				if(@files==0){
+					print "$k\_$value\_does not exist.\n";
 					next;
+				}	
+				for my $filename (@files){
+					unless (-e $filename) {
+						print "$filename does not exist.\n"; 
+						next;				
+					}
+					open my $fh, '<', $filename or die "Cannot open $filename: $!";
+					print "Processing $filename...\n";
+					my @data_t;
+					while (<$fh>) {
+						chomp;
+						my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
+						my @data_s = sort{$a <=> $b}@data;
+						shift @data_s;
+						pop @data_s;
+						@data_t=(@data_t,@data_s);
+					}
+					my $avg=0;
+					$avg +=$_ for @data_t;
+					$avg /=@data_t;
+					push @line, sprintf ("%.2f",$avg);
+					push @line_s, $line[1]/sprintf ("%.2f",$avg);					
 				}
-				open my $fh, '<', $filename or die "Cannot open $filename: $!";
-				print "Processing $filename...\n";
-				my @data_t;
-				while (<$fh>) {
-					chomp;
-					my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
-					my @data_s = sort{$a <=> $b}@data;
-					shift @data_s;
-					pop @data_s;
-					@data_t=(@data_t,@data_s);
-				}
-				my $avg=0;
-				$avg +=$_ for @data_t;
-				$avg /=@data_t;
-				push @line, sprintf ("%.2f",$avg);
-				push @line_s, $line[1]/sprintf ("%.2f",$avg);
+				
+
 				
 			}
 			push @t_exe_time, [@line];
@@ -116,17 +125,97 @@ for my $server (@servers){
 			
 		}
 		chdir($currpath) or die "Can't chdir to $currpath $!";	
-		my $file_out = $server.'_'.$n_cu.'_'.$n_su.'_'."weak_execution.dat";
+		my $file_out = $server.'_'."weak_execution.dat";
 		open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
 		print $fh join(',',@$_) . "\n" for (@t_exe_time);
 		
-		my $file_out_s = $server.'_'.$n_cu.'_'.$n_su.'_'.'weak_speedup'.'.dat';
+		my $file_out_s = $server.'_'.'weak_speedup'.'.dat';
 		open my $fh_s, '>', $file_out_s or die "couldn't open $file_out_s: $!";
 		print $fh_s join(',',@$_) . "\n" for (@t_speedup);
 		
 	#}
 	
 }
+
+
+
+
+
+
+#for my $server (@servers){
+#	my $fdname = $server.'_'.$sw.'_'.$GC;
+#	my $path = "$currpath/$fdname";
+#	chdir($path) or die "Can't chdir to $path $!";	
+#	print "$path\n";
+#	my $thread;
+#	#for my $thread (@threads) {
+#		if ($server eq "f4"){
+#			$thread = [31,1];
+#			$sz_end = 50000;
+#		}elsif($server eq "supermicro"){
+#			$thread = [39,1];
+#			$sz_end = 50000;
+#		}elsif($server eq "debian"){
+#			$thread = [11,1];
+#			$sz_end = 37000;
+#		}elsif($server eq "hive"){
+#			$thread = [11,1];
+#			$sz_end = 37000;
+#		}elsif($server eq "ccsl"){
+#			$thread = [7,1];
+#			$sz_end = 26000;
+#		}
+#		my @t_exe_time;
+#		my @t_speedup;
+#		push @t_exe_time, ["#size",@kernels];
+#		push @t_speedup, ["#size",@kernels];
+#		
+#		my ($n_cu,$n_su) = @$thread;
+#		for (my $v=$sz_start; $v<$sz_end;$v=$v+$sz_step){
+#			my $value = $v;
+#			my $ratio = 0;
+#			my @line  = ($value);
+#			my @line_s  = ($value);
+#			for my $k (@kernels) {
+#				my $filename = $k . '_' . $value . '_' . $n_cu . '_' . $n_su . '.txt';
+#				unless (-e $filename) {
+#					print "$filename does not exist.\n"; 
+#					next;
+#				}
+#				open my $fh, '<', $filename or die "Cannot open $filename: $!";
+#				print "Processing $filename...\n";
+#				my @data_t;
+#				while (<$fh>) {
+#					chomp;
+#					my @data = (split /\s*,\s*/,$_)[$startPos..$endPos];
+#					my @data_s = sort{$a <=> $b}@data;
+#					shift @data_s;
+#					pop @data_s;
+#					@data_t=(@data_t,@data_s);
+#				}
+#				my $avg=0;
+#				$avg +=$_ for @data_t;
+#				$avg /=@data_t;
+#				push @line, sprintf ("%.2f",$avg);
+#				push @line_s, $line[1]/sprintf ("%.2f",$avg);
+#				
+#			}
+#			push @t_exe_time, [@line];
+#			push @t_speedup, [@line_s];
+#			
+#		}
+#		chdir($currpath) or die "Can't chdir to $currpath $!";	
+#		my $file_out = $server.'_'."weak_execution.dat";
+#		open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
+#		print $fh join(',',@$_) . "\n" for (@t_exe_time);
+#		
+#		my $file_out_s = $server.'_'.'weak_speedup'.'.dat';
+#		open my $fh_s, '>', $file_out_s or die "couldn't open $file_out_s: $!";
+#		print $fh_s join(',',@$_) . "\n" for (@t_speedup);
+#		
+#	#}
+#	
+#}
 	
 
 #for (my $v=$sz_start;$v<$sz_end;$v=$v+$sz_step){

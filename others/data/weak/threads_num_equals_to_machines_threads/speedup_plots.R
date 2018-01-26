@@ -1,6 +1,6 @@
 library(ggplot2)
 library(stats)
-setwd("/home/marcos/GIT/darts-heterogeneous/others/data/weak/")
+#setwd("/home/marcos/GIT/darts-heterogeneous/others/data/weak/")
 currPath = getwd()
 setwd(currPath)
 
@@ -17,9 +17,9 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
     
     
     
-    data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
-    
-    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-Hybrid")
+    #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
+    data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
+    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
     
     
     if(j == "f4") j <- "Fatnode"
