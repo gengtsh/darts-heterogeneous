@@ -36,7 +36,7 @@ set grid
 app_0 = 'StencilCudaHybrid4'
 app_1 = 'StencilDARTSHybrid4'
 
-gbase_list = "1000 2000 4000 8000"
+gbase_list = "1000 2000 3000 4000 5000 6000 7000 8000"
 item1(n) = word (gbase_list,n)
 
 num_list = "17000 19000 21000 23000 25000"
@@ -57,9 +57,9 @@ do for [i=1: words(num_list)]{
 	#set key autotitle columnhead
 	set xlabel "cpu/gpu ratio"
 	set ylabel "execution time "
-	set xtics 0.5
+	set xtics 0.25
 
-	set title server.wp.app_1.wp.nThreads.wp.Threads.wp.item2(i).wp.exe1
+	#set title server.wp.app_1.wp.nThreads.wp.Threads.wp.item2(i).wp.exe1
 	plot for [j=bg:ed] app_0.udl.nSU1.udl.item2(i).udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
 	
 	set terminal pngcairo

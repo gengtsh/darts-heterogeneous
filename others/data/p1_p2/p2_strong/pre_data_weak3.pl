@@ -14,8 +14,8 @@ my @hwinfo = qw(Server_Name NumOfSocket CPU_Type CPU_Clock(GHz) CPU_Cores CPU_Th
 
 my %all_hw_info;
 
-my @servers = qw/fatnode supermicro debian hive ccsl/;
-#my @servers = qw/supermicro /;
+#my @servers = qw/fatnode supermicro debian hive ccsl/;
+my @servers = qw/fatnode supermicro debian hive/;
 
 for my $server (@servers){
 	my %server_info;
@@ -241,20 +241,23 @@ for my $server (@servers){
 	}
 
 	for my $k (@kernels) {
-		for my $nth (@nthreads){
-			for my $msz (@msize){
-				my @exe_msz;
+		for my $msz (@msize){
+			my @exe_msz;
+			for my $nth (@nthreads){
+			
+				
 				for my $gb (@gbase){					
 					for my $ra (@ratio){		
 					#	push @exe_info, [@v_hw_info,$msz,$gb,$ra,$all_exe_time{$server}->{$k}->{$msz}->{$gb}->{$ra}];	
 						push @exe_msz, [$nth,$gb,$ra,$all_exe_time{$server}->{$k}->{$nth}->{$msz}->{$gb}->{$ra}];
 					}
 				}
-				@exe_msz = grep { $_->[-1] != 0 } @exe_msz;
-				my @array = sort { $a->[-1] <=> $b->[-1] } @exe_msz;
-				if(@array){
-					push @exe_info_best,[@v_hw_info,$msz,$array[0][0],$array[0][1],$array[0][2]];
-				}
+
+			}
+			@exe_msz = grep { $_->[-1] != 0 } @exe_msz;
+			my @array = sort { $a->[-1] <=> $b->[-1] } @exe_msz;
+			if(@array){
+				push @exe_info_best,[@v_hw_info,$msz,$array[0][0],$array[0][1],$array[0][2]];
 			}
 		}
 	}
