@@ -81,7 +81,7 @@ for my $thread (@threads) {
 		
 		for my $msz (@msize){
 			my @v_exe_time=();
-			push @v_exe_time,['#ratio', @gbase];			
+			push @v_exe_time,['#ratio',"nCores", @gbase];			
 			for my $ra (@ratio){
 				my @line;
 				push @line, $ra,$total_cores;			
@@ -92,7 +92,8 @@ for my $thread (@threads) {
 				push @v_exe_time, [@line];
 				
 			}
-			my $file_out = $k.'_'.$n_su.'_'.$msz.'_'.'weak_execution'.'.dat';
+			#my $file_out = $k.'_'.$n_su.'_'.$msz.'_'.'weak_execution'.'.dat';
+			my $file_out = $k.'_'.$msz.'_'.'weak_execution'.'.dat';
 			open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
 			print $fh join(',',@$_) . "\n" for (@v_exe_time);
 		}

@@ -49,11 +49,11 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   scale_x_continuous(breaks=seq(0,50000,5000)) +
   theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=0, hjust=1)) +
   theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-  theme(legend.text  = element_text(family = "Times", face="bold", size=18)) +
+  theme(legend.text  = element_text(family = "Times", face="bold", size=16)) +
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
         legend.key=element_rect(size=5),
-        legend.key.size = unit(4, "lines")) +
+        legend.key.size = unit(3, "lines")) +
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
@@ -76,11 +76,11 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   scale_x_continuous(breaks=seq(0,50000,5000)) +
   theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=0, hjust=1)) +
   theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-  theme(legend.text  = element_text(family = "Times", face="bold", size=18)) +
+  theme(legend.text  = element_text(family = "Times", face="bold", size=16)) +
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
         legend.key=element_rect(size=5),
-        legend.key.size = unit(4, "lines")) +
+        legend.key.size = unit(3, "lines")) +
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
