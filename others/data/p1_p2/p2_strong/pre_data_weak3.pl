@@ -14,8 +14,8 @@ my @hwinfo = qw(Server_Name NumOfSocket CPU_Type CPU_Clock(GHz) CPU_Cores CPU_Th
 
 my %all_hw_info;
 
-#my @servers = qw/fatnode supermicro debian hive ccsl/;
-my @servers = qw/fatnode supermicro debian hive/;
+my @servers = qw/fatnode supermicro debian hive ccsl/;
+#my @servers = qw/ccsl/;
 
 for my $server (@servers){
 	my %server_info;
@@ -121,7 +121,14 @@ for my $server (@servers){
 my @kernels = qw/StencilCudaHybrid4/;
 my @gbase = (1000,2000,3000,4000,5000,6000,7000,8000);
 my @ratio = (0.25,0.5,1,1.25,1.5,1.75,2);
-my @msize = (17000,18000,19000,20000,21000,22000,23000,24000,25000,27000,29000,31000,33000,35000);
+#my @msize = (17000,18000,19000,20000,21000,22000,23000,24000,25000,26000,27000,28000,29000,31000,33000,35000);
+my @msize = ();
+my $mz_st=17000;
+my $mz_ed=36000;
+my $mz_st=1000;
+for (my $mz=$mz_st;$mz<$mz_ed;$mz=$mz+$mz_st){
+	push @msize,$mz;
+}
 
 my @nthreads=();
 for (my $i = 4;$i<41;++$i){
@@ -129,10 +136,11 @@ for (my $i = 4;$i<41;++$i){
 }
 
 
-my $strongOrweak = 'weak';
+my $strongOrweak = 'strong';
 my $platform = 'darts';
 my $type= 'hybrid';
-my $sufix = 'p';
+my $problem = 'p';
+my $gm ='2GB';
 
 
 my %all_exe_time;
@@ -147,7 +155,7 @@ for my $server (@servers){
 		$sv = $server;
 	}
 	
-	my $fdname = $sv.'_'.$strongOrweak.'_'.$platform.'_'.$type.'_'.$sufix;
+	my $fdname = $sv.'_'.$platform.'_'.$type.'_'.$gm.'_'.$problem.'_'.$strongOrweak;
 	my $path = "$currpath/$fdname";
 	chdir($path) or die "Can't chdir to $path $!";	
 	print "$path\n";
@@ -264,11 +272,11 @@ for my $server (@servers){
 	
 }
 
-my $file_out = 'weak_execution3'.'.csv';
+my $file_out = $strongOrweak.'_'.'execution3'.'.csv';
 open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
 print $fh join(',',@$_) . "\n" for (@exe_info);
 
-my $file_out2 = 'weak_execution3_best'.'.csv';
+my $file_out2 = $strongOrweak.'_'.'execution3_best'.'.csv';
 open my $fh2, '>', $file_out2 or die "couldn't open $file_out2: $!";
 print $fh2 join(',',@$_) . "\n" for (@exe_info_best);
 
