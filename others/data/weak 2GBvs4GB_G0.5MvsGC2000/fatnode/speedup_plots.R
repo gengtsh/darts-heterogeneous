@@ -45,7 +45,7 @@ df <- data.frame()
     
     #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
-    names(data) <- c("size", "CPU-Sequence","DARTS-DAWL-2GB-1", "DARTS-DAWL-2GB-2", "DARTS-DAWL-4GB-1", "DARTS-DAWL-4GB-2")
+    names(data) <- c("size", "CPU-Sequence","EDRT-DAWL-2GB-1", "EDRT-DAWL-2GB-2", "EDRT-DAWL-4GB-1", "EDRT-DAWL-4GB-2")
     
     
     if(j == "f4") j <- "Fatnode"

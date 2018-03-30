@@ -19,7 +19,7 @@ for(j in c("ccsl","debian",  "f4", "hive", "supermicro")){
     
     #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
-    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
+    names(data) <- c("size", "CPU-Sequence", "GPU-only", "EDRT-CPU", "EDRT-GPU", "EDRT-DAWL")
     
     
     if(j == "f4") j <- "Fatnode"
@@ -83,6 +83,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
         legend.key.size = unit(3, "lines")) +
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
-  facet_wrap(~machine, ncol=1, scales="free_x") +
+  #facet_wrap(~machine, ncol=1, scales="free_x") +
+  facet_wrap(~machine, ncol=1, scales="free") +
   theme(strip.text = element_text(size=20))
-ggsave(paste("./speedUpZoom.pdf",sep=""), Graph, device = pdf, height=18, width=9)
+ggsave(paste("./speedUpZoom_new.pdf",sep=""), Graph, device = pdf, height=18, width=9)
