@@ -41,7 +41,8 @@ DEF_CODELET(Stencil3D7ptSwapCD,0,SHORTWAIT);
 
 
 DEF_CODELET(Stencil3D7ptGpuKernelWithAllTimeStepsCD,2,LONGWAIT);
-
+DEF_CODELET(Stencil3D7ptGpuKernelPureGpuWithStreamsCD,2,LONGWAIT);
+DEF_CODELET(Stencil3D7ptGpuKernelHybridWithStreamsCD,2,LONGWAIT);
 
 DEF_TP(StencilTP)
 {
@@ -74,7 +75,8 @@ DEF_TP(StencilTP)
 	Stencil3D7ptSwapCD Swap37;
 
 	Stencil3D7ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps37;
-
+    Stencil3D7ptGpuKernelPureGpuWithStreamsCD GpuKernelPureGpuWithStreams37;
+//    Stencil3D7ptGpuKernelHybridWithStreamsCD GpuKernelHybridWithStreams37;
     SyncCD	sync;
     Codelet *signalUp;
 	uint64_t nRowsGpu=0;
@@ -169,40 +171,40 @@ DEF_TP(StencilTP)
 #endif
         if(nSlices==1){
             //2D4points
-            if(nRows==17000){
-	            nRowsGpuBase =2000;
-	            nRowsCpuBase =4000;	
-            }else if(nRows==19000){
-	            nRowsGpuBase =1200;
-	            nRowsCpuBase =1200;	
-            }else if(nRows==23000){
-	            nRowsGpuBase =4000;
-	            nRowsCpuBase =5000;	
-            }else if(nRows==25000){
-	            nRowsGpuBase =1000;
-	            nRowsCpuBase =800;	
-            }else if(nRows==27000){
-	            nRowsGpuBase =1000;
-	            nRowsCpuBase =1700;	
-            }else if(nRows==33000){
-	            nRowsGpuBase =3000;
-	            nRowsCpuBase =3000;	
-            }else if(nRows==37000){
-	            nRowsGpuBase =3000;
-	            nRowsCpuBase =2000;	
-            }else if(nRows==41000){
-	            nRowsGpuBase =2000;
-	            nRowsCpuBase =3000;	
-            }else if(nRows==45000){
-	            nRowsGpuBase =4000;
-	            nRowsCpuBase =4000;	
-            }else if(nRows==47000){
-	            nRowsGpuBase =3000;
-	            nRowsCpuBase =3000;	
-            }else{
-	            nRowsGpuBase =1000;
-	            nRowsCpuBase =2000;	
-            }
+//            if(nRows==17000){
+//	            nRowsGpuBase =2000;
+//	            nRowsCpuBase =4000;	
+//            }else if(nRows==19000){
+//	            nRowsGpuBase =1200;
+//	            nRowsCpuBase =1200;	
+//            }else if(nRows==23000){
+//	            nRowsGpuBase =4000;
+//	            nRowsCpuBase =5000;	
+//            }else if(nRows==25000){
+//	            nRowsGpuBase =1000;
+//	            nRowsCpuBase =800;	
+//            }else if(nRows==27000){
+//	            nRowsGpuBase =1000;
+//	            nRowsCpuBase =1700;	
+//            }else if(nRows==33000){
+//	            nRowsGpuBase =3000;
+//	            nRowsCpuBase =3000;	
+//            }else if(nRows==37000){
+//	            nRowsGpuBase =3000;
+//	            nRowsCpuBase =2000;	
+//            }else if(nRows==41000){
+//	            nRowsGpuBase =2000;
+//	            nRowsCpuBase =3000;	
+//            }else if(nRows==45000){
+//	            nRowsGpuBase =4000;
+//	            nRowsCpuBase =4000;	
+//            }else if(nRows==47000){
+//	            nRowsGpuBase =3000;
+//	            nRowsCpuBase =3000;	
+//            }else{
+//	            nRowsGpuBase =1000;
+//	            nRowsCpuBase =2000;	
+//            }
 
 	    	if(GpuRatio ==0.0){
 	    	    nCPU = N_CORES;
@@ -402,9 +404,9 @@ DEF_TP(StencilTP)
                 blockDimy = (nRows-2)> tile_y? tile_y:(nRows-2);
                 blockDimz = 1;
 
-	            gridDimx = std::ceil(1.0*(nCols-2)/blockDimx);
-	            gridDimy = std::ceil(1.0*(nRows-2)/blockDimy);
-                gridDimz = std::ceil(1.0*(nSlices-2)/tile_z);
+	            gridDimx = std::ceil(1.0*(nCols)/blockDimx);
+	            gridDimy = std::ceil(1.0*(nRows)/blockDimy);
+                gridDimz = std::ceil(1.0*(nSlices)/tile_z);
                 d_size = sizeof(double)*nRows*nCols*nSlices;  
                 d_size_sharedCols = sizeof(double)*nRows*nSlices*gridDimx*2;
                 d_size_sharedRows = sizeof(double)*nCols*nSlices*gridDimy*2;
@@ -424,7 +426,18 @@ DEF_TP(StencilTP)
 	    				GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
                         add(&GpuKernelWithAllTimeSteps37);	
                     }else{
-
+                        
+                        nCPU=0;
+                        nGPU = std::ceil(req_size/gpuMemMax);
+                        nSlicesGpu = nSlices;
+                        gpuPos=0;
+                        invokeStreams = true;
+                        stream = new cudaStream_t[nStream];
+                        for(int i=0;i<nStream;++i){
+                            cudaStreamCreate(&stream[i]);
+                        }
+                        GpuKernelPureGpuWithStreams37 = Stencil3D7ptGpuKernelPureGpuWithStreamsCD{0,1,this,GPUMETA};
+                        add(&GpuKernelPureGpuWithStreams37);
 
                     }
 

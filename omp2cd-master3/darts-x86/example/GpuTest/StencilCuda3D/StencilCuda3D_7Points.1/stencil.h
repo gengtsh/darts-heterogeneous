@@ -102,6 +102,12 @@ void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sh
 
 void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z);
 
+void gpu_kernel37_cp_slices_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+
+void gpu_kernel37_cp_rows_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_cols_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+
+void gpu_kernel37_stream( cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z);
 #ifdef __cplusplus
 }
 #endif
