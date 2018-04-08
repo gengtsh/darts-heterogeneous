@@ -60,6 +60,8 @@ DEF_TP(StencilTP)
 	uint32_t nCPU = 0;
 	uint32_t nGPU = 0;
 
+    uint64_t tWL=0;
+
 	Stencil2D4ptGpuKernelCD GpuKernel;
 	Stencil2D4ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps;
     Stencil2D4ptGpuKernelPureGpuWithStreamsCD GpuKernelPureGpuWithStreams;
@@ -71,19 +73,18 @@ DEF_TP(StencilTP)
 	Stencil2D4ptSwapCD Swap;
 	
 	Stencil3D7ptCpuLoopCD *CpuLoop37 = NULL;
-    //Stencil3D7ptCpuSyncCD	CpuSync37;
+    Stencil3D7ptCpuSyncCD	CpuSync37;
 	Stencil3D7ptSwapCD Swap37;
 
 	Stencil3D7ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps37;
     Stencil3D7ptGpuKernelPureGpuWithStreamsCD GpuKernelPureGpuWithStreams37;
-//    Stencil3D7ptGpuKernelHybridWithStreamsCD GpuKernelHybridWithStreams37;
+    Stencil3D7ptGpuKernelHybridWithStreamsCD GpuKernelHybridWithStreams37;
     SyncCD	sync;
     Codelet *signalUp;
-	uint64_t nRowsGpu=0;
-	uint64_t nRowsCpu=0;
-    uint64_t nSlicesGpu=0;
-    uint64_t nSlicesCpu=0;
-
+	uint64_t gpuWL=0;
+	uint64_t cpuWL=0;
+    int gpuWLMin=3;
+    int cpuWLMin=N_CORES-1;
 
 	int tile_x = 0;
 	int tile_y = 0;
@@ -114,19 +115,14 @@ DEF_TP(StencilTP)
     uint64_t gpuPos=0;
 	uint64_t cpuPos=0;
 
-	uint64_t nRowsLeft=0;
-    uint64_t nSlicesLeft=0;
+	uint64_t wlLeft=0;
 
 	uint64_t gpuPosInit=0;
 	uint64_t cpuPosInit=0;
 	
-    uint64_t nRowsGpuInit=0;
-	uint64_t nRowsCpuInit=0;
-	uint64_t nRowsLeftInit=0;
-   
-	uint64_t nSlicesGpuInit=0;
-	uint64_t nSlicesCpuInit=0;
-	uint64_t nSlicesLeftInit=0;
+    uint64_t gpuWLInit=0;
+	uint64_t cpuWLInit=0;
+	uint64_t wlLeftInit=0;
 
 
 	uint32_t nCPUInit = 0;
@@ -134,17 +130,19 @@ DEF_TP(StencilTP)
     uint32_t gpuCnt = 0;
     uint32_t cpuCnt = 0;
 
- 	double 	gpuInitR = 0.5; 
+
+ 	
+    double 	gpuInitR = 0.5; 
 	double 	cpuInitR = 0.5;
-	double 	ggInitR = 0.5;
-    double 	cgInitR = 1.0;
+	double 	ggInitR  = 0.5;
+    double 	cgInitR  = 1.0;
 	double 	gpuStepR = 0.2;
 	double 	cpuStepR = 0.2;
-	uint64_t	nRowsGpuBase =2000;
-	uint64_t	nRowsCpuBase = 2000;	
+	uint64_t	gpuWLBase =200;
+	uint64_t	cpuWLBase = 200;	
 	
     uint64_t lastCnt = 0;
-    uint64_t nRowsGpuMax= 0;
+    uint64_t gpuWLMax= 0;
     size_t gpuMemMax = 0;
     bool invokeStreams = false;
     int nStream = 4 ;
@@ -172,44 +170,45 @@ DEF_TP(StencilTP)
         if(nSlices==1){
             //2D4points
 //            if(nRows==17000){
-//	            nRowsGpuBase =2000;
-//	            nRowsCpuBase =4000;	
+//	            gpuWLBase =2000;
+//	            cpuWLBase =4000;	
 //            }else if(nRows==19000){
-//	            nRowsGpuBase =1200;
-//	            nRowsCpuBase =1200;	
+//	            gpuWLBase =1200;
+//	            cpuWLBase =1200;	
 //            }else if(nRows==23000){
-//	            nRowsGpuBase =4000;
-//	            nRowsCpuBase =5000;	
+//	            gpuWLBase =4000;
+//	            cpuWLBase =5000;	
 //            }else if(nRows==25000){
-//	            nRowsGpuBase =1000;
-//	            nRowsCpuBase =800;	
+//	            gpuWLBase =1000;
+//	            cpuWLBase =800;	
 //            }else if(nRows==27000){
-//	            nRowsGpuBase =1000;
-//	            nRowsCpuBase =1700;	
+//	            gpuWLBase =1000;
+//	            cpuWLBase =1700;	
 //            }else if(nRows==33000){
-//	            nRowsGpuBase =3000;
-//	            nRowsCpuBase =3000;	
+//	            gpuWLBase =3000;
+//	            cpuWLBase =3000;	
 //            }else if(nRows==37000){
-//	            nRowsGpuBase =3000;
-//	            nRowsCpuBase =2000;	
+//	            gpuWLBase =3000;
+//	            cpuWLBase =2000;	
 //            }else if(nRows==41000){
-//	            nRowsGpuBase =2000;
-//	            nRowsCpuBase =3000;	
+//	            gpuWLBase =2000;
+//	            cpuWLBase =3000;	
 //            }else if(nRows==45000){
-//	            nRowsGpuBase =4000;
-//	            nRowsCpuBase =4000;	
+//	            gpuWLBase =4000;
+//	            cpuWLBase =4000;	
 //            }else if(nRows==47000){
-//	            nRowsGpuBase =3000;
-//	            nRowsCpuBase =3000;	
+//	            gpuWLBase =3000;
+//	            cpuWLBase =3000;	
 //            }else{
-//	            nRowsGpuBase =1000;
-//	            nRowsCpuBase =2000;	
+//	            gpuWLBase =1000;
+//	            cpuWLBase =2000;	
 //            }
 
+            tWL=nRows;
 	    	if(GpuRatio ==0.0){
 	    	    nCPU = N_CORES;
 	    	    cpuPos = 0;
-	    	    nRowsCpu = nRows;	
+	    	    cpuWL = nRows;	
               
 	    	   CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 	    	   Swap = Stencil2D4ptSwapCD{nCPU,nCPU,this,SHORTWAIT}; 
@@ -268,15 +267,15 @@ DEF_TP(StencilTP)
 	    		}
 #endif		
 	    		
-                nRowsGpuMax =floor((gpuMemMax-2*nStream*(nCols+NUM_THREADS)*4) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
+                gpuWLMax =floor((gpuMemMax-2*nStream*(nCols+NUM_THREADS)*4) /(sizeof(double)*(nCols+gridDimx*2 + nCols*2/tile_y )));
 #ifdef CUDA_DARTS_DEBUG		
-	    		std::cout<<"nRowsGpuMax: "<<nRowsGpuMax<<std::endl;
+	    		std::cout<<"gpuWLMax: "<<gpuWLMax<<std::endl;
 #endif
                 if (GpuRatio == 1.0){
                     nCPU=0;
                     nGPU=std::ceil(req_size/gpuMemMax);
-                    nRowsGpu=nRows;
-                    nRowsCpu=0;
+                    gpuWL=nRows;
+                    cpuWL=0;
                     gpuPos=0;
                     invokeStreams = true;       
                     stream = new cudaStream_t[nStream];
@@ -293,9 +292,9 @@ DEF_TP(StencilTP)
 	    			    if(req_size <  gpuMemMax){
 	    					nCPU = 0;
 	    				    nGPU = 1;
-                            nRowsGpu = nRows;
+                            gpuWL = nRows;
 
-	    			        nRowsCpu = 0;
+	    			        cpuWL = 0;
 	    					gpuPos = 0;
 	    				
 	    				    GpuKernelWithAllTimeSteps = Stencil2D4ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
@@ -311,23 +310,23 @@ DEF_TP(StencilTP)
                             
                             CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
 	    			
-	    					uint64_t t1 = nRowsGpuBase;
-                            //uint64_t t1 = nRowsGpuMax;
-                            //uint64_t t1 = nRowsGpuMax*ggInitR;
+	    					uint64_t t1 = gpuWLBase;
+                            //uint64_t t1 = gpuWLMax;
+                            //uint64_t t1 = gpuWLMax*ggInitR;
                             uint64_t t2= nRows*gpuInitR;
-                            //nRowsGpu = t1;
-                            nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
-                            //nRowsGpu = (t2<t1)?t2:t1;
+                            //gpuWL = t1;
+                            gpuWL = (t1<gpuWLMax)?t1:gpuWLMax;
+                            //gpuWL = (t2<t1)?t2:t1;
                             
-                            uint64_t t3=nRowsCpuBase;
+                            uint64_t t3=cpuWLBase;
                             //uint64_t t3=nRows*cpuInitR;
-	    					//uint64_t t3 = nRowsGpu*cpuInitR;
-	    					//uint64_t t3 = nRowsGpu*cgInitR;
-                            uint64_t t4 = nRows-nRowsGpu+2;
-                            nRowsCpu = (t4<=t3)?t4:t3 ;
-	    					nRowsLeft = (t4<=t3)?0:(nRows-nRowsGpu-nRowsCpu+4);
+	    					//uint64_t t3 = gpuWL*cpuInitR;
+	    					//uint64_t t3 = gpuWL*cgInitR;
+                            uint64_t t4 = nRows-gpuWL+2;
+                            cpuWL = (t4<=t3)?t4:t3 ;
+	    					wlLeft = (t4<=t3)?0:(nRows-gpuWL-cpuWL+4);
                             gpuPos = 0;
-	    					cpuPos = nRowsGpu-2;
+	    					cpuPos = gpuWL-2;
                             
                             GpuKernelHybridWithStreams  =  Stencil2D4ptGpuKernelHybridWithStreamsCD(0,1,this,GPUMETA);
                             add(&GpuKernelHybridWithStreams);	
@@ -340,9 +339,9 @@ DEF_TP(StencilTP)
                         lastCnt = 0.1 * nRows;             
 	    				gpuPosInit = gpuPos;
 	    				cpuPosInit = cpuPos;
-	    				nRowsGpuInit = nRowsGpu;
-	    				nRowsCpuInit = nRowsCpu;
-	    				nRowsLeftInit = nRowsLeft;
+	    				gpuWLInit = gpuWL;
+	    				cpuWLInit = cpuWL;
+	    				wlLeftInit = wlLeft;
 	    		        nCPUInit = nCPU;
 	    		        nGPUInit = nGPU;
                         
@@ -356,11 +355,12 @@ DEF_TP(StencilTP)
 
 	    	}
         }else{ //3D7Points
-
+            
+            tWL=nSlices;
 	    	if(GpuRatio == 0.0){
                 nCPU = N_CORES;
 	    	    cpuPos = 0;
-                nSlicesCpu=nSlices;
+                cpuWL=tWL;
                 CpuLoop37 = new Stencil3D7ptCpuLoopCD[nCPU];
                 Swap37 = Stencil3D7ptSwapCD{nCPU,nCPU,this,SHORTWAIT}; 
                 for(size_t i=0;i<nCPU; ++i){
@@ -411,16 +411,20 @@ DEF_TP(StencilTP)
                 d_size_sharedCols = sizeof(double)*nRows*nSlices*gridDimx*2;
                 d_size_sharedRows = sizeof(double)*nCols*nSlices*gridDimy*2;
                 d_size_sharedSlices = sizeof(double)*nRows*nCols*gridDimz*2;
-
                 req_size = d_size + d_size_sharedCols + d_size_sharedRows + d_size_sharedSlices;
 
+                gpuWLMax = std::floor(1.0*gpuMemMax/(sizeof(double)*(nRows*nCols+nRows*gridDimx*2+nCols*gridDimy*2+1.0*nRows*nCols*(1/tile_z))));
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"gpuWLMax: "<<gpuWLMax<<std::endl;
+#endif
                 if (GpuRatio == 1.0){
                     
                     if(req_size < gpuMemMax){
                         nCPU = 0;
                         nGPU = 1;
-                        nSlicesGpu = nSlices;
-                        nSlicesCpu = 0;
+                        gpuWL = tWL;
+                        cpuWL = 0;
                         gpuPos = 0;
 
 	    				GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
@@ -429,7 +433,7 @@ DEF_TP(StencilTP)
                         
                         nCPU=0;
                         nGPU = std::ceil(req_size/gpuMemMax);
-                        nSlicesGpu = nSlices;
+                        gpuWL = tWL;
                         gpuPos=0;
                         invokeStreams = true;
                         stream = new cudaStream_t[nStream];
@@ -438,12 +442,80 @@ DEF_TP(StencilTP)
                         }
                         GpuKernelPureGpuWithStreams37 = Stencil3D7ptGpuKernelPureGpuWithStreamsCD{0,1,this,GPUMETA};
                         add(&GpuKernelPureGpuWithStreams37);
-
                     }
-
 
                 }else{
 
+                    if(req_size< gpuMemMax){
+                       
+                        nCPU = 0;
+                        nGPU = 1;
+                        gpuWL = tWL;
+                        cpuWL = 0;
+                        gpuPos = 0;
+
+	    				GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
+                        add(&GpuKernelWithAllTimeSteps37);	
+
+                    }else{
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"CPU&GPU Hybrid! "<<std::endl;
+#endif
+                        
+                        nCPU = N_CORES-1;
+                        nGPU = std::ceil(req_size/gpuMemMax);
+                        invokeStreams = true;
+
+                        cpuWLMin=nCPU;
+
+                        stream = new cudaStream_t[nStream];
+                        for(int i=0;i<nStream;++i){
+                            cudaStreamCreate(&stream[i]);
+	    		        }
+    
+
+	    				uint64_t t1 = gpuWLBase;
+                        //uint64_t t1 = gpuWLMax;
+                        //uint64_t t1 = gpuWLMax*ggInitR;
+                        uint64_t t2= tWL*gpuInitR;
+                        //gpuWL = t1;
+                        gpuWL = (t1<gpuWLMax)?t1:gpuWLMax;
+                        //gpuWL = (t2<t1)?t2:t1;
+                        
+                        uint64_t t3=cpuWLBase;
+                        //uint64_t t3=tWL*cpuInitR;
+	    				//uint64_t t3 = gpuWL*cpuInitR;
+	    				//uint64_t t3 = gpuWL*cgInitR;
+                        uint64_t t4 = tWL-gpuWL+2;
+                        cpuWL = (t4<=t3)?t4:t3 ;
+	    				wlLeft = (t4<=t3)?0:(tWL-gpuWL-cpuWL+4);
+                        gpuPos = 0;
+	    				cpuPos = gpuWL-2;
+                        
+                        CpuLoop37 = new Stencil3D7ptCpuLoopCD[nCPU];
+                        CpuSync37 = Stencil3D7ptCpuSyncCD{nCPU,nCPU,this,SHORTWAIT}; 
+                    
+                        GpuKernelHybridWithStreams37  =  Stencil3D7ptGpuKernelHybridWithStreamsCD(0,1,this,GPUMETA);
+                        add(&GpuKernelHybridWithStreams37);	
+                        
+                        for(size_t i=0;i<nCPU; ++i){
+	    	   	            CpuLoop37[i] = Stencil3D7ptCpuLoopCD{0,1,this,SHORTWAIT,i};
+	    	   	            add(CpuLoop37 + i);
+	    	            }
+
+                        Swap37 = Stencil3D7ptSwapCD{2,2,this,SHORTWAIT}; 
+
+                        lastCnt = 0.1 * tWL;             
+	    				gpuPosInit = gpuPos;
+	    				cpuPosInit = cpuPos;
+	    				gpuWLInit = gpuWL;
+	    				cpuWLInit = cpuWL;
+	    				wlLeftInit = wlLeft;
+	    		        nCPUInit = nCPU;
+	    		        nGPUInit = nGPU;
+      
+                    }
 
                 }
                  
@@ -457,12 +529,11 @@ DEF_TP(StencilTP)
 		std::cout<<"nRows = "<<nRows<<std::endl;
 		std::cout<<"nSlices = "<<nSlices<<std::endl;
 		std::cout<<"gpuPos = "<<gpuPos<<std::endl;
-		std::cout<<"nRowsGpu = "<<nRowsGpu<<std::endl;
+		std::cout<<"gpuWL = "<<gpuWL<<std::endl;
 		std::cout<<"cpuPos = "<<cpuPos<<std::endl;
-		std::cout<<"nRowsCpu = "<<nRowsCpu<<std::endl;
-		std::cout<<"nRowsLeft = "<<nRowsLeft<<std::endl;
+		std::cout<<"cpuWL = "<<cpuWL<<std::endl;
+		std::cout<<"wlLeft = "<<wlLeft<<std::endl;
        
-		std::cout<<"nSlicesLeft = "<<nSlicesLeft<<std::endl;
         std::cout<<"invokeStreams = "<<invokeStreams<<std::endl;
 #endif
 	}

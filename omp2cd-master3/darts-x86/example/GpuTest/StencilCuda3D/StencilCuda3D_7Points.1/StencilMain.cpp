@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
     std::cout<<"nRows:"<<nRows<<",nCols:"<<nCols<<",nSlices:"<<nSlices<<",timestep:"<<nTmSteps<<",nReps:"<<nReps<<std::endl;
 #endif
 
-    double GpuRatio = 1.0; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
+    double GpuRatio = 0.6; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
 	
     double* OriginalMatrix = new double[nRows*nCols*nSlices];
 
@@ -297,8 +297,8 @@ int main(int argc, char *argv[])
 //	innerAvg /=(nReps-2);
 
 
-    std::cout << nSlices                 << " * "
-              << nRows << " * " << nCols << ", "
+    std::cout << nRows << " * " << nCols << " * "
+              << nSlices                 << ", "
               << g_nCU                   << ", "
               << g_nSU                   << ", "
               << g_nSU*(1+g_nCU)         << ", "
