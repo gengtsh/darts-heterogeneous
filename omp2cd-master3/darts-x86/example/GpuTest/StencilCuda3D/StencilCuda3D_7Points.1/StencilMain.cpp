@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
     std::cout<<"nRows:"<<nRows<<",nCols:"<<nCols<<",nSlices:"<<nSlices<<",timestep:"<<nTmSteps<<",nReps:"<<nReps<<std::endl;
 #endif
 
-    double GpuRatio = 0.6; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
+    double GpuRatio = 1.0; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
 	
     double* OriginalMatrix = new double[nRows*nCols*nSlices];
 
@@ -354,10 +354,10 @@ int main(int argc, char *argv[])
 	std::cout<<std::setprecision(6)<<std::endl;
 	int kk = 0;
 	int ttk = 10;
-	int jj =64; 
-	int ttj =72;
-    int ss =560;
-    int tts=563;
+	int jj =0; 
+	int ttj =10;
+    int ss =97;
+    int tts=100;
 	std::cout<<"Original Matrix:"<<std::endl;
 	print_results(OriginalMatrix,kk,ttk,jj,ttj,ss,tts,nRows,nCols,nSlices);
     std::cout<<"Seq Matrix:"<<std::endl;

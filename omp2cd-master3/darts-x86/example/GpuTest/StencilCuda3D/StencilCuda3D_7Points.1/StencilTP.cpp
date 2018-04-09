@@ -2005,7 +2005,8 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
     int nTile_z = std::ceil(1.0*gpuWL/(tile_z*vnStream));
     int chunk = nTile_z*tile_z;
     int nSlicesChunk = nTile_z*tile_z + 2;
-   
+    int nSlicesChunkInit = nSlicesChunk;
+    
     int blockDimx = FRAME(blockDimx);   // tile_x
     int blockDimy = FRAME(blockDimy);   // tile_y
     int blockDimz = FRAME(blockDimz);   // 1
@@ -2018,6 +2019,7 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 
 	double d_size = sizeof(double)*nRows*nCols*nSlicesChunk;
     
+	double d_sizeInit = d_size;
 	int64_t d_size_sharedRows   = sizeof(double)*nCols*gridDimy*2*nSlicesChunk;
     int64_t d_size_sharedCols   = sizeof(double)*nRows*gridDimx*2*nSlicesChunk;
 	int64_t d_size_sharedSlices = sizeof(double)*nRows*nCols*2*gridDimz2;
@@ -2046,20 +2048,20 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	err4 = cudaMalloc( (void **) &d_sharedSlices, d_size_sharedSlices*nStream);
 #ifdef CUDA_ERROR_CHECKING
 	if(err1!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda malloc1: "<<cudaGetErrorString(err1)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda malloc1: "<<cudaGetErrorString(err1)<<std::endl;
 		exit(-1);
 	}
 	if(err2!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda malloc2: "<<cudaGetErrorString(err2)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda malloc2: "<<cudaGetErrorString(err2)<<std::endl;
 		exit(-1);
 	}
 	if(err3!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda malloc3: "<<cudaGetErrorString(err3)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda malloc3: "<<cudaGetErrorString(err3)<<std::endl;
 		exit(-1);
 	}
 
 	if(err4!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda malloc4: "<<cudaGetErrorString(err4)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda malloc4: "<<cudaGetErrorString(err4)<<std::endl;
 		exit(-1);
 	}
 #endif
@@ -2095,39 +2097,39 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 
 
 #ifdef CUDA_DARTS_DEBUG
-//	std::cout<<"GpuKernelWithAllTimeSteps37: GpuPos:"<<pos1/nCols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: nRows:"<<nRows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: nCols:"<<nCols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: nSlices:"<<nSlices<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: d_size:"<<d_size<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: tile_x:"<<tile_x<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: tile_y:"<<tile_y<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: tile_z:"<<tile_z<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx:"<<blockDimx<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy:"<<blockDimy<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: blockDimz:"<<blockDimz<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: gridDimx="<<gridDimx<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: gridDimy="<<gridDimy<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: gridDimz="<<gridDimz<<std::endl;
+//	std::cout<<"GpuKernelPureGpuWithStreams3737: GpuPos:"<<pos1/nCols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: nRows:"<<nRows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: nCols:"<<nCols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: nSlices:"<<nSlices<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: d_size:"<<d_size<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: tile_x:"<<tile_x<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: tile_y:"<<tile_y<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: tile_z:"<<tile_z<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx:"<<blockDimx<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy:"<<blockDimy<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimz:"<<blockDimz<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: gridDimx="<<gridDimx<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: gridDimy="<<gridDimy<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: gridDimz="<<gridDimz<<std::endl;
 
-	std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_slices:"<<gridDimz_rows<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_rows:"<<blockDimx_rows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_rows:"<<blockDimy_rows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_rows:"<<gridDimx_rows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_rows:"<<gridDimy_rows<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_rows:"<<gridDimz_rows<<std::endl;
-    std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_cols:"<<blockDimx_cols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_cols:"<<blockDimy_cols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_cols:"<<gridDimx_cols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_cols:"<<gridDimy_cols<<std::endl;
-	std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_cols:"<<gridDimz_cols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_slices:"<<blockDimx_slices<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_slices:"<<blockDimy_slices<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_slices:"<<gridDimx_slices<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_slices:"<<gridDimy_slices<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_slices:"<<gridDimz_rows<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_rows:"<<blockDimx_rows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_rows:"<<blockDimy_rows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_rows:"<<gridDimx_rows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_rows:"<<gridDimy_rows<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_rows:"<<gridDimz_rows<<std::endl;
+    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_cols:"<<blockDimx_cols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_cols:"<<blockDimy_cols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_cols:"<<gridDimx_cols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_cols:"<<gridDimy_cols<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_cols:"<<gridDimz_cols<<std::endl;
 
 #endif
 	
@@ -2144,7 +2146,15 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	size_t ts = FRAME(ts);
     uint64_t pos0 = gpuPos*nRows*nCols;
 	while(ts-- >0){
-	
+	    nSlicesChunk =nSlicesChunkInit ;
+
+        d_size = d_sizeInit;
+        gridDimz2 = std::ceil(1.0*nSlicesChunk/tile_z);
+        gridDimz_slices = gridDimz2;
+        gridDimz_rows = gridDimz2;
+        gridDimz_cols = gridDimz2;
+        gridDimz = gridDimz2;
+
         for(size_t i=0;i<nGPU;++i){
             for(size_t j=0;j<nStream;++j){
 
@@ -2163,6 +2173,8 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 int64_t s_scols_pos=j*nRows*gridDimx*2*nSlicesChunk;
                 int64_t s_sslices_pos=j*nRows*nCols*2*nTile_z;
                 int64_t nSlicesLeft = gpuWL-ps*chunk;
+                
+             
 
                 if(nSlicesLeft>1){
                 
@@ -2175,42 +2187,42 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                         gridDimz_cols = gridDimz2;
                         gridDimz = gridDimz2;
                     }
-	                    dim3 dimGrid_slices(gridDimx_slices,gridDimy_slices,gridDimz_slices);
-                        dim3 dimGrid_rows(gridDimx_rows,gridDimy_rows,gridDimz_rows);
-                        dim3 dimGrid_cols(gridDimx_cols,gridDimy_cols,gridDimz_cols);
+	                dim3 dimGrid_slices(gridDimx_slices,gridDimy_slices,gridDimz_slices);
+                    dim3 dimGrid_rows(gridDimx_rows,gridDimy_rows,gridDimz_rows);
+                    dim3 dimGrid_cols(gridDimx_cols,gridDimy_cols,gridDimz_cols);
 
-                        dim3 dimGrid (gridDimx,gridDimy,gridDimz);
+                    dim3 dimGrid (gridDimx,gridDimy,gridDimz);
                 
 
 #ifdef CUDA_DARTS_DEBUG
-	            std::cout<<"GpuKernelWithAllTimeSteps37: gpuPos:"<<gpuPos<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: d_size:"<<d_size<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
-                std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_slices:"<<gridDimz_rows<<std::endl;
-                std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_rows:"<<blockDimx_rows<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_rows:"<<blockDimy_rows<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_rows:"<<gridDimx_rows<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_rows:"<<gridDimy_rows<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_rows:"<<gridDimz_rows<<std::endl;
-                std::cout<<"GpuKernelWithAllTimeSteps37: blockDimx_cols:"<<blockDimx_cols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: blockDimy_cols:"<<blockDimy_cols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx_cols:"<<gridDimx_cols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy_cols:"<<gridDimy_cols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz_cols:"<<gridDimz_cols<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimx:"<<gridDimx<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimy:"<<gridDimy<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: grimDimz:"<<gridDimz2<<std::endl;
-                std::cout<<"GpuKernelWithAllTimeSteps37: nGpu: "<<i<<",stream:# "<<j<<", h_pos:"<<h_pos<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: nGpu: "<<i<<",stream:# "<<j<<", d_pos:"<<d_pos<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: nGpu: "<<i<<",stream:# "<<j<<", nSlicesChunk:"<<nSlicesChunk<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: nGpu: "<<i<<",stream:# "<<j<<", nSlicesLeft:"<<nSlicesLeft<<std::endl;
-	            std::cout<<"GpuKernelWithAllTimeSteps37: nGpu: "<<i<<",stream:# "<<j<<", chunk:"<<chunk<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: gpuPos:"<<gpuPos<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: d_size:"<<d_size<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_slices:"<<blockDimx_slices<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_slices:"<<blockDimy_slices<<std::endl;
+                    std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_slices:"<<gridDimx_slices<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_slices:"<<gridDimy_slices<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_slices:"<<gridDimz_rows<<std::endl;
+                    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_rows:"<<blockDimx_rows<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_rows:"<<blockDimy_rows<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_rows:"<<gridDimx_rows<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_rows:"<<gridDimy_rows<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_rows:"<<gridDimz_rows<<std::endl;
+                    std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimx_cols:"<<blockDimx_cols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: blockDimy_cols:"<<blockDimy_cols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx_cols:"<<gridDimx_cols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy_cols:"<<gridDimy_cols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz_cols:"<<gridDimz_cols<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimx:"<<gridDimx<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimy:"<<gridDimy<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: grimDimz:"<<gridDimz2<<std::endl;
+                    std::cout<<"GpuKernelPureGpuWithStreams3737: nGpu: "<<i<<",stream:# "<<j<<", h_pos:"<<h_pos<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: nGpu: "<<i<<",stream:# "<<j<<", d_pos:"<<d_pos<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: nGpu: "<<i<<",stream:# "<<j<<", nSlicesChunk:"<<nSlicesChunk<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: nGpu: "<<i<<",stream:# "<<j<<", nSlicesLeft:"<<nSlicesLeft<<std::endl;
+	                std::cout<<"GpuKernelPureGpuWithStreams3737: nGpu: "<<i<<",stream:# "<<j<<", chunk:"<<chunk<<std::endl;
 #endif
                 
                     err1 = cudaMemcpyAsync(d_dst+d_pos, h_src+h_pos, d_size, cudaMemcpyHostToDevice,FRAME(stream[j]));
@@ -2246,13 +2258,23 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 }
             }
         }
+
+	    err1 = cudaDeviceSynchronize();
+
+#ifdef CUDA_ERROR_CHECKING
+	    if(err1!=cudaSuccess){
+		    std::cout<<"GpuKernelPureGpuWithStreams37: cuda deviceSynchronize: "<<cudaGetErrorString(err1)<<std::endl;
+		    exit(-1);
+	    }
+#endif
+    	SWAP_PTR(&h_dst ,&h_src);
     }
 	
 	err1 = cudaDeviceSynchronize();
 
 #ifdef CUDA_ERROR_CHECKING
 	if(err1!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda deviceSynchronize: "<<cudaGetErrorString(err1)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda deviceSynchronize: "<<cudaGetErrorString(err1)<<std::endl;
 		exit(-1);
 	}
 #endif
@@ -2275,22 +2297,22 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	
 #ifdef CUDA_ERROR_CHECKING
 	if(err1!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_dst: "<<cudaGetErrorString(err1)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda memcpy free d_dst: "<<cudaGetErrorString(err1)<<std::endl;
 		exit(-1);
 	}
 
 	if(err2!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_sharedCols: "<<cudaGetErrorString(err2)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda memcpy free d_sharedCols: "<<cudaGetErrorString(err2)<<std::endl;
 		exit(-1);
 	}
 
 	if(err3!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_sharedRows: "<<cudaGetErrorString(err3)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda memcpy free d_sharedRows: "<<cudaGetErrorString(err3)<<std::endl;
 		exit(-1);
 	}
 
 	if(err4!=cudaSuccess){
-		std::cout<<"GpuKernelWithAllTimeSteps: cuda memcpy free d_sharedRows: "<<cudaGetErrorString(err4)<<std::endl;
+		std::cout<<"GpuKernelPureGpuWithStreams37: cuda memcpy free d_sharedRows: "<<cudaGetErrorString(err4)<<std::endl;
 		exit(-1);
 	}
 #endif

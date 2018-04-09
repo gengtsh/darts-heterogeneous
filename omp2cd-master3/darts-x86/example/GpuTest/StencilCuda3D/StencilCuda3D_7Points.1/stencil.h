@@ -3,7 +3,7 @@
 
 //#define VERIFICATION 
 //#define CUDA_DARTS_DEBUG
-#define CUDA_ERROR_CHECKING
+//#define CUDA_ERROR_CHECKING
 //#define CUDA_CUDA_DEBUG
 
 #ifdef __cplusplus
