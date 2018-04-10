@@ -1,10 +1,10 @@
 #ifndef STENCIL_H_GUARD
 #define STENCIL_H_GUARD
 
-#define VERIFICATION 
-#define CUDA_DARTS_DEBUG
-#define CUDA_ERROR_CHECKING
-#define CUDA_CUDA_DEBUG
+//#define VERIFICATION 
+//#define CUDA_DARTS_DEBUG
+//#define CUDA_ERROR_CHECKING
+//#define CUDA_CUDA_DEBUG
 
 #ifdef __cplusplus
 extern "C"
@@ -95,19 +95,19 @@ void gpu_kernel5_stream_cp_cols(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,
 bool checkGpu(cudaStream_t *stream, size_t n);
 
 
-void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
 
-void gpu_kernel37_cp_rows(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
-void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_rows(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
 
-void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z);
+void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z);
 
-void gpu_kernel37_cp_slices_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_slices_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
 
-void gpu_kernel37_cp_rows_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
-void gpu_kernel37_cp_cols_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_rows_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_cols_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
 
-void gpu_kernel37_stream( cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z);
+void gpu_kernel37_stream( cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z);
 #ifdef __cplusplus
 }
 #endif

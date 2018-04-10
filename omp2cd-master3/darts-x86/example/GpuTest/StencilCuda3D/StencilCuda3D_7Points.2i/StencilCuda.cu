@@ -747,7 +747,7 @@ bool checkGpu(cudaStream_t *stream, size_t n){
 
 
 
-__global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,uint64_t n_rows, uint64_t n_cols,uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+__global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
     if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
@@ -761,8 +761,8 @@ __global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows
 	int base_global_row   = tile_y * blockIdx.y;
 	int base_global_col   = blockDim.x * blockIdx.x;
 
-	uint64_t area = n_rows*n_cols;
-    uint64_t base_global_idx = base_global_slice*area + base_global_row * n_cols + base_global_col;
+	int area = n_rows*n_cols;
+    int base_global_idx = base_global_slice*area + base_global_row * n_cols + base_global_col;
     
     int nextSlice = base_global_slice+1;
     bool legalNextSlice = (nextSlice<n_slices);
@@ -771,8 +771,8 @@ __global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows
     
     for(int ty=0;ty<tile_y;++ty){ 
         bool legalCurRow = (base_global_row + ty)<n_rows;
-        uint64_t idx = blockIdx.z*area*2 + (base_global_row+ty)*n_cols + base_global_col+tx ;
-        uint64_t idx_dst = base_global_idx + ty*n_cols+tx;
+        int idx = blockIdx.z*area*2 + (base_global_row+ty)*n_cols + base_global_col+tx ;
+        int idx_dst = base_global_idx + ty*n_cols+tx;
     	if(legalCurCol&&legalCurRow){
     		shared_slices[idx] = dst[idx_dst];
     	}
@@ -805,7 +805,7 @@ __global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows
 }
 
 
-__global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,uint64_t n_rows, uint64_t n_cols,uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+__global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
@@ -819,10 +819,10 @@ __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, 
 	int base_global_row   = tile_y  * blockIdx.y;
 	int base_global_col   = blockDim.x*blockIdx.x;
 
-	uint64_t dst_area = n_rows*n_cols;
-    uint64_t s_area = gridDim.y*n_cols*2; 
+	int dst_area = n_rows*n_cols;
+    int s_area = gridDim.y*n_cols*2; 
     
-    uint64_t base_global_idx = base_global_slice*dst_area + base_global_row * n_cols + base_global_col;
+    int base_global_idx = base_global_slice*dst_area + base_global_row * n_cols + base_global_col;
     
     int nextRow = base_global_row+1;
 	bool legalNextRow = nextRow<n_rows;
@@ -832,8 +832,8 @@ __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, 
     
     for(int tz=0;tz<tile_z;++tz){ 
         bool legalCurSlice = (base_global_slice + tz)<n_slices;
-        uint64_t idx_dst =base_global_idx + tz*dst_area+ tx  ;
-        uint64_t idx = (base_global_slice+tz)*s_area + blockIdx.y*n_cols*2+blockIdx.x*blockDim.x+ tx  ;
+        int idx_dst =base_global_idx + tz*dst_area+ tx  ;
+        int idx = (base_global_slice+tz)*s_area + blockIdx.y*n_cols*2+blockIdx.x*blockDim.x+ tx  ;
         if(legalCurCol && legalCurSlice){
     		shared_rows[idx] = dst[idx_dst];
     	}
@@ -876,7 +876,7 @@ __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, 
 }
 
 
-__global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,uint64_t n_rows, uint64_t n_cols,uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+__global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0)&& threadIdx.x==0 && threadIdx.z==0){
@@ -890,15 +890,15 @@ __global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, 
 	int base_global_row   = blockDim.y * blockIdx.y;
 	int base_global_col   = tile_x * blockIdx.x;
 
-	uint64_t area_dst = n_rows*n_cols;
-    uint64_t area_shared = gridDim.x*n_rows*2; 
+	int area_dst = n_rows*n_cols;
+    int area_shared = gridDim.x*n_rows*2; 
     
 #ifdef CUDA_CUDA_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0&&threadIdx.x==0&&threadIdx.z==0)){
         printf("area_shared=%d\n",area_shared);
 	}
 #endif
-    uint64_t base_global_idx = base_global_slice*area_dst + base_global_row * n_cols + base_global_col;
+    int base_global_idx = base_global_slice*area_dst + base_global_row * n_cols + base_global_col;
     
     int nextCol= base_global_col+1;
 	bool legalNextCol = (nextCol<n_cols)?1:0;
@@ -908,8 +908,8 @@ __global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, 
     
     for(int tz=0;tz<tile_z;++tz){ 
         bool legalCurSlice = (base_global_slice + tz)<n_slices;
-        uint64_t idx_dst =base_global_idx + tz*area_dst + ty*n_cols ;
-        uint64_t idx = (base_global_slice+tz)*area_shared + blockIdx.x*2*n_rows+blockIdx.y*blockDim.y+ty; 
+        int idx_dst =base_global_idx + tz*area_dst + ty*n_cols ;
+        int idx = (base_global_slice+tz)*area_shared + blockIdx.x*2*n_rows+blockIdx.y*blockDim.y+ty; 
 
         if(legalCurRow && legalCurSlice){
     		shared_cols[idx] = dst[idx_dst];
@@ -936,7 +936,7 @@ __global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, 
 }
 
 
-void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy slices begin!\n");
@@ -950,7 +950,7 @@ void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * 
 //#endif
 }
 
-void gpu_kernel37_cp_rows(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_rows(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy rows begin!\n");
@@ -962,7 +962,7 @@ void gpu_kernel37_cp_rows(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sh
 //#endif
 }
 
-void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy cols begin!\n");
@@ -973,7 +973,7 @@ void gpu_kernel37_cp_cols(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sh
 //#endif
 }
 
-void gpu_kernel37_cp_slices_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_slices_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy slices begin!\n");
@@ -987,7 +987,7 @@ void gpu_kernel37_cp_slices_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlo
 //#endif
 }
 
-void gpu_kernel37_cp_rows_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_rows_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy rows begin!\n");
@@ -999,7 +999,7 @@ void gpu_kernel37_cp_rows_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBloc
 //#endif
 }
 
-void gpu_kernel37_cp_cols_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices, uint64_t n_rows, uint64_t n_cols, uint64_t n_slices,int tile_x,int tile_y, int tile_z){
+void gpu_kernel37_cp_cols_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy cols begin!\n");
@@ -1010,7 +1010,7 @@ void gpu_kernel37_cp_cols_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock
 //#endif
 }
 
-__global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double * shared_cols, double * shared_slices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z){
+__global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double * shared_cols, double * shared_slices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)&&(threadIdx.y==0)){
@@ -1026,12 +1026,12 @@ __global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double *
     int base_global_slice = tile_z * blockIdx.z;
 	int base_global_row   = tile_y * blockIdx.y;
 	int base_global_col   = tile_x * blockIdx.x;
-    uint64_t global_area = n_rows*n_cols;
+    int global_area = n_rows*n_cols;
    
-    uint64_t base_global_idx = base_global_slice * global_area + base_global_row * n_cols + base_global_col;
-    uint64_t num_rows = ((base_global_row + tile_y+2)<n_rows)?(tile_y+2):(n_rows-base_global_row);
-    uint64_t num_cols = ((base_global_col + tile_x+2)<n_cols)?(tile_x+2):(n_cols-base_global_col);
-    uint64_t num_slices = ((base_global_slice + tile_z+2)<n_slices)?(tile_z+2):(n_slices-base_global_slice);
+    int base_global_idx = base_global_slice * global_area + base_global_row * n_cols + base_global_col;
+    int num_rows = ((base_global_row + tile_y+2)<n_rows)?(tile_y+2):(n_rows-base_global_row);
+    int num_cols = ((base_global_col + tile_x+2)<n_cols)?(tile_x+2):(n_cols-base_global_col);
+    int num_slices = ((base_global_slice + tile_z+2)<n_slices)?(tile_z+2):(n_slices-base_global_slice);
 
     int tx = threadIdx.x;
     int ty = threadIdx.y;
@@ -1277,7 +1277,7 @@ __global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double *
 }
 
 
-void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z){
+void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
 	int sharedMemSize = sizeof(double)*(1+HALO*2)*((tile_x+2)*(tile_y+2));
 #ifdef CUDA_DARTS_DEBUG
 		printf("sharedMemSize: %d B, total sharedMemSize: %d B\n",sharedMemSize, sharedMemSize*dimGrid.x*dimGrid.y*dimGrid.z);
@@ -1290,7 +1290,7 @@ void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows
 }
 
 
-void gpu_kernel37_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,uint64_t n_rows,uint64_t n_cols, uint64_t n_slices,int tile_x, int tile_y, int tile_z){
+void gpu_kernel37_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
 	int sharedMemSize = sizeof(double)*(1+HALO*2)*((tile_x+2)*(tile_y+2));
 #ifdef CUDA_DARTS_DEBUG
 		printf("sharedMemSize: %d B, total sharedMemSize: %d B\n",sharedMemSize, sharedMemSize*dimGrid.x*dimGrid.y*dimGrid.z);
