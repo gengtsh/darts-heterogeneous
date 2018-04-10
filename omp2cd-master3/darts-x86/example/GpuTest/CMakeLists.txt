@@ -15,5 +15,5 @@
 #add_subdirectory (StencilCuda2.3.2.2.p)
 #add_subdirectory (StencilCuda2.4)
 add_subdirectory (StencilCuda2D)
-#add_subdirectory (StencilCuda3D)
+add_subdirectory (StencilCuda3D)
 
