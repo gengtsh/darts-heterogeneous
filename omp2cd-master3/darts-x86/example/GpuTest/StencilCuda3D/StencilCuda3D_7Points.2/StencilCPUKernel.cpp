@@ -6,6 +6,7 @@
 //#include <math.h>
 #include <cmath>
 //#define DEBUG_COPY
+#define DEBUG_COMPUTING
 
 void computeInner_stencil2d_v2(double *dst,double *src,size_t n_rows,size_t n_cols){
 
@@ -27,6 +28,8 @@ void computeInner_stencil37(double *dst,double *src,size_t n_rows,size_t n_cols,
 	typedef double (*Array3D)[n_rows][n_cols];
 	Array3D DST = (Array3D) dst,
 			SRC = (Array3D) src;
+#ifdef DEBUG_COMPUTING
+#endif
 
     for (size_t k = 1; k< n_slices;++k){
     	for (size_t i = 1; i < n_rows-1; ++i) {

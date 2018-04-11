@@ -15,8 +15,8 @@ pthread_mutex_t mutex;
 #include <iostream>
 
 
-////	pthread_mutex_lock(&mutex);
-////	pthread_mutex_unlock(&mutex);
+//	pthread_mutex_lock(&mutex);
+//	pthread_mutex_unlock(&mutex);
 
 extern "C"
 void
@@ -1596,7 +1596,10 @@ Stencil3D7ptCpuLoopCD::fire(void)
 	RESET(CpuLoop37[Id]);	
 	
 #ifdef CUDA_DARTS_DEBUG
-	std::cout<<"Invoke CPU["<<Id<<"]"<<std::endl;	
+
+    pthread_mutex_lock(&mutex);
+	std::cout<<"Invoke CpuLoop37["<<Id<<"]"<<std::endl;	
+    pthread_mutex_unlock(&mutex);
 #endif
 	double	*h_src  = FRAME(Initial);
 	double	*h_dst      = FRAME(New);
@@ -1608,33 +1611,29 @@ Stencil3D7ptCpuLoopCD::fire(void)
 	uint64_t	chunk = (cpuWL )/nCPU;
 	uint64_t	cpuPos = FRAME(cpuPos);
 	size_t		pos1 = (cpuPos + chunk*Id)*nCols*nRows;
-	uint64_t	nSlicesChunk = (Id==(nCPU-1))? (cpuWL-chunk*Id-1):(chunk +1) ;
+	int64_t	nSlicesChunk = (Id==(nCPU-1))? (cpuWL-chunk*Id-1):(chunk +1) ;
+	if((nSlicesChunk+cpuPos+chunk*Id)>=nSlices){
+			nSlicesChunk = cpuWL-chunk*Id-2 ;
+	}
 	double *src = h_src+pos1;
 	double *dst = h_dst+pos1;
 
 	double *d_dst = FRAME(d_dst);
 
 #ifdef CUDA_DARTS_DEBUG
-	std::cout<<"CpuLoop37["<<Id<<"]: cpuPos:"<<pos1/nCols<<std::endl;
+
+	pthread_mutex_lock(&mutex);
+	std::cout<<"CpuLoop37["<<Id<<"]: cpuPos:"<<cpuPos<<std::endl;
+	std::cout<<"CpuLoop37["<<Id<<"]: pos1:"<<pos1/(nCols*nRows)<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuWL:"<<cpuWL<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: chunk:"<<chunk<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: nSlicesChunk:"<<nSlicesChunk<<std::endl;
+	std::cout<<"CpuLoop37["<<Id<<"]: pos1+nSlicesChunk:"<<pos1/(nCols*nRows)+nSlicesChunk<<std::endl;
+	pthread_mutex_unlock(&mutex);
 #endif
 
 	computeInner_stencil37(dst,src,nRows,nCols,nSlicesChunk);
 
-#ifdef CUDA_DARTS_DEBUG
-//	std::cout<<"dst:"<<std::endl;
-//	std::cout<<std::setprecision(3)<<std::endl;
-//	int tr = (nRows_bk<10)?nRows_bk:10;
-//	int tc = (nCols<10)?nCols:10;
-//	for(size_t i=0;i<tr;++i){
-//		for (size_t j=0;j<tc;++j){
-//			std::cout<<dst[i*nCols+j]<<",";
-//		}
-//		std::cout<<"\n";
-//	}
-#endif
 
 	if(FRAME(GpuRatio)==0.0){
 		SYNC(Swap37);
@@ -1642,7 +1641,13 @@ Stencil3D7ptCpuLoopCD::fire(void)
 		SYNC(CpuSync37);
 	}
 
-//	std::cout<<"cpu["<<Id<<"]: Swap dependence is "<<FRAME(Swap).getCounter() <<std::endl;
+#ifdef CUDA_DARTS_DEBUG
+	pthread_mutex_lock(&mutex);
+	
+	std::cout<<"CpuLoop37["<<Id<<"]: finish computing!"<<std::endl;
+	std::cout<<"CpuLoop37["<<Id<<"]: CpuSync37 dependence is "<<FRAME(CpuSync37).getCounter() <<std::endl;
+	pthread_mutex_unlock(&mutex);
+#endif
 	EXIT_TP();
 }
 
@@ -2545,6 +2550,7 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
 #ifdef CUDA_DARTS_DEBUG
 	            std::cout<<"GpuKernelHybridWithStreams37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
 	            std::cout<<"GpuKernelHybridWithStreams37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
+	            std::cout<<"GpuKernelHybridWithStreams37: blockDimz_slices:"<<blockDimz_slices<<std::endl;
                 std::cout<<"GpuKernelHybridWithStreams37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
 	            std::cout<<"GpuKernelHybridWithStreams37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
 	            std::cout<<"GpuKernelHybridWithStreams37: grimDimz_slices:"<<gridDimz_rows<<std::endl;
@@ -2561,6 +2567,8 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
 	            std::cout<<"GpuKernelHybridWithStreams37: grimDimx:"<<gridDimx<<std::endl;
 	            std::cout<<"GpuKernelHybridWithStreams37: grimDimy:"<<gridDimy<<std::endl;
 	            std::cout<<"GpuKernelHybridWithStreams37: grimDimz:"<<gridDimz2<<std::endl;
+	            std::cout<<"GpuKernelHybridWithStreams37: h_pos:"<<h_pos<<std::endl;
+	            std::cout<<"GpuKernelHybridWithStreams37: d_size:"<<nSlicesLeft<<std::endl;
 #endif
                 
                 err1 = cudaMemcpyAsync(d_dst+d_pos, h_src+h_pos, d_size, cudaMemcpyHostToDevice,FRAME(stream[j]));
@@ -2657,7 +2665,7 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                 SYNC(Swap37);
             }else{
              
-                if(wlLeft < FRAME(lastCnt)+FRAME(cpuWLMin)){
+                if(wlLeft < FRAME(lastCnt)+FRAME(gpuWLMin)){
                     FRAME(gpuWL) = wlLeft;
                     FRAME(wlLeft) = 0;
                 }else{
@@ -2683,7 +2691,7 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                 }
                 
                 FRAME(nGPU)=nGPU;
-                FRAME(gpuPos) = nRows-wlLeft ;
+                FRAME(gpuPos) = FRAME(tWL)-wlLeft ;
                 __sync_synchronize();
 
                 SYNC(GpuKernelHybridWithStreams37);
@@ -2829,10 +2837,16 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                 SYNC(Swap37);
             }else{
                  
-                if(wlLeft <= FRAME(lastCnt)+FRAME(gpuWLMin)){
+                if(wlLeft <= FRAME(cpuWLMin)){
+                //if(wlLeft <= FRAME(lastCnt)+FRAME(cpuWLMin)){
                     FRAME(cpuWL) = wlLeft;
                     FRAME(wlLeft) = 0;
-                }else{
+					FRAME(nCPU) = wlLeft-1;
+				}else if(wlLeft <= FRAME(lastCnt)+FRAME(cpuWLMin)){
+
+                    FRAME(cpuWL) = wlLeft;
+                    FRAME(wlLeft) = 0;
+				}else{
 
                     uint64_t t1;
                     if(FRAME(gpuCnt)>FRAME(cpuCnt)){
@@ -2852,18 +2866,19 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                     FRAME(wlLeft) = wlLeft - FRAME(cpuWL)+2;
                 }
 
-				FRAME(cpuPos) = nRows-wlLeft;
+				FRAME(cpuPos) = FRAME(tWL)-wlLeft;
                 __sync_synchronize();
             }
             pthread_mutex_unlock(&mutex);
             
 #ifdef CUDA_DARTS_DEBUG
-            std::cout<<"CpuSync37: invoked  new CPU, cpuPos: "<<FRAME(cpuPos)/(FRAME(nRows)*FRAME(nCols))<<std::endl;
+            std::cout<<"CpuSync37: invoked  new CPU, cpuPos: "<<FRAME(cpuPos)<<std::endl;
 
             std::cout<<"CpuSync37: invoked  new CPU, cpuWL: "<<FRAME(cpuWL)<<std::endl;
 
             std::cout<<"CpuSync37: invoked  new CPU, wlLeft: "<<FRAME(wlLeft)<<std::endl;
 
+            std::cout<<"CpuSync37: invoked  new CPU, nCPU: "<<FRAME(nCPU)<<std::endl;
 #endif
 			__sync_bool_compare_and_swap(&FRAME(CpuFinish),true,false);
 			for(size_t i =0; i<FRAME(nCPU);++i){

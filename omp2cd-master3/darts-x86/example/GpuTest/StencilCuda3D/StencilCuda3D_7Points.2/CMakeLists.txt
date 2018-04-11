@@ -55,10 +55,10 @@ cuda_add_library(StencilCudalib3D_7Points ${LIB_TYPE}
 				 StencilCuda.cu 
 		)
 
-add_executable(StencilCuda37
+add_executable(StencilCuda37.2
 			   StencilMain.cpp
                StencilTP.cpp
 			   StencilCPUKernel.cpp
 			   )
 #target_link_libraries(Hello  darts -L/usr/local/cuda/lib64 ${CUDA_LIBRARIES}  mylib  -lcuda -lcudart -lm -lrt --verbose)
-target_link_libraries(StencilCuda37  darts -L/usr/local/cuda/lib64 ${CUDA_LIBRARIES}  StencilCudalib3D_7Points  -lcuda -lcudart -lm -lrt ) 
+target_link_libraries(StencilCuda37.2  darts -L/usr/local/cuda/lib64 ${CUDA_LIBRARIES}  StencilCudalib3D_7Points  -lcuda -lcudart -lm -lrt ) 

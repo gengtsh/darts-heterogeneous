@@ -356,8 +356,8 @@ int main(int argc, char *argv[])
 	int ttk = 10;
 	int jj =0; 
 	int ttj =10;
-    int ss =97;
-    int tts=100;
+    int ss =0;
+    int tts=3;
 	std::cout<<"Original Matrix:"<<std::endl;
 	print_results(OriginalMatrix,kk,ttk,jj,ttj,ss,tts,nRows,nCols,nSlices);
     std::cout<<"Seq Matrix:"<<std::endl;
