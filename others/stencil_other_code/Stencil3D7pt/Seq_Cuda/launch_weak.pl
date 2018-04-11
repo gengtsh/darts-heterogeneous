@@ -45,7 +45,7 @@ my $sz_step = 2000;
 
 #for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
 for my $sz(@sz_zxy){
-    my ($i,$j,$k) = @$sz;
+    my ($k,$i,$j) = @$sz;
     for my $thd (@threads) {
         my ($n_cu,$n_su) = @$thd;
         $ENV{'DARTS_NUM_CU'}    = $n_cu;
