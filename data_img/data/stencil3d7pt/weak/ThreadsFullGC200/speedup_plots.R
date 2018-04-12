@@ -51,7 +51,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
   theme(axis.text  = element_text(family = "Times", face="bold", size=20, colour = "Black")) +
 #  scale_x_continuous(breaks=seq(0,50000,5000)) +
-  theme(axis.text.x= element_text(family = "Times", face="bold", size=20, colour = "Black", angle=0, hjust=1)) +
+  theme(axis.text.x= element_text(family = "Times", face="bold", size=18, colour = "Black", angle=0, hjust=0.5)) +
   theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
   theme(legend.text  = element_text(family = "Times", face="bold", size=20)) +
   theme(legend.direction = "horizontal", 
