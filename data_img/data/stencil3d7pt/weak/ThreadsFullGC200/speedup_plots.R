@@ -41,8 +41,8 @@ df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200"
                                       "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
-  geom_line(size=1.5)+
-  geom_point(cex=2) +
+  geom_line(size=2)+
+  geom_point(cex=5) +
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
