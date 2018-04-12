@@ -58,7 +58,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
         legend.key=element_rect(size=5),
-        legend.key.size = unit(5, "lines")) +
+        legend.key.size = unit(9, "lines")) +
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
