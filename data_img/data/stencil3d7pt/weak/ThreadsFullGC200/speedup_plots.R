@@ -37,8 +37,8 @@ for(j in c("f4", "supermicro")){
 
 df <- df[df$apps != "CPU-Sequential",]
 
-df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", "400*800*800",
-                                      "800*400*400",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
+df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", 
+                                      "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=1.5)+
