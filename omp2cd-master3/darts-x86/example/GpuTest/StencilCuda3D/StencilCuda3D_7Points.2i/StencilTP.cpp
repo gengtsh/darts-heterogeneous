@@ -11,6 +11,7 @@
 #include <cassert>
 #include <pthread.h>
 pthread_mutex_t mutex;
+pthread_mutex_t mutex2;
 //#include <sstream>
 #include <iostream>
 
@@ -1542,8 +1543,8 @@ Stencil2D4ptSwapCD::fire(void)
         if(ts!=0){
                     
             if(FRAME(gpuCnt)>FRAME(cpuCnt)){
-                FRAME(gpuWLInit) = FRAME(gpuWLInit)*(1-FRAME(gpuStepR));
-                FRAME(wlLeftInit) = FRAME(nRows) - FRAME(gpuWLInit)-FRAME(cpuWLInit) +4;
+                FRAME(gpuWLInit) = FRAME(gpuWLInit)*(1+FRAME(gpuStepR));
+                FRAME(wlLeftInit) = FRAME(tWL) - FRAME(gpuWLInit)-FRAME(cpuWLInit) +4;
                 FRAME(cpuPosInit) = FRAME(gpuWLInit)-2;
             } 
             FRAME(gpuPos)	=FRAME(gpuPosInit);
@@ -1597,9 +1598,9 @@ Stencil3D7ptCpuLoopCD::fire(void)
 	
 #ifdef CUDA_DARTS_DEBUG
 
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutex2);
 	std::cout<<"Invoke CpuLoop37["<<Id<<"]"<<std::endl;	
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutex2);
 #endif
 	double	*h_src  = FRAME(Initial);
 	double	*h_dst      = FRAME(New);
@@ -1615,21 +1616,21 @@ Stencil3D7ptCpuLoopCD::fire(void)
 	if((nSlicesChunk+cpuPos+chunk*Id)>=nSlices){
 			nSlicesChunk = cpuWL-chunk*Id-2 ;
 	}
-	double *src = h_src+pos1;
+    double *src = h_src+pos1;
 	double *dst = h_dst+pos1;
 
 	double *d_dst = FRAME(d_dst);
 
 #ifdef CUDA_DARTS_DEBUG
 
-	pthread_mutex_lock(&mutex);
+	pthread_mutex_lock(&mutex2);
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuPos:"<<cpuPos<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: pos1:"<<pos1/(nCols*nRows)<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuWL:"<<cpuWL<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: chunk:"<<chunk<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: nSlicesChunk:"<<nSlicesChunk<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: pos1+nSlicesChunk:"<<pos1/(nCols*nRows)+nSlicesChunk<<std::endl;
-	pthread_mutex_unlock(&mutex);
+	pthread_mutex_unlock(&mutex2);
 #endif
 
 	computeInner_stencil37(dst,src,nRows,nCols,nSlicesChunk);
@@ -1642,11 +1643,10 @@ Stencil3D7ptCpuLoopCD::fire(void)
 	}
 
 #ifdef CUDA_DARTS_DEBUG
-	pthread_mutex_lock(&mutex);
-	
-	std::cout<<"CpuLoop37["<<Id<<"]: finish computing!"<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: CpuSync37 dependence is "<<FRAME(CpuSync37).getCounter() <<std::endl;
-	pthread_mutex_unlock(&mutex);
+//	pthread_mutex_lock(&mutex2);
+//	std::cout<<"CpuLoop37["<<Id<<"]: finish computing!"<<std::endl;
+//	std::cout<<"CpuLoop37["<<Id<<"]: CpuSync37 dependence is "<<FRAME(CpuSync37).getCounter() <<std::endl;
+//	pthread_mutex_unlock(&mutex2);
 #endif
 	EXIT_TP();
 }
@@ -1669,7 +1669,7 @@ Stencil3D7ptSwapCD::fire(void)
 	uint32_t	nGPU = FRAME(nGPU);
 
 #ifdef CUDA_DARTS_DEBUG
-	std::cout<<"Swap: ts: "<<FRAME(ts)<<std::endl;
+	std::cout<<"Swap37: ts: "<<FRAME(ts)<<std::endl;
 #endif	
 
 
@@ -1703,7 +1703,8 @@ Stencil3D7ptSwapCD::fire(void)
         if(ts!=0){
                     
             if(FRAME(gpuCnt)>FRAME(cpuCnt)){
-                FRAME(gpuWLInit) = FRAME(gpuWLInit)*(1-FRAME(gpuStepR));
+
+                FRAME(gpuWLInit) = FRAME(gpuWLInit)*(1+FRAME(gpuStepR));
                 FRAME(wlLeftInit) = FRAME(tWL) - FRAME(gpuWLInit)-FRAME(cpuWLInit) +4;
                 FRAME(cpuPosInit) = FRAME(gpuWLInit)-2;
             } 
@@ -1719,15 +1720,15 @@ Stencil3D7ptSwapCD::fire(void)
             FRAME(gpuCnt) = 0;
             FRAME(cpuCnt) = 0;
 #ifdef CUDA_DARTS_DEBUG
-	        std::cout<<"swap: reset gpuPos: "<<FRAME(gpuPos)<<std::endl;
-		    std::cout<<"swap: reset cpuPos: "<<FRAME(cpuPos)<<std::endl;
-		    std::cout<<"swap: reset gpu rows: "<<FRAME(gpuWL)<<std::endl;
-		    std::cout<<"swap: reset cpu rows: "<<FRAME(cpuWL)<<std::endl;
-		    std::cout<<"swap: reset cpu rowsLeft: "<<FRAME(wlLeft)<<std::endl;
+	        std::cout<<"swap37: reset gpuPos: "<<FRAME(gpuPos)<<std::endl;
+		    std::cout<<"swap37: reset cpuPos: "<<FRAME(cpuPos)<<std::endl;
+		    std::cout<<"swap37: reset gpu rows: "<<FRAME(gpuWL)<<std::endl;
+		    std::cout<<"swap37: reset cpu rows: "<<FRAME(cpuWL)<<std::endl;
+		    std::cout<<"swap37: reset cpu rowsLeft: "<<FRAME(wlLeft)<<std::endl;
 
-		    std::cout<<"swap: reset CpuFinsh: "<<FRAME(CpuFinish)<<std::endl;
+		    std::cout<<"swap37: reset CpuFinsh: "<<FRAME(CpuFinish)<<std::endl;
 
-		    std::cout<<"swap: reset GpuFinsh: "<<FRAME(GpuFinish)<<std::endl;
+		    std::cout<<"swap37: reset GpuFinsh: "<<FRAME(GpuFinish)<<std::endl;
 
 #endif
 
@@ -2390,18 +2391,18 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
 	gpu_mem_valid_t = gpu_mem_avail_t - XMB;
 	
 	std::cout<<std::setprecision(18)<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams: gpu memory total: "<<gpu_mem_total_t<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: gpu memory available: "<<gpu_mem_avail_t<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37 : require memory size:"<<(d_size + d_size_sharedCols + d_size_sharedRows)*4<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: nGPU:"<<nGPU<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: Gpupos:"<<FRAME(gpuPos)<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: nRows:"<<nRows<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: nCols:"<<nCols<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: nSlices:"<<nSlices<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: gpuWL:"<<gpuWL<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: nTile_z:"<<nTile_z<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: nSlicesChunk:"<<nSlicesChunk<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: d_size:"<<d_size<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams: gpu memory total: "<<gpu_mem_total_t<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: gpu memory available: "<<gpu_mem_avail_t<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37 : require memory size:"<<(d_size + d_size_sharedCols + d_size_sharedRows)*4<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: nGPU:"<<nGPU<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: Gpupos:"<<FRAME(gpuPos)<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: nRows:"<<nRows<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: nCols:"<<nCols<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: nSlices:"<<nSlices<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: gpuWL:"<<gpuWL<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: nTile_z:"<<nTile_z<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: nSlicesChunk:"<<nSlicesChunk<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: d_size:"<<d_size<<std::endl;
 #endif
 
     cudaError err1,err2,err3,err4;
@@ -2460,39 +2461,38 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
 
 
 #ifdef CUDA_DARTS_DEBUG
-//	std::cout<<"GpuKernelHybridWithStreams37: GpuPos:"<<pos1/nCols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: nRows:"<<nRows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: nCols:"<<nCols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: nSlices:"<<nSlices<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: d_size:"<<d_size<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: tile_x:"<<tile_x<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: tile_y:"<<tile_y<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: tile_z:"<<tile_z<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: blockDimx:"<<blockDimx<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: blockDimy:"<<blockDimy<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: blockDimz:"<<blockDimz<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: gridDimx="<<gridDimx<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: gridDimy="<<gridDimy<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: gridDimz="<<gridDimz<<std::endl;
-
-	std::cout<<"GpuKernelHybridWithStreams37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_slices:"<<gridDimz_rows<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: blockDimx_rows:"<<blockDimx_rows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_rows:"<<blockDimy_rows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimx_rows:"<<gridDimx_rows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_rows:"<<gridDimy_rows<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_rows:"<<gridDimz_rows<<std::endl;
-    std::cout<<"GpuKernelHybridWithStreams37: blockDimx_cols:"<<blockDimx_cols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_cols:"<<blockDimy_cols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimx_cols:"<<gridDimx_cols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_cols:"<<gridDimy_cols<<std::endl;
-	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_cols:"<<gridDimz_cols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: nRows:"<<nRows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: nCols:"<<nCols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: nSlices:"<<nSlices<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: d_size:"<<d_size<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: tile_x:"<<tile_x<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: tile_y:"<<tile_y<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: tile_z:"<<tile_z<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: blockDimx:"<<blockDimx<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: blockDimy:"<<blockDimy<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: blockDimz:"<<blockDimz<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: gridDimx="<<gridDimx<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: gridDimy="<<gridDimy<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: gridDimz="<<gridDimz<<std::endl;
+//
+//	std::cout<<"GpuKernelHybridWithStreams37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_slices:"<<gridDimz_rows<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: blockDimx_rows:"<<blockDimx_rows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_rows:"<<blockDimy_rows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimx_rows:"<<gridDimx_rows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_rows:"<<gridDimy_rows<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_rows:"<<gridDimz_rows<<std::endl;
+//    std::cout<<"GpuKernelHybridWithStreams37: blockDimx_cols:"<<blockDimx_cols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: blockDimy_cols:"<<blockDimy_cols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimx_cols:"<<gridDimx_cols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimy_cols:"<<gridDimy_cols<<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: grimDimz_cols:"<<gridDimz_cols<<std::endl;
 #endif
 	
 	//dim3 dimGrid_slices(gridDimx_slices,gridDimy_slices,gridDimz_slices);
@@ -2668,6 +2668,8 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                 if(wlLeft < FRAME(lastCnt)+FRAME(gpuWLMin)){
                     FRAME(gpuWL) = wlLeft;
                     FRAME(wlLeft) = 0;
+
+                    FRAME(nGPU)=1;
                 }else{
 
                     uint64_t t1;
@@ -2682,15 +2684,17 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                     }
 
                     if(wlLeft<t1){
-                        FRAME(gpuWL) = wlLeft*rt;
+                        FRAME(gpuWL) = wlLeft;
+                        FRAME(wlLeft) = 0;
                     }else{
                         FRAME(gpuWL) = t1;
+
+                        FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
                     }
                
-                    FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
+                    FRAME(nGPU)=nGPU;
                 }
                 
-                FRAME(nGPU)=nGPU;
                 FRAME(gpuPos) = FRAME(tWL)-wlLeft ;
                 __sync_synchronize();
 
@@ -2710,7 +2714,7 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
     }
 
 #ifdef CUDA_DARTS_DEBUG
-	std::cout<<"GpuKernelHybridWithStreams37: Swap dependence is "<<FRAME(Swap37).getCounter() <<std::endl;
+//	std::cout<<"GpuKernelHybridWithStreams37: Swap dependence is "<<FRAME(Swap37).getCounter() <<std::endl;
 #endif
 
 //	SYNC(sync);
@@ -2773,6 +2777,7 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                 if(wlLeft <= FRAME(lastCnt)+FRAME(gpuWLMin)){
                     FRAME(gpuWL) = wlLeft;
                     FRAME(wlLeft) = 0;
+                    FRAME(nGPU) = 1;
                 }else{
                     uint64_t t1;
                   
@@ -2787,14 +2792,15 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                     }
                     
                     if(wlLeft<t1){
-                        FRAME(gpuWL) = wlLeft*rt;
+                        FRAME(gpuWL) = wlLeft;
+                        FRAME(wlLeft)=0;
                     }else{
                         FRAME(gpuWL) = t1;
+                
+                        FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
                     }
-               
-                    FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
+                    
                 }
-                FRAME(nGPU)=2;
                 FRAME(gpuPos) = FRAME(tWL)-wlLeft;
                 __sync_synchronize();
                 SYNC(GpuKernelHybridWithStreams37);
@@ -2809,7 +2815,6 @@ void Stencil3D7ptCpuSyncCD::fire(void)
 
 			std::cout<<"CpuSync37: gpu memory total: "<<gpu_mem_total_t<<std::endl;
 			std::cout<<"CpuSync37: gpu memory available: "<<gpu_mem_avail_t<<std::endl;
-			std::cout<<"CpuSync37: reqire gpu memory : "<<sizeof(double)*nCols*FRAME(gpuWL)<<std::endl;
 #endif		
 
 
@@ -2817,7 +2822,7 @@ void Stencil3D7ptCpuSyncCD::fire(void)
 				std::cout<<"CpuSync37 new GpuKernelHybridWithStreams: gpuPos: "<<FRAME(gpuPos)<<std::endl;
 				std::cout<<"CpuSync37 new GpuKernelHybridWithStreams: gpuWL: "<<FRAME(gpuWL)<<std::endl;
 				std::cout<<"CpuSync37 new GpuKernelHybridWithStreams: reset rowsLeft: "<<FRAME(wlLeft)<<std::endl;
-				std::cout<<"CpuSync37: Swap dependence is "<<FRAME(Swap).getCounter() <<std::endl;
+//				std::cout<<"CpuSync37: Swap dependence is "<<FRAME(Swap).getCounter() <<std::endl;
 
 #endif
 
@@ -2858,12 +2863,13 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                     }
 
                     if(wlLeft<t1){
-                        FRAME(cpuWL) = wlLeft*rt;
+                        FRAME(cpuWL) = wlLeft;
+                        FRAME(wlLeft) = 0;
                     }else{
                         FRAME(cpuWL) = t1;
+                        FRAME(wlLeft) = wlLeft - FRAME(cpuWL)+2;
                     }
                
-                    FRAME(wlLeft) = wlLeft - FRAME(cpuWL)+2;
                 }
 
 				FRAME(cpuPos) = FRAME(tWL)-wlLeft;
@@ -2892,7 +2898,7 @@ void Stencil3D7ptCpuSyncCD::fire(void)
 		}
 
 #ifdef CUDA_DARTS_DEBUG
-	std::cout<<"CpuSync37: Swap dependence is "<<FRAME(Swap37).getCounter() <<std::endl;
+//	std::cout<<"CpuSync37: Swap dependence is "<<FRAME(Swap37).getCounter() <<std::endl;
 #endif
 	}
 

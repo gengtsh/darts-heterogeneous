@@ -488,7 +488,7 @@ DEF_TP(StencilTP)
 	    				//uint64_t t3 = gpuWL*cgInitR;
                         uint64_t t4 = tWL-gpuWL+2;
                         cpuWL = ((t4-2)<=t3)?t4:t3 ;
-	    				wlLeft = (t4<=t3)?0:(tWL-gpuWL-cpuWL+4);
+	    				wlLeft = (t4-2<=t3)?0:(tWL-gpuWL-cpuWL+4);
                         gpuPos = 0;
 	    				cpuPos = gpuWL-2;
                     
