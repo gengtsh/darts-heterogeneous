@@ -43,17 +43,18 @@ df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200"
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=2)+
   geom_point(cex=5) +
+  scale_linetype_manual(values=c("longdash","dotted", "solid",  "twodash" ))+
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
   ylab("Speedup(baseline = CPU-Sequential)" ) +
   theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
-  theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
-  theme(axis.text  = element_text(family = "Times", face="bold", size=20, colour = "Black")) +
+  theme(axis.title = element_text(family = "Times", face="bold", size=40)) +
+  theme(axis.text  = element_text(family = "Times", face="bold", size=30, colour = "Black")) +
 #  scale_x_continuous(breaks=seq(0,50000,5000)) +
-  theme(axis.text.x= element_text(family = "Times", face="bold", size=18, colour = "Black", angle=0, hjust=0.5)) +
+  theme(axis.text.x= element_text(family = "Times", face="bold", size=25, colour = "Black", angle=15, hjust=0.85)) +
   theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-  theme(legend.text  = element_text(family = "Times", face="bold", size=20)) +
+  theme(legend.text  = element_text(family = "Times", face="bold", size=30)) +
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
         legend.key=element_rect(size=5),
@@ -61,8 +62,8 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
-  theme(strip.text = element_text(size=30))
-ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=18, width=20)
+  theme(strip.text = element_text(size=40))
+ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=14, width=18)
 
 
 
