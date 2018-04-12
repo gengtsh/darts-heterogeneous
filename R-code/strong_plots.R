@@ -48,7 +48,7 @@ Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=si
     theme(plot.title=element_text(hjust=0.5)) +
     # scale_colour_manual(values=cbbPalette) +
     scale_colour_grey() +
-    ylab("Speedup(baseline: CPU-Sequence)" ) +
+    ylab("Speedup(baseline: CPU-Sequential)" ) +
     theme(plot.title = element_text(family = "Times", face="bold", size=20)) +
     theme(axis.title = element_text(family = "Times", face="bold", size=15)) +
     theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
