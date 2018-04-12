@@ -1,0 +1,231 @@
+#gnuplot script RR_execution.gpi
+reset
+
+#server = 'supermicro'
+#hwltype1 = 'compact'
+#hwltype2 = 'spread'
+#hwltype3 = 'scatter'
+
+
+Threads = 'Threads'
+
+
+exe1= 'execution'
+exe2= 'speedUp'
+
+sw1='strong'
+sw2='weak'
+
+udl= '_'
+wp=' '
+
+sz_start=1000
+sz_end=49000
+sz_step=2000
+
+nSU1 = '1'
+
+set xtic rotate by -45 scale 0
+
+out_suffix='.png'
+
+set datafile separator ","
+set grid
+
+
+#'StencilSEQ','StencilCUDA','StencilCudaCpu,'StencilCudaGpu','StencilCudaHybrid3');
+
+
+server_list = "f4 supermicro debian hive ccsl"
+item0(n) = word(server_list,n)
+
+app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3"
+app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSGpu StencilDARTSHybrid3"
+
+item1(n)  = word(app_list_0,n)
+item2(n)  = word(app_list_1,n)
+
+bg=2
+ed=1+words(app_list_0)
+
+num_list = '31 39 11 11 7'
+item3(n)  = word(num_list,n)
+
+sz_end_list = '49000 49000 35000 35000 25000'
+item4(n)  = word(sz_end_list,n)
+
+
+#do for [i=1: words(num_list)]{
+#
+#	set key left
+#	#set key samplen 3
+#	#set nokey
+#	#set key outside
+#	#set key autotitle columnhead
+#	set xlabel "matrix size(double type)"
+#	set ylabel "execution (baselin:sequential)"
+#	#set xrange [sz_start:sz_end]
+#	set xtics sz_start,sz_step,sz_end
+#	
+#	set title server.wp.nThreads.wp.exe1
+#	plot for [j=bg:ed] item3(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item2(j-bg+1) 
+#	
+#	set terminal pngcairo
+#	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe1.out_suffix
+#	replot
+#	set output
+#	set terminal wxt
+#}
+
+
+set macros
+
+#set size 1.0, 1.0
+#set origin 0.0, 0.0
+set key outside
+set multiplot layout 5,1
+
+	#set key left
+	#set key samplen 3
+	#set nokey
+	#set key outside
+	#set key autotitle columnhead
+	set xlabel "matrx size(double precision)"
+	set ylabel "speedUp (baselin:sequential)"
+	
+	#set xrange [sz_start:sz_end]
+	#set xtics sz_start,sz_step,sz_end
+	#set xtic rotate by -45 scale 0
+	set xtics rotate
+
+do for [i=1: words(server_list)]{
+	#set size 0.5, 0.5
+	nThreads = item3(i)+1
+	sz_end = item4(i)
+	set xrange [sz_start:sz_end]
+	
+	set title item0(i).wp.nThreads.wp.Threads
+	plot for [j=bg:ed] item0(i).udl.item3(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 4+j title item2(j-bg+1) 
+	
+	#set terminal pngcairo
+	#set output item0(i).udl.udl.sw2.udl.nThreads.udl.Threads.udl.exe2.out_suffix
+	#replot
+	#set output
+	#set terminal wxt
+}
+
+unset multiplot
+
+
+
+
+
+
+##server = 'supermicro'
+##hwltype1 = 'compact'
+##hwltype2 = 'spread'
+##hwltype3 = 'scatter'
+##
+##nThreads = 40
+##Threads = 'Threads'
+##
+##nCU1='39'
+##nCU2='15'
+##nSU1='1'
+##nSU2='2'
+##SU = 'SU'
+##
+##exe1= 'execution'
+##exe2= 'speedUp'
+##
+##sw1='strong'
+##sw2='weak'
+##
+##udl= '_'
+##wp=' '
+##
+##sz_start=1000
+##sz_end=49000
+##sz_step=2000
+##
+##set xtic rotate by -45 scale 0
+##
+##out_suffix='.png'
+##
+##set datafile separator ","
+##set grid
+##
+###'StencilSEQ/StencilSEQ','StencilSEQ/StencilCUDA','StencilSEQ/StencilCudaCpu,'StencilSEQ/StencilCudaGpu','StencilSEQ/StencilCudaHybrid3');
+###'StencilSEQ','StencilCUDA','StencilCudaCpu,'StencilCudaGpu','StencilCudaHybrid3');
+##
+##
+##server_list = "f4 supermicro debian hive ccsl"
+##item(n) = word(server_list,n)
+##
+##app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3"
+##app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSGpu StencilDARTSHybrid3"
+##
+##
+##item0(n)  = word(app_list_0,n)
+##item1(n)  = word(app_list_1,n)
+##
+##bg=2
+##ed=1+words(app_list_0)
+##
+##num_list = "39"
+##item2(n)  = word(num_list,n)
+##
+##do for [i=1: words(num_list)]{
+##
+##	set key left
+##	#set key samplen 3
+##	#set nokey
+##	#set key outside
+##	#set key autotitle columnhead
+##	set xlabel "matrix size(double type)"
+##	set ylabel "execution (baselin:sequential)"
+##	#set xrange [sz_start:sz_end]
+##	set xtics sz_start,sz_step,sz_end
+##	
+##	set title server.wp.nThreads.wp.exe1
+##	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw2.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
+##	
+##	set terminal pngcairo
+##	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe1.out_suffix
+##	replot
+##	set output
+##	set terminal wxt
+##}
+##
+##do for [i=1: words(num_list)]{
+##
+##	set key left
+##	#set key samplen 3
+##	#set nokey
+##	#set key outside
+##	#set key autotitle columnhead
+##	set xlabel "matrix size(double type)"
+##	set ylabel "speedUp (baselin:sequential)"
+##	#set xrange [sz_start:sz_end]
+##	set xtics sz_start,sz_step,sz_end
+##	
+##	set title server.wp.nThreads.wp.exe2
+##	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw2.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
+##	
+##	set terminal pngcairo
+##	set output server.udl.sw2.udl.nThreads.udl.Threads.udl.exe2.out_suffix
+##	replot
+##	set output
+##	set terminal wxt
+##}
+
+
+
+
+
+
+
+
+
+
+

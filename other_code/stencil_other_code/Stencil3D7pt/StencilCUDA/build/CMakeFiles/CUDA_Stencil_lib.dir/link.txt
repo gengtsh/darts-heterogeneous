@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCUDA_Stencil_lib.a  CMakeFiles/CUDA_Stencil_lib.dir/CUDA_Stencil_lib_generated_StencilCuda.cu.o
+/usr/bin/ranlib libCUDA_Stencil_lib.a

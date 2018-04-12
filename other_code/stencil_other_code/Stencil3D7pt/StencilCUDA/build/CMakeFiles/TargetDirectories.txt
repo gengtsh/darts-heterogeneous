@@ -1,0 +1,5 @@
+/home/tgeng/Stencil/Stencil3D7pt/StencilCUDA/build/CMakeFiles/test.dir
+/home/tgeng/Stencil/Stencil3D7pt/StencilCUDA/build/CMakeFiles/edit_cache.dir
+/home/tgeng/Stencil/Stencil3D7pt/StencilCUDA/build/CMakeFiles/rebuild_cache.dir
+/home/tgeng/Stencil/Stencil3D7pt/StencilCUDA/build/CMakeFiles/StencilCUDA.dir
+/home/tgeng/Stencil/Stencil3D7pt/StencilCUDA/build/CMakeFiles/CUDA_Stencil_lib.dir

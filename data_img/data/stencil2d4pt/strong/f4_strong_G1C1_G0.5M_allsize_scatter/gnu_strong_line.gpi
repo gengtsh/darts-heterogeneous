@@ -1,0 +1,286 @@
+#gnuplot script RR_execution.gpi
+reset
+
+server = 'f4'
+hwltype1 = 'compact'
+hwltype2 = 'half scatter'
+hwltype3 = 'scatter'
+
+nThreads = 32
+Threads = 'Threads'
+
+nCU1='31'
+nCU2='15'
+nSU1='1'
+nSU2='2'
+SU = 'SU'
+
+exe1= 'execution'
+exe2= 'speedUp'
+
+sw1='strong'
+sw2='weak'
+
+udl= '_'
+wp=' '
+
+
+set xtic rotate by -45 scale 0  
+		
+out_suffix='.png'
+
+#'StencilSEQ/StencilSEQ','StencilSEQ/StencilCUDA','StencilSEQ/StencilCudaCpu,'StencilSEQ/StencilCudaGpu','StencilSEQ/StencilCudaHybrid3');
+#'StencilSEQ','StencilCUDA','StencilCudaCpu,'StencilCudaGpu','StencilCudaHybrid3');
+
+app1_e1='StencilSEQ'
+app2_e1='StencilCUDA'
+app3_e1='StencilDARTSCpu'
+app4_e1='StencilDARTSHybrid3'
+app5_e1='StencilDARTSGpu'
+
+
+
+################################################################################
+
+set datafile separator ","
+set grid
+
+num_list = "1000 3000 5000 25000"
+
+app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaHybrid3"
+app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSHybrid3"
+
+item0(n)  = word(app_list_0,n)
+item1(n)  = word(app_list_1,n)
+item2(n)  = word (num_list,n)
+
+bg=2
+ed=1+words(app_list_0)
+
+do for [i=1: words(num_list)]{
+
+	set key left
+	#set key samplen 3
+	#set nokey
+	#set key outside
+	#set key autotitle columnhead
+	set xlabel "number of threads"
+	set ylabel "execution (baselin:sequential)"
+	set xrange [0:nThreads]
+	
+	set title server.wp.hwltype3.wp.item2(i).wp.exe1
+	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw1.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
+	
+	set terminal pngcairo
+	set output server.udl.hwltype3.udl.item2(i).udl.exe1.out_suffix
+	replot
+	set output
+	set terminal wxt
+}
+
+do for [i=1: words(num_list)]{
+
+	set key left
+	#set key samplen 3
+	#set nokey
+	#set key outside
+	#set key autotitle columnhead
+	set xlabel "number of threads"
+	set ylabel "execution (baselin:sequential)"
+	set xrange [0:nThreads]
+	
+	set title server.wp.hwltype3.wp.item2(i).wp.exe2
+	plot for [j=bg:ed] item2(i).udl.nSU1.udl.sw1.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 4+j title item1(j-bg+1) 
+	
+	set terminal pngcairo
+	set output server.udl.hwltype3.udl.item2(i).udl.exe2.out_suffix
+	replot
+	set output
+	set terminal wxt
+}
+
+
+
+
+################################################################################
+#app1_e1='StencilSEQ'
+#app2_e1='StencilCUDA'
+#app3_e1='StencilDARTSCpu'
+#app4_e1='StencilDARTSHybrid3'
+#app5_e1='StencilDARTSGpu'
+
+app_list_0 = "StencilSEQ StencilCUDA StencilCudaCpu StencilCudaHybrid3"
+app_list_1 = "StencilSEQ StencilCUDA StencilDARTSCpu StencilDARTSHybrid3"
+
+item0(n) = word(app_list_0,n)
+item1(n) = word(app_list_1,n)
+
+#num_list = "500 1000"
+num_list = ""
+do for[i=1000:39000:2000] {num_list = num_list.sprintf("%d",i)." " }
+item2(n) = word(num_list,n)
+
+bg=2
+ed=1+words(num_list)
+
+do for [i=1: words(app_list_0)]{
+	set xlabel "number of threads"
+	set ylabel "execution (baselin:sequential)"
+	set xrange [0:nThreads]
+	
+	set title server.wp.hwltype3.wp.item0(i).wp.exe1
+	plot for [j=bg:ed] item0(i).udl.nSU1.udl.sw1.udl.exe1.'.dat'  using 1:j w lp lw 2 pt 4+j title item2(j-bg+1) 
+	
+	set terminal pngcairo
+	set output server.udl.hwltype3.udl.item0(i).udl.exe1.out_suffix
+	replot
+	set output
+	set terminal wxt
+}
+
+#do for [i=1: words(app_list_0)]{
+#	set xlabel "number of threads"
+#	set ylabel "speedup (baselin:sequential)"
+#	set xrange [0:nThreads]
+#	
+#	set title server.wp.hwltype3.wp.item0(i).wp.exe2
+#	plot for [j=bg:ed] item0(i).udl.nSU1.udl.sw1.udl.exe2.'.dat'  using 1:j w lp lw 2 pt 4+j title item2(j-bg+1) 
+#	
+#	set terminal pngcairo
+#	set output server.udl.hwltype3.udl.item0(i).udl.exe2.out_suffix
+#	replot
+#	set output
+#	set terminal wxt
+#}
+
+
+
+#####################################################################################################
+#################################################################################
+
+#num0 = '500'
+#num1 = '1000'
+#num2 = '3000'
+#num3 = '5000'
+#num4 = '25000'
+#
+#sz_start=1000
+#sz_end=49000
+#sz_step=2000
+
+
+#$n_cu.'_'.$n_su.'_'."weak_execution.dat";
+#data_in11_e1=nCU1.udl.nSU1.udl.sw2.udl.exe1
+#data_in12_e1=nCU2.udl.nSU2.udl.sw2.udl.exe1
+#                           
+#data_t11_e1=server.wp.nThreads.wp.Threads.wp.exe1
+#data_t12_e1=server.wp.nThreads.wp.Threads.wp.exe1
+#
+			
+##$v.'_'.$n_su.'_'."strong_execution.dat";
+#data_in01_e1=num0.udl.nSU1.udl.sw1.udl.exe1
+#data_in02_e1=num0.udl.nSU2.udl.sw1.udl.exe1
+#
+#data_t01_e1=server.wp.hwltype1.wp.num0.wp.exe1
+#data_t02_e1=server.wp.hwltype1.wp.num0.wp.exe1
+#          
+#data_in01_e2=num0.udl.nSU1.udl.sw1.udl.exe2
+#data_in02_e2=num0.udl.nSU2.udl.sw1.udl.exe2
+#
+#data_t01_e2=server.wp.hwltype1.wp.num0.wp.exe2
+#data_t02_e2=server.wp.hwltype1.wp.num0.wp.exe2
+
+
+
+#set ylabel "speedup(baseline:sequential) "
+#
+#set title data_t01_e2
+#
+#plot data_in01_e2.'.dat' using 1:2 w lp lw 2 pt 4 title app1_e2,\
+#	 data_in01_e2.'.dat' using 1:3 w lp lw 2 pt 5 title app2_e2,\
+#	 data_in01_e2.'.dat' using 1:4 w lp lw 2 pt 6 title app3_e2,\
+#	 data_in01_e2.'.dat' using 1:5 w lp lw 2 pt 7 title app4_e2,\
+#	 #data_in01_e2.'.dat' using 1:6 w lp lw 2 pt 8 title app5_e2
+#
+#	 	 	 
+#
+#set terminal pngcairo
+#set output data_t01_e2.out_suffix
+#replot
+#set output
+#set terminal wxt
+#
+#
+#set title data_t11_e2
+#
+#plot data_in11_e2.'.dat' using 1:2 w lp lw 2 pt 4 title app1_e2,\
+#	 data_in11_e2.'.dat' using 1:3 w lp lw 2 pt 5 title app2_e2,\
+#	 data_in11_e2.'.dat' using 1:4 w lp lw 2 pt 6 title app3_e2,\
+#	 data_in11_e2.'.dat' using 1:5 w lp lw 2 pt 7 title app4_e2,\
+#	 #data_in11_e2.'.dat' using 1:6 w lp lw 2 pt 8 title app5_e2
+#
+#	 	 	 
+#
+#set terminal pngcairo
+#set output data_t11_e2.out_suffix
+#replot
+#set output
+#set terminal wxt
+#
+##set yrange [0:8]
+#set title data_t21_e1
+#
+#plot data_in21_e2.'.dat' using 1:2 w lp lw 2 pt 4 title app1_e2,\
+#	 data_in21_e2.'.dat' using 1:3 w lp lw 2 pt 5 title app2_e2,\
+#	 data_in21_e2.'.dat' using 1:4 w lp lw 2 pt 6 title app3_e2,\
+#	 data_in21_e2.'.dat' using 1:5 w lp lw 2 pt 7 title app4_e2,\
+#	 #data_in21_e2.'.dat' using 1:6 w lp lw 2 pt 8 title app5_e2
+#	 	
+#	 	 
+#
+#set terminal pngcairo
+#set output data_t21_e2.out_suffix
+#replot
+#set output
+#set terminal wxt
+#
+#
+#set title data_t31_e1
+#
+#plot data_in31_e2.'.dat' using 1:2 w lp lw 2 pt 4 title app1_e2,\
+#	 data_in31_e2.'.dat' using 1:3 w lp lw 2 pt 5 title app2_e2,\
+#	 data_in31_e2.'.dat' using 1:4 w lp lw 2 pt 6 title app3_e2,\
+#	 data_in31_e2.'.dat' using 1:5 w lp lw 2 pt 7 title app4_e2,\
+#	 #data_in31_e2.'.dat' using 1:6 w lp lw 2 pt 8 title app5_e2
+#
+#	 	 	 
+#
+#set terminal pngcairo
+#set output data_t31_e2.out_suffix
+#replot
+#set output
+#set terminal wxt
+#
+#set title data_t41_e1
+#
+#plot data_in41_e2.'.dat' using 1:2 w lp lw 2 pt 4 title app1_e2,\
+#	 data_in41_e2.'.dat' using 1:3 w lp lw 2 pt 5 title app2_e2,\
+#	 data_in41_e2.'.dat' using 1:4 w lp lw 2 pt 6 title app3_e2,\
+#	 data_in41_e2.'.dat' using 1:5 w lp lw 2 pt 7 title app4_e2,\
+#	 #data_in41_e2.'.dat' using 1:6 w lp lw 2 pt 8 title app5_e2
+#
+#	 	 	 
+#
+#set terminal pngcairo
+#set output data_t41_e2.out_suffix
+#replot
+#set output
+#set terminal wxt
+
+
+
+
+
+
+
+
