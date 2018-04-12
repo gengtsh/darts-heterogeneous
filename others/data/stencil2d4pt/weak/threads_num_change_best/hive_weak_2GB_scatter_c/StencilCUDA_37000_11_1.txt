@@ -1,4 +1,0 @@
-GpuKernelPureGpuWithStreams: cuda malloc d_dst:  out of memory 
- GpuKernelPureGpuWithStreams: cuda malloc d_dst:  out of memory 
- GpuKernelPureGpuWithStreams: cuda malloc d_dst:  out of memory 
- 
