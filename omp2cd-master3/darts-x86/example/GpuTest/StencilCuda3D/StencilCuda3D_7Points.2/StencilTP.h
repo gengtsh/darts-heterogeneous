@@ -142,7 +142,9 @@ DEF_TP(StencilTP)
 	
     uint64_t lastCnt = 0;
     uint64_t gpuWLMax= 0;
-    size_t gpuMemMax = 0;
+    uint64_t gpuMemMax = 0;
+    
+
     bool invokeStreams = false;
     int nStream = 4 ;
 	cudaStream_t *stream ;

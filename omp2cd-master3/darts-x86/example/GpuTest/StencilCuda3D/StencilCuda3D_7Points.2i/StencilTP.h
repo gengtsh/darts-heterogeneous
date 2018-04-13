@@ -59,8 +59,7 @@ DEF_TP(StencilTP)
 	double softGpuRatio=0.0;
 	uint32_t nCPU = 0;
 	uint32_t nGPU = 0;
-
-    uint64_t tWL=0;
+	uint64_t tWL=0;
 
 	Stencil2D4ptGpuKernelCD GpuKernel;
 	Stencil2D4ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps;
@@ -84,7 +83,7 @@ DEF_TP(StencilTP)
 	uint64_t gpuWL=0;
 	uint64_t cpuWL=0;
     int gpuWLMin=3;
-    int cpuWLMin=N_CORES-1;
+    int cpuWLMin=N_CORES;
 
 	int tile_x = 0;
 	int tile_y = 0;
@@ -143,7 +142,9 @@ DEF_TP(StencilTP)
 	
     uint64_t lastCnt = 0;
     uint64_t gpuWLMax= 0;
-    size_t gpuMemMax = 0;
+    uint64_t gpuMemMax = 0;
+    
+
     bool invokeStreams = false;
     int nStream = 4 ;
 	cudaStream_t *stream ;
@@ -467,7 +468,7 @@ DEF_TP(StencilTP)
                         nGPU = std::ceil(req_size/gpuMemMax);
                         invokeStreams = true;
 
-                        cpuWLMin=nCPU;
+                        cpuWLMin=nCPU+1;
 
                         stream = new cudaStream_t[nStream];
                         for(int i=0;i<nStream;++i){

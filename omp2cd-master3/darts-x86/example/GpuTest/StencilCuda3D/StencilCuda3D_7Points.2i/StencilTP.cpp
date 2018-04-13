@@ -2672,15 +2672,15 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                     FRAME(nGPU)=1;
                 }else{
 
-                    uint64_t t1;
+                    uint64_t t1,t2;
                     if(FRAME(gpuCnt)>FRAME(cpuCnt)){
-                        uint64_t t2;
                         t2 = (1+gpuStepR)*gpuWL;
                         t1 = (t2<FRAME(gpuWLMax))?t2:FRAME(gpuWLMax);
                     }else if(FRAME(gpuCnt)==FRAME(cpuCnt)) {
                         t1 = gpuWL;
                     }else{
-                        t1 = (1+gpuStepR)*gpuWL;
+                        t2 = (1-gpuStepR)*gpuWL;
+                        t1 = t2<FRAME(gpuWLMin)?FRAME(gpuWLMin):t2; 
                     }
 
                     if(wlLeft<t1){
@@ -2688,7 +2688,6 @@ Stencil3D7ptGpuKernelHybridWithStreamsCD::fire(void)
                         FRAME(wlLeft) = 0;
                     }else{
                         FRAME(gpuWL) = t1;
-
                         FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
                     }
                
@@ -2780,15 +2779,15 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                     FRAME(nGPU) = 1;
                 }else{
                     uint64_t t1;
-                  
+                    uint64_t t2;
                     if(FRAME(gpuCnt)>FRAME(cpuCnt)){
-                        uint64_t t2;
                         t2 = (1+gpuStepR)*gpuWL;
                         t1 = (t2<FRAME(gpuWLMax))?t2:FRAME(gpuWLMax);
                     }else if(FRAME(gpuCnt)==FRAME(cpuCnt)) {
                         t1 = gpuWL;
                     }else{
-                        t1 = (1+gpuStepR)*gpuWL;
+                        t2 = (1-gpuStepR)*gpuWL;
+                        t1 = (t2<FRAME(gpuWLMin))?FRAME(gpuWLMin):t2;
                     }
                     
                     if(wlLeft<t1){
@@ -2799,7 +2798,6 @@ void Stencil3D7ptCpuSyncCD::fire(void)
                 
                         FRAME(wlLeft) = wlLeft - FRAME(gpuWL)+2;
                     }
-                    
                 }
                 FRAME(gpuPos) = FRAME(tWL)-wlLeft;
                 __sync_synchronize();
