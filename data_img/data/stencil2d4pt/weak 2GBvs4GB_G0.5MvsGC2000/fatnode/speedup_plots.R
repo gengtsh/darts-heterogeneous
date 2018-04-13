@@ -68,7 +68,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
-  ylab("Speedup(baseline = CPU-Sequence)" ) +
+  ylab("Speedup(baseline = CPU-Sequential)" ) +
   theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
   theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
   theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +

@@ -35,14 +35,16 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
 
 
 df <- df[df$apps != "CPU-Sequence",]
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "EDRT-DAWL", "EDRT-CPU", "EDRT-GPU", "GPU-only"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=1.5)+
   geom_point(cex=3.5) +
+  scale_linetype_manual(values=c("dotted", "longdash","solid",  "twodash" ))+
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
-  ylab("Speedup(baseline = CPU-Sequence)" ) +
+  ylab("Speedup(baseline = CPU-Sequential)" ) +
   theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
   theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
   theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
@@ -66,10 +68,11 @@ df <-  df[df$size >= 17000,]
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=1.5)+
   geom_point(cex=3.5) +
+  scale_linetype_manual(values=c("dotted", "longdash","solid",  "twodash" ))+
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
-  ylab("Speedup(baseline = CPU-Sequence)" ) +
+  ylab("Speedup(baseline = CPU-Sequential)" ) +
   theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
   theme(axis.title = element_text(family = "Times", face="bold", size=30)) +
   theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +

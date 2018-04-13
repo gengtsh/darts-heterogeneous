@@ -8,7 +8,7 @@ setwd(currPath)
 # cbbPalette <- gray(1:4/ 12)#c("red", "blue", "darkgray", "orange","black","brown", "lightblue","violet")
 
 df <- data.frame()
-for(j in c("f4", "supermicro","ccsl")){
+for(j in c("f4", "supermicro","debian","ccsl")){
 #for(j in c("ccsl", "debian", "f3", "hive", "supermicro")){
     if(j == "ccsl") threads <- 7
     if(j == "debian") threads <- 11
@@ -40,6 +40,8 @@ df <- df[df$apps != "CPU-Sequential",]
 df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", 
                                       "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "EDRT-DAWL", "EDRT-CPU", "EDRT-GPU", "GPU-only"))
+
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=2)+
   geom_point(cex=5) +
@@ -63,7 +65,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
   theme(strip.text = element_text(size=40))
-ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=30, width=18)
+ggsave(paste("./speedUp-Stencil3D-New.pdf",sep=""), Graph, device = pdf, height=25, width=15)
 
 
 

@@ -44,11 +44,11 @@ Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=si
     geom_point(cex=3) + 
     xlab("Number of Threads") + 
     theme_bw() +
-    ggtitle("Hive") +
+    ggtitle("Machine Hive") +
     theme(plot.title=element_text(hjust=0.5)) +
     # scale_colour_manual(values=cbbPalette) +
     scale_colour_grey() +
-    ylab("Speedup(baseline: CPU-Sequence)" ) +
+    ylab("Speedup(baseline: CPU-Sequential)" ) +
     theme(plot.title = element_text(family = "Times", face="bold", size=20)) +
     theme(axis.title = element_text(family = "Times", face="bold", size=15)) +
     theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
@@ -61,10 +61,10 @@ Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=si
           legend.key=element_rect(size=0.1),
           legend.key.size = unit(4, "lines")) +
     guides(col = guide_legend(nrow = 1)) +
-    # facet_grid(sched~App, scales="free") +
-    facet_wrap(sched~App, scales="free_x",nrow = 4) +
+    facet_grid(sched~App, scales="free") +
+    # facet_wrap(sched~App, scales="free_x",nrow = 2) +
     theme(strip.text = element_text(size=20))
-ggsave(paste("./speedUp-strong-Hive.pdf",sep=""), Graph, device = pdf, height=12, width=6)
+ggsave(paste("./speedUp-strong-Hive.pdf",sep=""), Graph, device = pdf, height=6, width=9)
     
 
 dfTemp <- df[df$machine %in% c("Fatnode"),]
@@ -73,11 +73,11 @@ Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=si
     geom_point(cex=1.5) + 
     xlab("Number of Threads") + 
     theme_bw() +
-    ggtitle("Fatnode") +
+    ggtitle("Machine Fatnode") +
     theme(plot.title=element_text(hjust=0.5)) +
     # scale_colour_manual(values=cbbPalette) +
     scale_colour_grey() +
-    ylab("Speedup(baseline: CPU-Sequence)" ) +
+    ylab("Speedup(baseline: CPU-Sequential)" ) +
     theme(plot.title = element_text(family = "Times", face="bold", size=20)) +
     theme(axis.title = element_text(family = "Times", face="bold", size=15)) +
     theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
@@ -87,10 +87,10 @@ Graph <- ggplot(data=dfTemp, aes(x=Threads, y=time, group=size, col=size, pch=si
     theme(legend.text  = element_text(family = "Times", face="bold", size=15)) +
     theme(legend.direction = "horizontal", 
           legend.position = "bottom",
-          legend.key=element_rect(size=0.1),
+          legend.key=element_rect(size=1),
           legend.key.size = unit(5, "lines")) +
     guides(col = guide_legend(nrow = 1)) +
-    # facet_grid(sched~App, scales="free") +
-    facet_wrap(sched~App, scales="free_x",nrow = 4) +
+    facet_grid(sched~App, scales="free") +
+    # facet_wrap(sched~App, scales="free_x",nrow = 2) +
     theme(strip.text = element_text(size=15))
-ggsave(paste("./speedUp-strong-Fatnode.pdf",sep=""), Graph, device = pdf, height=12, width=6)
+ggsave(paste("./speedUp-strong-Fatnode.pdf",sep=""), Graph, device = pdf, height=6, width=9)

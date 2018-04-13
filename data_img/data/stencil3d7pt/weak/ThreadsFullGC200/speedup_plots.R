@@ -40,6 +40,8 @@ df <- df[df$apps != "CPU-Sequential",]
 df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", 
                                       "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "EDRT-DAWL", "EDRT-CPU", "EDRT-GPU", "GPU-only"))
+
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=2)+
   geom_point(cex=5) +
@@ -58,12 +60,12 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
         legend.key=element_rect(size=5),
-        legend.key.size = unit(9, "lines")) +
+        legend.key.size = unit(5, "lines")) +
   guides(col = guide_legend(nrow = 1)) +
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
   theme(strip.text = element_text(size=40))
-ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=14, width=18)
+ggsave(paste("./speedUp-Stencil3D.pdf",sep=""), Graph, device = pdf, height=25, width=15)
 
 
 
