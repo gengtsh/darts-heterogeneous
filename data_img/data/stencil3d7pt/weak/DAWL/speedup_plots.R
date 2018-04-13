@@ -63,7 +63,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
   # facet_grid(.~machine, scales="free") +
   facet_wrap(~machine, ncol=1, scales="free_x") +
   theme(strip.text = element_text(size=40))
-ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=14, width=18)
+ggsave(paste("./speedUp.pdf",sep=""), Graph, device = pdf, height=30, width=18)
 
 
 

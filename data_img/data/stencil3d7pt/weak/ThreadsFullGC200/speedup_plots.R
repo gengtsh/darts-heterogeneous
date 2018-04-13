@@ -8,7 +8,7 @@ setwd(currPath)
 # cbbPalette <- gray(1:4/ 12)#c("red", "blue", "darkgray", "orange","black","brown", "lightblue","violet")
 
 df <- data.frame()
-for(j in c("f4", "supermicro","ccsl")){
+for(j in c("f4", "supermicro","debian","ccsl")){
 #for(j in c("ccsl", "debian", "f3", "hive", "supermicro")){
     if(j == "ccsl") threads <- 7
     if(j == "debian") threads <- 11
