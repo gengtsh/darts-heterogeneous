@@ -43,7 +43,7 @@ df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200"
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=2)+
   geom_point(cex=5) +
-  scale_linetype_manual(values=c("longdash","dotted", "solid",  "twodash" ))+
+  scale_linetype_manual(values=c("dotted", "longdash","solid",  "twodash" ))+
   xlab("Size of the Problem") + 
   theme_bw() +
     scale_colour_grey() +
