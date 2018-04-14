@@ -10,7 +10,7 @@ my $currpath = Cwd::abs_path();
 print "$currpath\n";
 
 #my @servers = qw/f3 supermicro ccsl debian hive/;
-my @servers = qw/f4 supermicro ccsl/;
+my @servers = qw/f4 supermicro debian ccsl/;
 my $sw = 'weak';
 my $GC= 'DAWL_2GB';
 my $thd='threads';
