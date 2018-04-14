@@ -86,8 +86,8 @@ for my $server (@servers){
 	}elsif($server eq "debian"){
 		$thread = 11;
 		$sz_end = 37000;
-		$xEnd=800;
-		$yEnd=800;
+		$xEnd=1000;
+		$yEnd=1000;
 	}elsif($server eq "hive"){
 		$thread = 11;
 		$sz_end = 37000;
