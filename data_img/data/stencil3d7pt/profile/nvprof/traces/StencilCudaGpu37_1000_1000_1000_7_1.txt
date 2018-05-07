@@ -1,0 +1,1 @@
+==20983== NVPROF is profiling process 20983, command: ./StencilCudaGpu37 1000 1000 1000 30 10
