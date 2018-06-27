@@ -1,0 +1,67 @@
+CC=gcc
+CXX=g++
+#SHELL:=/bin/bash
+
+OMPFLAGS_GCC=-fopenmp 
+MATHFLAGS=-fexcess-precision=standard -freciprocal-math 
+#CFLAGS=-std=c11 -D_XOPEN_SOURCE -D_POSIX_C_SOURCE=200809L -Wall -Wextra -pedantic -Werror -O3 $(OMPFLAGS) 
+OPTIM=-O3
+DEBUG=#-ggdb
+CFLAGS=-std=c11 -march=native -D_XOPEN_SOURCE -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Wno-unknown-pragmas -pedantic $(DEBUG) $(OPTIM) 
+CXXFLAGS=-std=c++11 -D_XOPEN_SOURCE -D_POSIX_C_SOURCE=200809L -Wall -Werror $(MATHFLAGS)
+LDFLAGS=-lm -lrt -lpthread
+MODULE_LOAD=. ${MODULESHOME}/init/bash && module load
+
+all: OMPLaplaceSolver SeqLaplaceSolver
+#all: LoadIntelLib OMPLaplaceSolver SeqLaplaceSolver
+#LoadIntelLib:
+#	echo $$0
+#	echo $(MODULE_LOAD)
+#	${MODULE_LOAD} intel_libomp_oss; \
+#	echo ${LIBIOMP5_PATH}
+
+INC_INTEL=$(${LIBIOMP5_PATH}lin_32e/include) $(${LIBIOMP5_PATH}lin_32e/include_compat) $(${LIBIOMP5_PATH}common/include) $(${LIBIOMP5_PATH}common/include_compat)
+
+INCS_INTEL=$(foreach d,$(INC_INTEL), -I%d)
+LIB_INTEL=-L ${LIBIOMP5_PATH}lin_32e/lib
+LD_INTEL=-liomp5
+INTEL=TRUE
+OMPFLAGS_INTEL=$(LIB_INTEL) $(INCS_INTEL) $(LD_INTEL)
+
+ifdef INTEL
+OMPFLAGS=$(OMPFLAGS_INTEL)
+else
+OMPFLAGS=$(OMPFLAGS_GCC)
+endif
+
+OMPLaplaceSolver: stencil_omp.o main_omp.o timer_omp.o
+	$(CC) $(OMPFLAGS) -o $@ $^ $(LDFLAGS)
+
+SeqLaplaceSolver: stencil_seq.o main_seq.o timer_seq.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+
+timer_omp.o: timer.c
+	$(CC) $(OMPFLAGS) $(CFLAGS) -c -o $@ $<
+
+timer_seq.o: timer.c
+	$(CC) 			  $(CFLAGS) -c -o $@ $<
+
+main_omp.o: main.c
+	$(CC) $(OMPFLAGS) $(CFLAGS) -c -o $@ $<
+
+main_seq.o: main.c
+	$(CC) 			  $(CFLAGS) -c -o $@ $<
+
+stencil_seq.o:stencil_omp.c 
+	$(CC) 			  $(CFLAGS) -c -o $@ $<
+
+stencil_omp.o:stencil_omp.c
+	$(CC) $(OMPFLAGS) $(CFLAGS) -c -o $@ $<
+
+
+%_omp.o: %.c %.h 
+		$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f *.o OMPLaplaceSolver SeqLaplaceSolver
