@@ -1,6 +1,7 @@
 #ifndef STENCIL_H_GUARD
 #define STENCIL_H_GUARD
 #include "util.h"
+#include <omp.h>
 
 #define SWAP(type,left,right) do { \
     type tmp = left;               \
@@ -61,4 +62,6 @@ void stencil2D4pt_omp_simd ( double* restrict dst,    double* restrict src,
 void stencil2D4pt_simd2  ( double* restrict dst,    double* restrict src, 
                            const size_t     n_rows, const size_t     n_cols,
                            const size_t     n_tsteps );
+
+void test_threads();
 #endif // STENCIL_H_GUARD

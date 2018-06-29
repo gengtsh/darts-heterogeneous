@@ -1,10 +1,17 @@
-#include "stencil.h"
 
+#include <omp.h>
+#include <stdlib.h>
 #include <stdio.h>
 
+#include "stencil.h"
 #include <pmmintrin.h>
 
-
+void test_threads(){
+#   pragma omp parallel
+    {
+        printf("test: threads # %d in %d threads\n", omp_get_thread_num(),omp_get_num_threads());
+    }
+}
 
 
 /**
@@ -66,8 +73,9 @@ init_loop ( double* dst, double *src, const size_t n_rows, const size_t n_cols )
 
 #pragma omp for nowait schedule(static) 
         for (size_t i = 0; i < n_rows; ++i) 
-            for (size_t j = 0; j < n_cols; ++j) 
+            for (size_t j = 0; j < n_cols; ++j){ 
                 DST[i][j]=SRC[i][j];
+            }
     
 }
 

@@ -12,21 +12,27 @@ CXXFLAGS=-std=c++11 -D_XOPEN_SOURCE -D_POSIX_C_SOURCE=200809L -Wall -Werror $(MA
 LDFLAGS=-lm -lrt -lpthread
 MODULE_LOAD=. ${MODULESHOME}/init/bash && module load
 
-all: OMPLaplaceSolver SeqLaplaceSolver
+.PHONY: all 
+
+all: OMPLaplaceSolver 
+#all: OMPLaplaceSolver SeqLaplaceSolver
 #all: LoadIntelLib OMPLaplaceSolver SeqLaplaceSolver
-#LoadIntelLib:
-#	echo $$0
-#	echo $(MODULE_LOAD)
-#	${MODULE_LOAD} intel_libomp_oss; \
-#	echo ${LIBIOMP5_PATH}
+.SECONDEXPANSION:
+LoadIntelLib:
+	${MODULE_LOAD} intel_libomp_oss; \
+	echo "LIBIOMP5_PATH= " $${LIBIOMP5_PATH}
 
-INC_INTEL=$(${LIBIOMP5_PATH}lin_32e/include) $(${LIBIOMP5_PATH}lin_32e/include_compat) $(${LIBIOMP5_PATH}common/include) $(${LIBIOMP5_PATH}common/include_compat)
 
-INCS_INTEL=$(foreach d,$(INC_INTEL), -I%d)
+INCS_INTEL=-I${LIBIOMP5_PATH}lin_32e/include -I${LIBIOMP5_PATH}lin_32e/include_compat -I${LIBIOMP5_PATH}common/include -I${LIBIOMP5_PATH}common/include_compat
+
 LIB_INTEL=-L ${LIBIOMP5_PATH}lin_32e/lib
 LD_INTEL=-liomp5
 #INTEL=TRUE
 OMPFLAGS_INTEL=$(LIB_INTEL) $(INCS_INTEL) $(LD_INTEL)
+
+Echo:
+	echo ${INCS_INTEL}
+	echo ${OMPFLAGS_INTEL}
 
 ifdef INTEL
 OMPFLAGS=$(OMPFLAGS_INTEL)

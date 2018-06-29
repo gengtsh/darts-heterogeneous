@@ -13,7 +13,10 @@
 #define N_TSTEPS  100UL
 #define N_REPS     10UL
 
+
 #define SIZE2D(type,dim1,dim2) sizeof(type)*(dim1)*(dim2)
+
+//#define THREAD_TEST 1
 
 static inline void usage(const char *name) 
 {
@@ -200,7 +203,9 @@ main(int argc, char* argv[])
            *initial_matrix = smalloc( sizeof(double) * n_rows * n_cols);
 
 	array2d_init(initial_matrix,n_rows,n_cols); // initial 2D array
-
+#ifdef THREAD_TEST
+    test_threads();
+#endif
     uint64_t outer_start = 0, 
              outer_stop  = 0,
              inner_start = 0,
