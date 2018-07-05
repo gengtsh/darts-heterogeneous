@@ -217,7 +217,6 @@ main(int argc, char* argv[])
 
     char *str_n_threads = getenv("OMP_NUM_THREADS");
     long  n_threads     = str_n_threads ? strtoul(str_n_threads,NULL,0) : 1L;
-
     outer_start = get_time();
     for (size_t i = 0; i < n_reps; ++i) {
         //memcpy(current_values, initial_matrix, sizeof(double*)*n_rows*n_cols);
