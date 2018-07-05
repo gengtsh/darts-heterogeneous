@@ -25,8 +25,8 @@ my $its = 10;
 
 #my @kernels = qw/Seq OMP OMPFG OMPFGV2 FineGrain FineGrainM2V2 FineGrainM2 InPlace Naive NaiveTPsPtr InPlaceTPs FineGrainTPs/; # Seq/; 
 #my @kernels = qw/StencilCUDA/; # Seq/; 
-my @kernels = qw/OMP_GCC8.1 OMP_GCC8.1_IniLoop OMP_GCC8.1_IniLoop_SIMD OMP_INTEL OMP_INTEL_IniLoop OMP_INTEL_IniLoop_SIMD/; # Seq/; 
-#my @kernels = qw/OMP_INTEL_IniLoop_SIMD/; # Seq/; 
+#my @kernels = qw/OMP_GCC8.1 OMP_GCC8.1_IniLoop OMP_GCC8.1_IniLoop_SIMD/; # Seq/; 
+my @kernels = qw/OMP_INTEL OMP_INTEL_IniLoop OMP_INTEL_IniLoop_SIMD/ ; # Seq/; 
 my @outputs = ();
 my $sz_start = 1000;
 my $sz_end = 11000;
@@ -38,6 +38,7 @@ for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
         $ENV{'DARTS_NUM_SU'}    = $n_su;
         $ENV{'OMP_PROC_BIND'}   = 'true';
         $ENV{'OMP_NUM_THREADS'} = ($n_cu+1)*$n_su;
+        #$ENV{'KMP_AFFIINITY'} = 'compact';
         for my $kernel (@kernels) {
             my $ker = './' . $kernel;
             if (-e $ker) {
