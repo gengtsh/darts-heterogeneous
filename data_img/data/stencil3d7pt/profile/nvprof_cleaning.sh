@@ -1,56 +1,34 @@
 #!/bin/bash
 
-function join { local IFS="$1"; shift; echo "$*"; }
+declare -a Machines=( "ccsl" )
 
-declare -a Machines=( "f3" )
+declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" "cudaMemGetInfo" "cudaMalloc" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" "cudaLaunch (gpu_stencil37_hack1_cp_slices" "gpu_stencil37_hack1_cp_slice" "cudaLaunch (gpu_stencil37_hack1_cp_rows" "gpu_stencil37_hack1_cp_rows" "cudaLaunch (gpu_stencil37_hack1_cp_cols" "gpu_stencil37_hack1_cp_cols" "cudaLaunch (gpu_stencil37_hack2" "gpu_stencil37_hack2")
 
 for machine in "${Machines[@]}"; do
     
     if [[ "${machine}" -eq "ccsl" ]]; then
-
-	    declare -a Metrics=("CPU_CLK_UNHALTED" "INST_RETIRED" "LLC_MISSES" "LLC_REFS" "l2_rqsts" "cpl_cycles" "icache" "br_inst_exec" "br_misp_exec" "resource_stalls" "fp_assist" "l2_trans" "mem_uops_retired") 
-        declare -a ZXY=( "200_200_50" "200_200_100" "200_200_200" "400_400_800" "800_800_200" "800_800_400" "800_800_800" )
+           declare -a ZXY=( "200_200_50" "200_200_100" "200_200_200" "400_400_800" "800_800_200" "800_800_400" "800_800_800" )
         coreThreadMachine="_7_1"
     fi
 
     if [[ "${machine}" -eq "f3" ]]; then
-        declare -a Metrics=("CPU_CLK_UNHALTED" "INST_RETIRED" "LLC_MISSES" "LLC_REFS" "l2_rqsts" "l1d" "cpl_cycles" "icache" "br_inst_exec" "br_misp_exec" "resource_stalls" "fp_assist" "hw_interrupts" "l2_trans" "mem_uops_retired")
         declare -a ZXY=("200_200_50" "200_200_100" "200_200_200" "400_400_800" "800_800_200" "800_800_400" "800_800_800"  "800_1000_1000" "1000_1000_1000")
         coreThreadMachine="_31_1"
 
     fi
-                    
-	header=`join , ${Metrics[@]}` 
-    echo "machine, size, ${header}" > tempFileMetric 
-    
-    for sizesZXY in "${ZXY[@]}"; do
-		#counter=0
-        grep "Counted" ${machine}_opreport_cpu/operf_StencilCudaCpu37_${sizesZXY}${coreThreadMachine}.txt > varAll
-
-        tempSizeMetric="${machine}, ${sizesZXY},"
-        tempMetric=`cat ${machine}_opreport_cpu/operf_StencilCudaCpu37_${sizesZXY}${coreThreadMachine}.txt | awk  '{print $0}' | tail -1`
-		for metric in "${Metrics[@]}"; do
-		        var=`grep -hnr "${metric}" varAll`
-
-        	if [ -n "${var}" ]; then       
-         
-                IFS=':' read -r -a lineMetric <<< $var
-        		countMetric=`echo ${var} | awk '{print $NF}'`
-                tempValueMetric=`echo $tempMetric | awk -v temp=$(($lineMetric*4-2)) ' {print $((temp))}'`
-                tempValueMetric=`echo $((${tempValueMetric} * ${countMetric}))`
-                var=""
-        
-            else
-                tempValueMetric=0
-            fi
-        
-            tempSizeMetric="$tempSizeMetric $tempValueMetric,"
+                   
+   echo "machine, size, metric, invocations, min, max, mean" > tempFileMetric     
+   for sizesZXY in "${ZXY[@]}"; do
+       echo $sizesZXY
+       declare -a arrayTempMetrics
+       counter=0
+   	for metric in "${Traces[@]}"; do
+           tempTraceValues=`grep  "${metric}" ${machine}_nvprof_traces/StencilCudaGpu37_${sizesZXY}${coreThreadMachine}.txt | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(length(d),  min(d), max(d), mean(d), sep="\n")'`
+           tempTraceValues=`echo ${tempTraceValues} | sed -e 's/ /,/g'` 
+           echo "${machine}, ${sizesZXY}, ${metric}, ${tempTraceValues}" >> tempFileMetric
         done
-        
-        echo $tempSizeMetric >> tempFileMetric      
     done
-    mv tempFileMetric ${machine}_opreport_cpu/operfMetric.csv
-    rm -rf varAll
+    
+    mv tempFileMetric ${machine}_nvprof_traces/nvprofTraces.csv     
 done
 
-#"${apps[@]}";
