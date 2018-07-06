@@ -11,13 +11,13 @@ ccsl, 200_200_50, CUDA memcpy HtoD, 10,1518451,1519187,1518768
 ccsl, 200_200_50, CUDA memcpy DtoH, 10,1517939,2466175,1612903
 ccsl, 200_200_50, cudaFree, 42,61085,2039341,173085.7
 ccsl, 200_200_50, cudaLaunch (gpu_stencil37_hack1_cp_slices, 300,5013,33800,6143.43
-ccsl, 200_200_50, gpu_stencil37_hack1_cp_slice, 600,5013,33800,14145.07
+ccsl, 200_200_50, "gpu_stencil37_hack1_cp_slices, 300,21728,23457,22146.7
 ccsl, 200_200_50, cudaLaunch (gpu_stencil37_hack1_cp_rows, 300,4940,12446,5258.427
-ccsl, 200_200_50, gpu_stencil37_hack1_cp_rows, 600,4940,63169,33681.24
+ccsl, 200_200_50, "gpu_stencil37_hack1_cp_rows, 300,61057,63169,62104.05
 ccsl, 200_200_50, cudaLaunch (gpu_stencil37_hack1_cp_cols, 300,4963,11314,5219.213
-ccsl, 200_200_50, gpu_stencil37_hack1_cp_cols, 600,4963,131842,67731.6
+ccsl, 200_200_50, "gpu_stencil37_hack1_cp_cols, 300,128674,131842,130244
 ccsl, 200_200_50, cudaLaunch (gpu_stencil37_hack2, 300,4959,12451,5338.633
-ccsl, 200_200_50, gpu_stencil37_hack2, 600,4959,592775,294660.6
+ccsl, 200_200_50, "gpu_stencil37_hack2, 300,577703,592775,583982.6
 ccsl, 200_200_100, cuDeviceGetAttribute, 91,145,65093,2166.912
 ccsl, 200_200_100, cudaSetupArgument, 12000,161,610,188.2639
 ccsl, 200_200_100, cudaMallocHost, 2,5839132,108724179,57281656
@@ -30,13 +30,13 @@ ccsl, 200_200_100, CUDA memcpy HtoD, 10,3033380,3079045,3042760
 ccsl, 200_200_100, CUDA memcpy DtoH, 10,3032868,3034756,3033246
 ccsl, 200_200_100, cudaFree, 42,67186,5268403,317785.5
 ccsl, 200_200_100, cudaLaunch (gpu_stencil37_hack1_cp_slices, 300,4836,36355,6040.193
-ccsl, 200_200_100, gpu_stencil37_hack1_cp_slice, 600,4836,36355,15871.62
+ccsl, 200_200_100, "gpu_stencil37_hack1_cp_slices, 300,24992,26752,25703.05
 ccsl, 200_200_100, cudaLaunch (gpu_stencil37_hack1_cp_rows, 300,4871,11497,5250.48
-ccsl, 200_200_100, gpu_stencil37_hack1_cp_rows, 600,4871,74368,39169.57
+ccsl, 200_200_100, "gpu_stencil37_hack1_cp_rows, 300,72065,74368,73088.66
 ccsl, 200_200_100, cudaLaunch (gpu_stencil37_hack1_cp_cols, 300,4859,24456,5191.573
-ccsl, 200_200_100, gpu_stencil37_hack1_cp_cols, 600,4859,192098,97045.12
+ccsl, 200_200_100, "gpu_stencil37_hack1_cp_cols, 300,186082,192098,188898.7
 ccsl, 200_200_100, cudaLaunch (gpu_stencil37_hack2, 300,4880,12037,5276.343
-ccsl, 200_200_100, gpu_stencil37_hack2, 600,4880,1194447,594540.9
+ccsl, 200_200_100, "gpu_stencil37_hack2, 300,1167342,1194447,1183805
 ccsl, 200_200_200, cuDeviceGetAttribute, 91,142,66030,2122.604
 ccsl, 200_200_200, cudaSetupArgument, 12000,171,3168,189.3637
 ccsl, 200_200_200, cudaMallocHost, 2,13390119,115531586,64460852
@@ -49,13 +49,13 @@ ccsl, 200_200_200, CUDA memcpy HtoD, 10,6063111,6219848,6101566
 ccsl, 200_200_200, CUDA memcpy DtoH, 10,6062247,6411275,6098417
 ccsl, 200_200_200, cudaFree, 42,69691,9829945,574677.1
 ccsl, 200_200_200, cudaLaunch (gpu_stencil37_hack1_cp_slices, 300,5033,65359,6862.37
-ccsl, 200_200_200, gpu_stencil37_hack1_cp_slice, 600,5033,65359,21915.66
+ccsl, 200_200_200, "gpu_stencil37_hack1_cp_slices, 300,36000,38144,36968.95
 ccsl, 200_200_200, cudaLaunch (gpu_stencil37_hack1_cp_rows, 300,4937,18132,5769.813
-ccsl, 200_200_200, gpu_stencil37_hack1_cp_rows, 600,4937,112705,58193.12
+ccsl, 200_200_200, "gpu_stencil37_hack1_cp_rows, 300,108930,112705,110616.4
 ccsl, 200_200_200, cudaLaunch (gpu_stencil37_hack1_cp_cols, 300,4907,15187,5530.207
-ccsl, 200_200_200, gpu_stencil37_hack1_cp_cols, 600,4907,432901,214583.5
+ccsl, 200_200_200, "gpu_stencil37_hack1_cp_cols, 300,414053,432901,423636.8
 ccsl, 200_200_200, cudaLaunch (gpu_stencil37_hack2, 300,4968,16816,5636.643
-ccsl, 200_200_200, gpu_stencil37_hack2, 600,4968,2391036,1191644
+ccsl, 200_200_200, "gpu_stencil37_hack2, 300,2351836,2391036,2377652
 ccsl, 400_400_800, cuDeviceGetAttribute, 91,200,95753,2977.857
 ccsl, 400_400_800, cudaSetupArgument, 12000,162,4997,191.5494
 ccsl, 400_400_800, cudaMallocHost, 2,198989183,309039669,254014426
@@ -68,13 +68,13 @@ ccsl, 400_400_800, CUDA memcpy HtoD, 10,97618119,99268987,98457835
 ccsl, 400_400_800, CUDA memcpy DtoH, 10,99638719,103412462,101320673
 ccsl, 400_400_800, cudaFree, 42,99350,145510645,6693903
 ccsl, 400_400_800, cudaLaunch (gpu_stencil37_hack1_cp_slices, 300,5077,77853,6898.307
-ccsl, 400_400_800, gpu_stencil37_hack1_cp_slice, 600,5077,475462,240083.2
+ccsl, 400_400_800, "gpu_stencil37_hack1_cp_slices, 300,472006,475462,473268.2
 ccsl, 400_400_800, cudaLaunch (gpu_stencil37_hack1_cp_rows, 300,5015,17169,5650.163
-ccsl, 400_400_800, gpu_stencil37_hack1_cp_rows, 600,5015,1482194,740809.5
+ccsl, 400_400_800, "gpu_stencil37_hack1_cp_rows, 300,1472690,1482194,1475969
 ccsl, 400_400_800, cudaLaunch (gpu_stencil37_hack1_cp_cols, 300,5073,13219,5548.01
-ccsl, 400_400_800, gpu_stencil37_hack1_cp_cols, 600,5073,10319934,5109170
+ccsl, 400_400_800, "gpu_stencil37_hack1_cp_cols, 300,10079451,10319934,10212792
 ccsl, 400_400_800, cudaLaunch (gpu_stencil37_hack2, 300,5037,14556,5581.653
-ccsl, 400_400_800, gpu_stencil37_hack2, 600,5037,34709063,17310719
+ccsl, 400_400_800, "gpu_stencil37_hack2, 300,34538694,34709063,34615857
 ccsl, 800_800_200, cuDeviceGetAttribute, 91,140,65577,2110.231
 ccsl, 800_800_200, cudaSetupArgument, 12000,168,983,193.5096
 ccsl, 800_800_200, cudaMallocHost, 2,204580225,312980434,258780330
@@ -87,13 +87,13 @@ ccsl, 800_800_200, CUDA memcpy HtoD, 10,97403653,98502772,97861976
 ccsl, 800_800_200, CUDA memcpy DtoH, 10,98693013,102042912,100306781
 ccsl, 800_800_200, cudaFree, 42,98611,131098579,6250593
 ccsl, 800_800_200, cudaLaunch (gpu_stencil37_hack1_cp_slices, 300,5046,48020,6637.8
-ccsl, 800_800_200, gpu_stencil37_hack1_cp_slice, 600,5046,475782,240075.3
+ccsl, 800_800_200, "gpu_stencil37_hack1_cp_slices, 300,472422,475782,473512.8
 ccsl, 800_800_200, cudaLaunch (gpu_stencil37_hack1_cp_rows, 300,4973,11752,5463.013
-ccsl, 800_800_200, gpu_stencil37_hack1_cp_rows, 600,4973,1477170,738686.7
+ccsl, 800_800_200, "gpu_stencil37_hack1_cp_rows, 300,1467155,1477170,1471910
 ccsl, 800_800_200, cudaLaunch (gpu_stencil37_hack1_cp_cols, 300,5022,12595,5350.223
-ccsl, 800_800_200, gpu_stencil37_hack1_cp_cols, 600,5022,10384034,5109221
+ccsl, 800_800_200, "gpu_stencil37_hack1_cp_cols, 300,10086015,10384034,10213092
 ccsl, 800_800_200, cudaLaunch (gpu_stencil37_hack2, 300,4989,13032,5348.363
-ccsl, 800_800_200, gpu_stencil37_hack2, 600,4989,34871701,17421488
+ccsl, 800_800_200, "gpu_stencil37_hack2, 300,34789076,34871701,34837627
 ccsl, 800_800_400, cuDeviceGetAttribute, 91,141,69347,2232.374
 ccsl, 800_800_400, cudaSetupArgument, 96000,161,313257,209.3763
 ccsl, 800_800_400, cudaMallocHost, 2,333059116,449298976,391179046
@@ -106,13 +106,13 @@ ccsl, 800_800_400, CUDA memcpy HtoD, 2400,26720221,35719144,27496451
 ccsl, 800_800_400, CUDA memcpy DtoH, 2400,23282997,34961791,26273444
 ccsl, 800_800_400, cudaFree, 42,126878,238930048,10496663
 ccsl, 800_800_400, cudaLaunch (gpu_stencil37_hack1_cp_slices, 2400,6232,40574,8967.151
-ccsl, 800_800_400, gpu_stencil37_hack1_cp_slice, 4800,6232,750889,227498.9
+ccsl, 800_800_400, "gpu_stencil37_hack1_cp_slices, 2400,228451,750889,446030.7
 ccsl, 800_800_400, cudaLaunch (gpu_stencil37_hack1_cp_rows, 2400,5646,40807,6175.144
-ccsl, 800_800_400, gpu_stencil37_hack1_cp_rows, 4800,5646,37000695,17219432
+ccsl, 800_800_400, "gpu_stencil37_hack1_cp_rows, 2400,18359258,37000695,34432690
 ccsl, 800_800_400, cudaLaunch (gpu_stencil37_hack1_cp_cols, 2400,5514,313838,6143.517
-ccsl, 800_800_400, gpu_stencil37_hack1_cp_cols, 4800,5514,3822670,1427952
+ccsl, 800_800_400, "gpu_stencil37_hack1_cp_cols, 2400,2493982,3822670,2849760
 ccsl, 800_800_400, cudaLaunch (gpu_stencil37_hack2, 2400,5496,20368,5914.482
-ccsl, 800_800_400, gpu_stencil37_hack2, 4800,5496,10818753,4613119
+ccsl, 800_800_400, "gpu_stencil37_hack2, 2400,8589798,10818753,9220324
 ccsl, 800_800_800, cuDeviceGetAttribute, 91,144,65721,2117.385
 ccsl, 800_800_800, cudaSetupArgument, 96000,158,359096,219.2566
 ccsl, 800_800_800, cudaMallocHost, 2,676810244,816586718,746698481
@@ -125,10 +125,10 @@ ccsl, 800_800_800, CUDA memcpy HtoD, 2400,52725556,65917201,56006053
 ccsl, 800_800_800, CUDA memcpy DtoH, 2400,48186878,67326978,54708625
 ccsl, 800_800_800, cudaFree, 42,153567,490324193,21227371
 ccsl, 800_800_800, cudaLaunch (gpu_stencil37_hack1_cp_slices, 2400,7053,107150,13603.15
-ccsl, 800_800_800, gpu_stencil37_hack1_cp_slice, 4800,7053,967884,240165
+ccsl, 800_800_800, "gpu_stencil37_hack1_cp_slices, 2400,375077,967884,466726.9
 ccsl, 800_800_800, cudaLaunch (gpu_stencil37_hack1_cp_rows, 2400,6414,30662,7506.249
-ccsl, 800_800_800, gpu_stencil37_hack1_cp_rows, 4800,6414,55587862,26423145
+ccsl, 800_800_800, "gpu_stencil37_hack1_cp_rows, 2400,36770870,55587862,52838785
 ccsl, 800_800_800, cudaLaunch (gpu_stencil37_hack1_cp_cols, 2400,6223,333366,7251.722
-ccsl, 800_800_800, gpu_stencil37_hack1_cp_cols, 4800,6223,5737701,2761802
+ccsl, 800_800_800, "gpu_stencil37_hack1_cp_cols, 2400,5144253,5737701,5516353
 ccsl, 800_800_800, cudaLaunch (gpu_stencil37_hack2, 2400,6190,38760,6955
-ccsl, 800_800_800, gpu_stencil37_hack2, 4800,6190,19619530,9043331
+ccsl, 800_800_800, "gpu_stencil37_hack2, 2400,17546641,19619530,18079706
