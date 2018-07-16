@@ -14,9 +14,9 @@ my @threads = (
 #   [05,8]
 );
 
-my $n_iter = 30;
-my $n_reps = 10;
-my $its = 5;
+my $n_iter = 3;
+my $n_reps = 3;
+my $its = 1;
 
 my @sz_zxy = (
     [50,200,200],
@@ -47,6 +47,7 @@ my $sz_start = 1000;
 my $sz_end = 51000;
 my $sz_step = 2000;
 
+my $nvprof = "nvprof_metrics";
 #for (my $i= $sz_start;$i<$sz_end;$i=$i+$sz_step){
 for my $sz(@sz_zxy){
     my ($k,$i,$j) = @$sz;
@@ -57,21 +58,21 @@ for my $sz(@sz_zxy){
         $ENV{'OMP_PROC_BIND'}   = 'true';
         $ENV{'OMP_NUM_THREADS'} = ($n_cu+1)*$n_su;
 		my $n_total = ($n_cu+1)*$n_su;
-        if ($n_total <= 16){
-            #$ENV{'GOMP_CPU_AFFINITY'}="0-7 16-23";
-			$ENV{'DARTS_AFFINITY'}="0-7 16-23";
-        }else{
-            #$ENV{'GOMP_CPU_AFFINITY'}="0-31";
-			$ENV{'DARTS_AFFINITY'}="0-31";
-        }
-		
+        #if ($n_total <= 16){
+        #    #$ENV{'GOMP_CPU_AFFINITY'}="0-7 16-23";
+		#	$ENV{'DARTS_AFFINITY'}="0-7 16-23";
+        #}else{
+        #    #$ENV{'GOMP_CPU_AFFINITY'}="0-31";
+		#	$ENV{'DARTS_AFFINITY'}="0-31";
+        #}
+		$ENV{'DARTS_AFFINITY'}="0-31";
         for my $kernel (@kernels) {
             my $ker = './' . $kernel;
             if (-e $ker) {
 		    #open my $fh, '>>', "${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}.txt" or die $!;
                 for (my $idx = 0; $idx < $its; ++$idx) {
 			#print $fh  `numactl --interleave=0-1 $ker $i $j $k $n_iter $n_reps `;
-		    system `nvprof --metrics all --events all --csv -u ns $ker $i $j $k $n_iter $n_reps 2> ${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}.txt`; 
+		    system `nvprof --metrics all --events all --csv -u ns $ker $i $j $k $n_iter $n_reps 2> ${nvprof}_${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}.txt`; 
 
                 }
             } else {
