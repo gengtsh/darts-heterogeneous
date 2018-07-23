@@ -84,10 +84,10 @@ for my $sz(@sz_zxy){
             my $ker = './' . $kernel;
             if (-e $ker) {
 				for(my $m=1;$m<$n_iter;++$m){
-				#open my $fh, '>>', "${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}.txt" or die $!;
+					open my $fh, '>>', "${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}_${n_reps}_${m}.txt" or die $!;
 					for (my $idx = 0; $idx < $its; ++$idx) {
-				#print $fh  `numactl --interleave=0-1 $ker $i $j $k $n_iter $n_reps `;
-				system `nvprof --print-gpu-trace --print-api-trace --csv -u ns $ker $i $j $k $m $n_reps 2> ${nvprof}_${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}_${n_reps}_${m}.txt`; 
+						print $fh  `numactl --interleave=0-1 $ker $i $j $k $m $n_reps `;
+						system `nvprof --print-gpu-trace --print-api-trace --csv -u ns $ker $i $j $k $m $n_reps 2> ${nvprof}_${kernel}_${i}_${j}_${k}_${n_cu}_${n_su}_${n_reps}_${m}.txt`; 
 	
 					}
 				}
