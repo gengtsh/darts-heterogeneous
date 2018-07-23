@@ -320,7 +320,7 @@ DEF_TP(StencilTP)
                             GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
                             add(&GpuKernelWithAllTimeSteps37);	
                             }else{
-
+								exit(-1);
                             }
                     }else{
 
