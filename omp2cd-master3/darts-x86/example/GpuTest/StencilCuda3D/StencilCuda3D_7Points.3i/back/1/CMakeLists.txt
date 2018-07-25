@@ -36,7 +36,6 @@ find_package(CUDA QUIET REQUIRED)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 set(CUDA_HOST_COMPILER /usr/bin/g++-4.8)
-
 if (DEBUG EQUAL ON)	
 #	SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} ;--ptxas-options=-v -O0 -G -g -std=c++11)
 	SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} ;--ptxas-options=-v  -O0 -G -g -std=c++11;--default-stream legacy )

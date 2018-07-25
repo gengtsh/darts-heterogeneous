@@ -6,6 +6,30 @@ extern "C" {
 #include <stdio.h>
 #define ROTATE_DOWN(val,MAX) ((val-1==-1)?MAX-1:val-1)
 #define ROTATE_UP(val,MAX) ((val+1)%MAX)
+
+
+void gpuAssert(cudaError_t code,const char *file,const int line, bool abort=true){   
+    if(code != cudaSuccess){
+        fprintf(stderr, "GPUassert: %s %s %d \n", cudaGetErrorString(code),file,line);
+        if(abort){
+            exit(code);
+        }
+    }
+}
+
+__global__ void test_cp3d(double *dst,int tile_x,int tile_y, int tile_z){
+    
+    if(blockIdx.z==0 && blockIdx.x==0 && blockIdx.y==0 && threadIdx.y==0 && threadIdx.z==0){
+        printf("test copy 3d mem[%d]=%f\n",threadIdx.x+tile_x,dst[threadIdx.x+tile_x]);
+    }
+}
+
+void test_copy3d(dim3 dimGrid,dim3 dimBlock, double *dst,int tile_x,int tile_y,int tile_z ){
+
+    test_cp3d<<<dimGrid,dimBlock>>>(dst,tile_x,tile_y,tile_z);
+}
+
+
 /**
   * GPU Device kernel for the for 2D stencil
   * First attempt during hackaton
@@ -804,15 +828,89 @@ __global__ void gpu_stencil37_hack1_cp_slices(double * dst, double * shared_rows
 #endif
 }
 
+__global__ void gpu_stencil37_hack2_cp_slices(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int d_xpitch,int d_ypitch,int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols,int n_slices, int tile_x,int tile_y, int tile_z){
+
+#ifdef CUDA_DARTS_DEBUG
+    if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
+		printf("copy slices: begin!\n");
+        printf("copy slices: n_cols=%d,n_rows=%d,n_slices=%d\n",n_cols,n_rows,n_slices);
+        printf("copy slices: gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("copy slices: blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("copy slices: tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+	}
+#endif
+    int base_global_slice = tile_z * blockIdx.z;
+	int base_global_row   = tile_y * blockIdx.y;
+	int base_global_col   = blockDim.x * blockIdx.x;
+
+	//int area = n_rows*n_cols;
+    //int base_global_idx = base_global_slice*area + base_global_row * n_cols + base_global_col;
+    //int d_area = n_rows*d_xpitch;
+    //int s_area = n_rows*n_cols;
+    int d_area = d_ypitch*d_xpitch;
+    int s_area = s_ypitch*s_xpitch;
+    int base_global_idx = base_global_slice*d_area + base_global_row * d_xpitch + base_global_col;
+    
+    int nextSlice = base_global_slice+1;
+    bool legalNextSlice = (nextSlice<n_slices);
+	int tx = threadIdx.x;
+	bool legalCurCol = (base_global_col + tx)<n_cols;
+    
+    for(int ty=0;ty<tile_y;++ty){ 
+        bool legalCurRow = (base_global_row + ty)<n_rows;
+        //int s_idx = blockIdx.z*s_area*2 + (base_global_row+ty)*n_cols + base_global_col+tx ;
+        //int dst_idx = base_global_idx + ty*n_cols+tx;
+        int s_idx = blockIdx.z*s_area*2 + (base_global_row+ty)*s_xpitch + base_global_col+tx ;
+        int d_idx = base_global_idx + ty*d_xpitch+tx;
+    	if(legalCurCol&&legalCurRow){
+    		shared_slices[s_idx] = dst[d_idx];
+    	}
+    	if(legalNextSlice&&legalCurCol&&legalCurRow){
+    		shared_slices[s_idx+s_area] = dst[d_idx+d_area];
+    	}
+
+    }
+    __syncthreads();
+
+#ifdef CUDA_CUDA_DEBUG
+	if(blockIdx.z ==0 && blockIdx.y==0 && blockIdx.x==0 ){
+	//	printf("shared_slices: addr:%d, val = %f\n",n_cols*n_rows + threadIdx.x,shared_slices[n_cols*n_rows+threadIdx.x]);
+	    if(threadIdx.x==0||threadIdx.x==1||threadIdx.x==2){
+            int addr  = s_xpitch*s_ypitch + blockDim.x*blockIdx.x+threadIdx.x;
+            int addr1 = s_xpitch*s_ypitch + blockDim.x*blockIdx.x+threadIdx.x+s_xpitch;
+            int addr2 = s_xpitch*s_ypitch + blockDim.x*blockIdx.x+threadIdx.x+s_xpitch*2;
+	    	
+            int daddr  = d_xpitch*d_ypitch + blockDim.x*blockIdx.x+threadIdx.x;
+            int daddr1 = d_xpitch*d_ypitch + blockDim.x*blockIdx.x+threadIdx.x+d_xpitch;
+            int daddr2 = d_xpitch*d_ypitch + blockDim.x*blockIdx.x+threadIdx.x+d_xpitch*2;
+            printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,dst: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, daddr,dst[daddr]);
+	    	printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,dst: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, daddr1,dst[daddr1]);
+	    	printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,dst: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, daddr2,dst[daddr2]);
+            
+            printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,shared_slices: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, addr,shared_slices[addr]);
+	    	printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,shared_slices: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, addr1,shared_slices[addr1]);
+	    	printf("copy slices: blockIdx.x=%d, blockIdx.y=%d, blockIdx.z=%d,shared_slices: addr= %d, val= %f\n",blockIdx.x, blockIdx.y, blockIdx.z, addr2,shared_slices[addr2]);
+        }
+    }
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
+		printf("copy slices end!\n");
+	}
+#endif
+}
+
+
 
 __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
-		printf("copy rows begin\n");
-        printf("gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
-        printf("blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
-        printf("tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+		printf("copy rows:begin\n");
+        printf("copy rows:gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("copy rows:blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("copy rows:tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
 	}
 #endif
     int base_global_slice = tile_z * blockIdx.z;
@@ -853,10 +951,10 @@ __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, 
             int addr  = base_global_slice+blockIdx.x*blockDim.x + threadIdx.x;
             int addr1 = s_area*(base_global_slice+1)+n_cols+blockIdx.x*blockDim.x+ threadIdx.x;
             int addr2 = s_area*(base_global_slice+2)+n_cols+blockIdx.x*blockDim.x+ threadIdx.x;
-		    printf("blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst      : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,addr0,dst[addr0]);
-		    printf("blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,addr,shared_rows[addr]);
-		    printf("blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,addr1,shared_rows[addr1]);
-		    printf("blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,addr2,shared_rows[addr2]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst      : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,addr0,dst[addr0]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,addr,shared_rows[addr]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,addr1,shared_rows[addr1]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,addr2,shared_rows[addr2]);
         }
         if(threadIdx.x==0 && threadIdx.y==0){
             int addr =  2*s_area+n_cols+256;
@@ -875,15 +973,105 @@ __global__ void gpu_stencil37_hack1_cp_rows(double * dst, double * shared_rows, 
 #endif
 }
 
+__global__ void gpu_stencil37_hack2_cp_rows(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int d_xpitch,int d_ypitch,int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
+
+#ifdef CUDA_DARTS_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
+		printf("copy rows: begin\n");
+        printf("copy rows: n_cols=%d,n_rows=%d,n_slices=%d\n",n_cols,n_rows,n_slices);
+        printf("copy rows: gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("copy rows: blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("copy rows: tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+	}
+#endif
+    int base_global_slice = tile_z * blockIdx.z;
+	int base_global_row   = tile_y  * blockIdx.y;
+	int base_global_col   = blockDim.x*blockIdx.x;
+
+	//int dst_area = n_rows*n_cols;
+    //int s_area = gridDim.y*n_cols*2; 
+	int dst_area = d_ypitch*d_xpitch;
+    int s_area = gridDim.y*s_xpitch*2; 
+    
+    //int base_global_idx = base_global_slice*dst_area + base_global_row * n_cols + base_global_col;
+	int base_global_idx = base_global_slice*dst_area + base_global_row * d_xpitch + base_global_col;
+    
+    int nextRow = base_global_row+1;
+	bool legalNextRow = nextRow<n_rows;
+
+    int tx = threadIdx.x;
+	bool legalCurCol = (base_global_col + tx)<n_cols;
+    
+    for(int tz=0;tz<tile_z;++tz){ 
+        bool legalCurSlice = (base_global_slice + tz)<n_slices;
+        int idx_dst =base_global_idx + tz*dst_area+ tx  ;
+        //int idx = (base_global_slice+tz)*s_area + blockIdx.y*n_cols*2+blockIdx.x*blockDim.x+ tx  ;
+        int idx = (base_global_slice+tz)*s_area + blockIdx.y*s_xpitch*2+blockIdx.x*blockDim.x+ tx  ;
+        if(legalCurCol && legalCurSlice){
+    		shared_rows[idx] = dst[idx_dst];
+    	}
+        if(legalCurCol && legalCurSlice && legalNextRow){
+    		//shared_rows[idx+n_cols] = dst[idx_dst+n_cols];
+    		shared_rows[idx+s_xpitch] = dst[idx_dst+d_xpitch];
+    	}
+
+
+    }
+    __syncthreads();
+
+#ifdef CUDA_CUDA_DEBUG
+	if(blockIdx.y==0 && blockIdx.x==0 &&blockIdx.z==0 ){
+        if((threadIdx.x==0 || threadIdx.x==1 || threadIdx.x==2 ) && threadIdx.y==0){
+            
+            int d_addr0 = base_global_idx+0*dst_area+threadIdx.x;
+            int d_addr1 = base_global_idx+1*dst_area+threadIdx.x;
+            int s_addr00  = base_global_slice+blockIdx.x*blockDim.x + threadIdx.x;
+            int s_addr01  = base_global_slice+blockIdx.x*blockDim.x + threadIdx.x+s_xpitch;
+            int s_addr02  = base_global_slice+blockIdx.x*blockDim.x + threadIdx.x+s_xpitch*2;
+            int s_addr10 = s_area*(base_global_slice+1)+blockIdx.x*blockDim.x+ threadIdx.x;
+            int s_addr11 = s_area*(base_global_slice+1)+blockIdx.x*blockDim.x+ threadIdx.x+s_xpitch;
+            int s_addr12 = s_area*(base_global_slice+1)+blockIdx.x*blockDim.x+ threadIdx.x+s_xpitch*2;
+            int s_addr20 = s_area*(base_global_slice+2)+blockIdx.x*blockDim.x+ threadIdx.x;
+            int s_addr21 = s_area*(base_global_slice+2)+blockIdx.x*blockDim.x+ threadIdx.x+s_xpitch;
+            int s_addr22 = s_area*(base_global_slice+2)+blockIdx.x*blockDim.x+ threadIdx.x+s_xpitch*2;
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,d_addr0,dst[d_addr0]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,d_addr1,dst[d_addr1]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,s_addr00,shared_rows[s_addr00]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,s_addr01,shared_rows[s_addr01]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,s_addr00,shared_rows[s_addr02]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,s_addr10,shared_rows[s_addr10]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,s_addr11,shared_rows[s_addr11]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,s_addr12,shared_rows[s_addr12]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,s_addr20,shared_rows[s_addr20]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,s_addr21,shared_rows[s_addr21]);
+		    printf("copy rows: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_rows: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,s_addr22,shared_rows[s_addr22]);
+        }
+        if(threadIdx.x==0 && threadIdx.y==0){
+            int addr =  2*s_area+n_cols+256;
+            int addr1 = 2*dst_area+n_cols+256;
+            printf("copy rows: shared_rows: addr:%d, val:%f\n", addr, shared_rows[addr]);  
+            printf("copy rows: dst        : addr:%d, val:%f\n", addr1, dst[addr1]);  
+        }
+	}
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+	
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)){
+		printf("copy rows end!\n");
+	}
+#endif
+}
+
 
 __global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
 
 #ifdef CUDA_DARTS_DEBUG
 	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0)&& threadIdx.x==0 && threadIdx.z==0){
-		printf("copy cols begin\n");
-        printf("gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
-        printf("blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
-        printf("tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+		printf("copy cols: begin\n");
+        printf("copy cols: gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("copy cols: blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("copy cols: tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
 	}
 #endif
     int base_global_slice = tile_z * blockIdx.z;
@@ -935,6 +1123,88 @@ __global__ void gpu_stencil37_hack1_cp_cols(double * dst, double * shared_rows, 
 #endif
 }
 
+__global__ void gpu_stencil37_hack2_cp_cols(double * dst, double * shared_rows, double *shared_cols,double *shared_slices,int d_xpitch, int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols,int n_slices,int tile_x,int tile_y, int tile_z){
+
+#ifdef CUDA_DARTS_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0)&& threadIdx.x==0 && threadIdx.z==0){
+		printf("copy cols: begin\n");
+        printf("copy cols: n_cols=%d,n_rows=%d,n_slices=%d\n",n_cols,n_rows,n_slices);
+        printf("copy cols: gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("copy cols: blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("copy cols: tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+	}
+#endif
+    int base_global_slice = tile_z * blockIdx.z;
+	int base_global_row   = blockDim.y * blockIdx.y;
+	int base_global_col   = tile_x * blockIdx.x;
+
+	//int dst_area = n_rows*n_cols;
+    //int shared_area = gridDim.x*n_rows*2; 
+	int dst_area = d_ypitch*d_xpitch;
+    int shared_area = gridDim.x*s_ypitch*2; 
+    
+#ifdef CUDA_CUDA_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0&&threadIdx.x==0&&threadIdx.z==0)){
+        printf("copy cols: shared_area=%d\n",shared_area);
+	}
+#endif
+    //int base_global_idx = base_global_slice*dst_area + base_global_row * n_cols + base_global_col;
+	int base_global_idx = base_global_slice*dst_area + base_global_row * d_xpitch + base_global_col;
+    
+    int nextCol= base_global_col+1;
+	bool legalNextCol = (nextCol<n_cols)?1:0;
+    
+    int ty = threadIdx.y;
+	bool legalCurRow = (base_global_row + ty)<n_rows;
+    
+    for(int tz=0;tz<tile_z;++tz){ 
+        bool legalCurSlice = (base_global_slice + tz)<n_slices;
+        //int idx = (base_global_slice+tz)*shared_area + blockIdx.x*2*n_rows+blockIdx.y*blockDim.y+ty; 
+        //int idx_dst =base_global_idx + tz*dst_area + ty*n_cols ;
+        int idx = (base_global_slice+tz)*shared_area + blockIdx.x*2*s_ypitch+blockIdx.y*blockDim.y+ty; 
+		int idx_dst =base_global_idx + tz*dst_area + ty*d_xpitch ;
+        
+        if(legalCurRow && legalCurSlice){
+    		shared_cols[idx] = dst[idx_dst];
+    	}
+        if(legalCurRow && legalCurSlice && legalNextCol){
+    		//shared_cols[idx + n_rows] = dst[idx_dst + 1];
+    		shared_cols[idx + s_ypitch] = dst[idx_dst + 1];
+        }
+
+        __syncthreads();
+    }
+    __syncthreads();
+
+#ifdef CUDA_CUDA_DEBUG
+	if(blockIdx.z ==0 && blockIdx.y==0 && blockIdx.x==0 && (threadIdx.x==0)){
+//		printf("shared_cols: addr:%d, val = %f\n", threadIdx.y,shared_cols[threadIdx.y]);
+	}
+
+	if(blockIdx.y==0 && blockIdx.x==0 &&blockIdx.z==0 ){
+        if((threadIdx.x==0 || threadIdx.x==1 || threadIdx.x==2 ) && threadIdx.y==0){
+            
+            int d_addr0 = base_global_idx+0*dst_area+threadIdx.x;
+            int d_addr1 = base_global_idx+1*dst_area+threadIdx.x;
+            int addr  = base_global_slice+blockIdx.x*blockDim.x + threadIdx.x;
+            int addr1 = shared_area*(base_global_slice+1)+blockIdx.x*blockDim.x+ threadIdx.x;
+            int addr2 = shared_area*(base_global_slice+2)+blockIdx.x*blockDim.x+ threadIdx.x;
+		    printf("copy cols: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,d_addr0,dst[d_addr0]);
+		    printf("copy cols: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,d_addr1,dst[d_addr1]);
+		    printf("copy cols: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_cols: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,addr,shared_cols[addr]);
+		    printf("copy cols: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_cols: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,addr1,shared_cols[addr1]);
+		    printf("copy cols: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,shared_cols: z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,addr2,shared_cols[addr2]);
+        }
+	}
+
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.y==0 && threadIdx.x==0 && threadIdx.z==0)){
+		printf("copy cols end!\n");
+	}
+#endif
+}
 
 void gpu_kernel37_cp_slices(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
@@ -987,12 +1257,39 @@ void gpu_kernel37_cp_slices_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlo
 //#endif
 }
 
+void gpu_kernel37_cp_slices_stream_p(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices,int d_xpitch, int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols, int n_slices, int tile_x,int tile_y, int tile_z){
+
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy slices begin!\n");
+//        printf("dimBlock.x: %d, dimBlock.y: %d,dimBlock.z: %d\n",dimBlock.x,dimBlock.y,dimBlock.z);
+//        printf("dimGrid.x: %d, dimGrid.y: %d,dimGrid.z: %d\n",dimGrid.x,dimGrid.y,dimGrid.z);
+//#endif
+		gpu_stencil37_hack2_cp_slices<<<dimGrid,dimBlock,0,stream>>>(d_dst,sharedRows,sharedCols,sharedSlices,d_xpitch,d_ypitch,d_zpitch, s_xpitch,s_ypitch,s_zpitch,n_rows,n_cols,n_slices,tile_x,tile_y,tile_z);
+
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy slices finish!\n");
+//#endif
+}
+
+
 void gpu_kernel37_cp_rows_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy rows begin!\n");
 //#endif
 		gpu_stencil37_hack1_cp_rows<<<dimGrid,dimBlock,0,stream>>>(d_dst,sharedRows,sharedCols,sharedSlices,n_rows,n_cols,n_slices,tile_x,tile_y,tile_z);
+
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy rows finish!\n");
+//#endif
+}
+
+void gpu_kernel37_cp_rows_stream_p(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows,double * sharedCols, double * sharedSlices, int d_xpitch,int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
+
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy rows begin!\n");
+//#endif
+		gpu_stencil37_hack2_cp_rows<<<dimGrid,dimBlock,0,stream>>>(d_dst,sharedRows,sharedCols,sharedSlices,d_xpitch,d_ypitch,d_zpitch, s_xpitch,s_ypitch,s_zpitch,n_rows,n_cols,n_slices,tile_x,tile_y,tile_z);
 
 //#ifdef CUDA_DARTS_DEBUG
 //		printf("gpu_kernel37 copy rows finish!\n");
@@ -1009,6 +1306,18 @@ void gpu_kernel37_cp_cols_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock
 //		printf("gpu_kernel37 copy cols finish!\n");
 //#endif
 }
+
+void gpu_kernel37_cp_cols_stream_p(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices, int d_xpitch, int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z){
+
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy cols begin!\n");
+//#endif
+		gpu_stencil37_hack2_cp_cols<<<dimGrid,dimBlock,0,stream>>>(d_dst,sharedRows,sharedCols,sharedSlices,d_xpitch,d_ypitch,d_zpitch, s_xpitch,s_ypitch,s_zpitch,n_rows,n_cols,n_slices,tile_x,tile_y,tile_z);
+//#ifdef CUDA_DARTS_DEBUG
+//		printf("gpu_kernel37 copy cols finish!\n");
+//#endif
+}
+
 
 __global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double * shared_cols, double * shared_slices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
 
@@ -1277,6 +1586,345 @@ __global__ void gpu_stencil37_hack2(double * dst, double * shared_rows, double *
 }
 
 
+__global__ void gpu_stencil37_hack3(double * dst, double * shared_rows, double * shared_cols, double * shared_slices,int d_xpitch, int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
+
+#ifdef CUDA_DARTS_DEBUG
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)&&(threadIdx.y==0)){
+		printf("3D kernel begin!\n");
+//        printf("blockIdx.x = %d,blockIdx.y = %d, blockIdx.z = %d\n", blockIdx.x,blockIdx.y,blockIdx.z);
+//        printf("threadIdx.x = %d,threadIdx.y = %d, threadIdx.z = %d \n", threadIdx.x,threadIdx.y,threadIdx.z);
+        printf("3D kernel: n_cols=%d,n_rows=%d,n_slices=%d\n",n_cols,n_rows,n_slices);
+        printf("3D kernel: gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n",gridDim.x,gridDim.y,gridDim.z);
+        printf("3D kernel: blockDim.x=%d,blockDim.y=%d,blockDim.z=%d\n",blockDim.x,blockDim.y,blockDim.z);
+        printf("3D kernel: tile_x=%d,tile_y=%d,tile_z=%d\n",tile_x,tile_y,tile_z);
+	}
+#endif
+    
+    int base_global_slice = tile_z * blockIdx.z;
+	int base_global_row   = tile_y * blockIdx.y;
+	int base_global_col   = tile_x * blockIdx.x;
+    //int global_area = n_rows*n_cols;
+	//int base_global_idx = base_global_slice * global_area + base_global_row * n_cols + base_global_col;
+	
+	int global_area = d_ypitch*d_xpitch;
+	int base_global_idx = base_global_slice * global_area + base_global_row * d_xpitch + base_global_col;
+    
+    int num_rows = ((base_global_row + tile_y+2)<n_rows)?(tile_y+2):(n_rows-base_global_row);
+    int num_cols = ((base_global_col + tile_x+2)<n_cols)?(tile_x+2):(n_cols-base_global_col);
+    int num_slices = ((base_global_slice + tile_z+2)<n_slices)?(tile_z+2):(n_slices-base_global_slice);
+
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    int tx1 = threadIdx.x + 1;
+    int ty1 = threadIdx.y + 1;
+	bool legalCol    = (base_global_col + tx   )<n_cols;
+	bool legalCol1   = (base_global_col + tx + 1)<n_cols;
+	bool legalCol2   = (base_global_col + tx + 2)<n_cols;
+    bool legalColN   = (base_global_col + blockDim.x     )<n_cols;
+    bool legalColN1  = (base_global_col + blockDim.x + 1 )<n_cols;
+    bool legalColN2  = (base_global_col + blockDim.x + 2 )<n_cols;
+    bool legalColNX  = (base_global_col + blockDim.x + tx)<n_cols;
+    
+    bool legalSlice1  = (base_global_slice + 1       )<n_slices;
+    bool legalSlice2  = (base_global_slice + 2       )<n_slices;
+    bool legalSliceN  = (base_global_slice + tile_z  )<n_slices;
+    bool legalSliceN1 = (base_global_slice + tile_z+1)<n_slices;
+   
+    bool legalRow   = (base_global_row + ty    )<n_rows;
+    bool legalRow1  = (base_global_row + ty + 1)<n_rows;
+    bool legalRow2  = (base_global_row + ty + 2)<n_rows;
+    bool legalRowN  = (base_global_row + blockDim.y     )<n_rows;
+    bool legalRowN1 = (base_global_row + blockDim.y + 1 )<n_rows;
+    bool legalRowN2 = (base_global_row + blockDim.y + 2 )<n_rows;
+    bool legalRowNY = (base_global_row + blockDim.y + ty)<n_rows;
+    
+    //Declaring the shared memory array for source
+	extern	__shared__ double shared_mem[] ;
+    
+    
+    //====================================copy first 3 slices to shared_mem[]=================================//
+    int s_stride_x = blockDim.x + 2;
+    int s_stride_y = blockDim.y + 2;
+    int shared_area = s_stride_x*s_stride_y; 
+    //int sslices_area = global_area;
+    //int slices_idx = (blockIdx.z)*global_area*2 +blockIdx.y*tile_y*n_cols + blockIdx.x*tile_x;
+    //int sslices_area = n_rows*n_cols;
+    //int slices_idx = (blockIdx.z)*sslices_area*2 +blockIdx.y*tile_y*n_cols + blockIdx.x*tile_x;
+    int sslices_area = s_ypitch*s_xpitch;
+    int slices_idx = (blockIdx.z)*sslices_area*2 +blockIdx.y*tile_y*s_xpitch + blockIdx.x*tile_x;
+    
+    //----copy first two slices from shared_slices----//
+    //--copy x: 1~blockDim.x , y: 1~blockDimy
+    //shared_mem[(ty+1)*s_stride_x+tx+1] = (legalRow1&&legalCol1)?shared_slices[slices_idx+(ty+1)*n_cols+tx+1]:0;
+    //shared_mem[(ty+1)*s_stride_x+tx+1+shared_area] = (legalRow1&&legalCol1&&legalSlice1)?shared_slices[slices_idx+(ty+1)*n_cols+tx+1+sslices_area]:0;
+    shared_mem[(ty+1)*s_stride_x+tx+1] = (legalRow1&&legalCol1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+1]:0;
+    shared_mem[(ty+1)*s_stride_x+tx+1+shared_area] = (legalRow1&&legalCol1&&legalSlice1)?shared_slices[slices_idx+(ty+1)*s_xpitch +tx+1+sslices_area]:0;
+    
+    //--copy y=0,y=blockDim.y+1, x=1~blockDim.x --//
+    if(ty ==0){
+        //shared_mem[ty*s_stride_x+ tx+1] = (legalRow&&legalCol1)?shared_slices[slices_idx+ty*n_cols+tx+1]:0;
+        //shared_mem[ty*s_stride_x+ tx+1+shared_area] = (legalRow&&legalCol1&&legalSlice1)?shared_slices[slices_idx+ty*n_cols+tx+1+sslices_area]:0;
+        shared_mem[ty*s_stride_x+ tx+1] = (legalRow&&legalCol1)?shared_slices[slices_idx+ty*s_xpitch + tx+1]:0;
+        shared_mem[ty*s_stride_x+ tx+1+shared_area] = (legalRow&&legalCol1&&legalSlice1)?shared_slices[slices_idx+ty*s_xpitch +tx+1+sslices_area]:0;
+    }
+    if(ty==1){
+        //shared_mem[(blockDim.y+ty)*s_stride_x+ tx+1] = (legalRowNY&&legalCol1)?shared_slices[slices_idx+(ty+blockDim.y)*n_cols+tx+1]:0;
+        //shared_mem[(blockDim.y+ty)*s_stride_x+ tx+1+shared_area] = (legalRowNY&&legalCol1&&legalSlice1)?shared_slices[slices_idx+(ty+blockDim.y)*n_cols+tx+1+sslices_area]:0;
+        shared_mem[(blockDim.y+ty)*s_stride_x+ tx+1] = (legalRowNY&&legalCol1)?shared_slices[slices_idx+(ty+blockDim.y)*s_xpitch+tx+1]:0;
+        shared_mem[(blockDim.y+ty)*s_stride_x+ tx+1+shared_area] = (legalRowNY&&legalCol1&&legalSlice1)?shared_slices[slices_idx+(ty+blockDim.y)*s_xpitch +tx+1+sslices_area]:0;
+    }
+    //--copy x= 0, x=blockDim.x+1, y=1~blockDim.x--//
+    if(tx==0){
+        //shared_mem[(ty+1)*s_stride_x + tx] = (legalRow1)?shared_slices[slices_idx+(ty+1)*n_cols+tx]:0;
+        //shared_mem[(ty+1)*s_stride_x + tx+shared_area] = (legalRow1&&legalSlice1)?shared_slices[slices_idx+(ty+1)*n_cols+tx+sslices_area]:0;
+        shared_mem[(ty+1)*s_stride_x + tx] = (legalRow1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx]:0;
+        shared_mem[(ty+1)*s_stride_x + tx+shared_area] = (legalRow1&&legalSlice1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+sslices_area]:0;
+    }
+    if(tx==1){
+        //shared_mem[(ty+1)*s_stride_x + blockDim.x + tx] = (legalRow1&&legalColNX)?shared_slices[slices_idx+(ty+1)*n_cols+tx+blockDim.x]:0;
+        //shared_mem[(ty+1)*s_stride_x + blockDim.x + tx+shared_area] = (legalRow1&&legalColNX&&legalSlice1)?shared_slices[slices_idx+(ty+1)*n_cols+tx+blockDim.x+sslices_area]:0;
+        shared_mem[(ty+1)*s_stride_x + blockDim.x + tx] = (legalRow1&&legalColNX)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+blockDim.x]:0;
+        shared_mem[(ty+1)*s_stride_x + blockDim.x + tx+shared_area] = (legalRow1&&legalColNX&&legalSlice1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+blockDim.x+sslices_area]:0;
+    }
+    //----copy third plane from shared_rows, shared_cols, dst----//
+    //int srows_area = gridDim.y*n_cols*2;
+    //int scols_area = gridDim.x*n_rows*2;
+    int srows_area = gridDim.y*s_xpitch*2;
+    int scols_area = gridDim.x*s_ypitch*2;
+    int dst_idx= base_global_idx + global_area*2;
+    int s_idx  = shared_area*2;
+    //int srows_idx = srows_area*(base_global_slice+2) + blockIdx.y*n_cols*2 +blockIdx.x*tile_x;
+    //int scols_idx = scols_area*(base_global_slice+2) + blockIdx.x*n_rows*2 +blockIdx.y*tile_y;
+    int srows_idx = srows_area*(base_global_slice+2) + blockIdx.y*s_xpitch*2 +blockIdx.x*tile_x;
+    int scols_idx = scols_area*(base_global_slice+2) + blockIdx.x*s_ypitch*2 +blockIdx.y*tile_y;
+    if(legalSlice2){
+        //--copy x=1~blockDim.x, y=1~blockDim.y from dst to shared_mem--//
+        if(ty>0){
+            //shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?dst[dst_idx+(ty+1)*n_cols+tx+1]:0;
+			shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?dst[dst_idx+(ty+1)*d_xpitch+tx+1]:0; 			
+        }
+        //--copy y=0, y=blockDim.y+1 , x=1~blockDim.x from shared_rows to shared_mem--/
+        if(ty==0){ //y=0, x=1~blockDim.x
+            shared_mem[s_idx+tx+1] = (legalCol1)?shared_rows[srows_idx+tx+1]:0;
+            //shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?shared_rows[srows_idx+(ty+1)*n_cols+tx+1]:0;
+            shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?shared_rows[srows_idx+(ty+1)*s_xpitch+tx+1]:0;
+        }
+        if(ty==1){//y=blockDim.y+1, x=1~blockDim.x
+            //shared_mem[s_idx+(ty+blockDim.y)*s_stride_x+tx+1] = (legalCol1&&legalRowN2)?shared_rows[srows_idx+(ty+2)*n_cols+tx+1]:((legalCol1&&legalRowNY)?dst[dst_idx+(ty+blockDim.y)*n_cols+tx+1]:0);
+			shared_mem[s_idx+(ty+blockDim.y)*s_stride_x+tx+1] = (legalCol1&&legalRowN2)?shared_rows[srows_idx+(ty+2)*s_xpitch+tx+1]:((legalCol1&&legalRowNY)?dst[dst_idx+(ty+blockDim.y)*d_xpitch+tx+1]:0);
+        }
+        //--copy x=0, x=blockDim.x+1, y= 0~blockDim.y+1 from shared_cols to shared_mem--/
+        //--[0,0],[0,blockDim.y+1],[blockDim.x+1,0],[blockDim.x+1, blockDim.y+1] never be used
+        if(tx==0){  //x=0, y=1~blockDim.y   
+            shared_mem[s_idx+(ty+1)*s_stride_x] = (legalRow1)?shared_cols[scols_idx+ty+1]:0;
+        }
+        if(tx==1){  //x=blockDim.x+1,y=1~blockDim.y
+            //shared_mem[s_idx+(ty+1)*s_stride_x+tx+blockDim.x] = (legalColN2&&legalRow1)?shared_cols[scols_idx+(tx+2)*n_rows+ty+1]:((legalColNX&&legalRow1)?dst[dst_idx+(ty+1)*n_cols+tx+blockDim.x]:0);
+			shared_mem[s_idx+(ty+1)*s_stride_x+tx+blockDim.x] = (legalColN2&&legalRow1)?shared_cols[scols_idx+(tx+2)*s_ypitch+ty+1]:((legalColNX&&legalRow1)?dst[dst_idx+(ty+1)*d_xpitch+tx+blockDim.x]:0);
+        }
+    }
+    
+	__syncthreads();
+
+#ifdef CUDA_CUDA_DEBUG
+	if(blockIdx.z==0 && blockIdx.x==0 && blockIdx.y==1 ){
+        if(threadIdx.y==0 || threadIdx.y==1){
+            
+			int s_addr0 = (base_global_slice+0)*shared_area+threadIdx.y*s_stride_x+threadIdx.x+s_stride_x;
+			int s_addr1 = (base_global_slice+1)*shared_area+threadIdx.y*s_stride_x+threadIdx.x+s_stride_x;
+			int s_addr2 = (base_global_slice+2)*shared_area+threadIdx.y*s_stride_x+threadIdx.x+s_stride_x;
+			int sr_addr0 =(base_global_slice+0)*srows_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;
+			int sr_addr1 =(base_global_slice+1)*srows_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;
+			int sr_addr2 =(base_global_slice+2)*srows_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;
+			int sc_addr0 =(base_global_slice+0)*scols_area + threadIdx.y*s_ypitch + threadIdx.x+s_ypitch;
+			int sc_addr1 =(base_global_slice+1)*scols_area + threadIdx.y*s_ypitch + threadIdx.x+s_ypitch;
+			int sc_addr2 =(base_global_slice+2)*scols_area + threadIdx.y*s_ypitch + threadIdx.x+s_ypitch;
+			int ss_addr0 =(base_global_slice+0)*sslices_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;
+			int ss_addr1 =(base_global_slice+1)*sslices_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;
+			int ss_addr2 =(base_global_slice+2)*sslices_area + threadIdx.y*s_xpitch + threadIdx.x+s_xpitch;			
+			
+            printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,s_addr0,shared_mem[s_addr0]);
+            printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,s_addr1,shared_mem[s_addr1]);
+            printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,s_addr2,shared_mem[s_addr2]);	
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_rows   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sr_addr0,shared_rows[sr_addr0]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_rows   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sr_addr1,shared_rows[sr_addr1]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_rows   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sr_addr2,shared_rows[sr_addr2]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_cols   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sc_addr0,shared_cols[sc_addr0]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_cols   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sc_addr1,shared_cols[sc_addr1]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_cols   : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,sc_addr2,shared_cols[sc_addr2]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_slices : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,ss_addr0,shared_slices[ss_addr0]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_slices : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,ss_addr1,shared_slices[ss_addr1]);
+			printf("3D kernel: blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_slices : addr: %d, ,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,ss_addr2,shared_slices[ss_addr2]);			
+        }
+
+    }
+
+	__syncthreads();
+#endif
+    //====================================copy first 3 slices to shared_mem[]=================================//
+
+    //==============================compute plus copy 1 slices to shared_mem[]===============================//
+
+    int center = 1;
+    int north  = 0;
+    int south  = 2;
+    int curSlice;
+    int lenSlice = (legalSliceN)? (tile_z):(n_slices-base_global_slice-1);
+    for (curSlice = HALO; curSlice < lenSlice ; curSlice+=1){
+        //----compute slice----//
+        if(legalCol2 && legalRow2){
+            //dst[base_global_idx + curSlice*global_area + ty1*n_cols + tx1] = 
+            dst[base_global_idx + curSlice*global_area + ty1*d_xpitch + tx1] = 
+                 (   shared_mem[center*shared_area+ty1*s_stride_x+tx]  + shared_mem[center*shared_area+ty1*s_stride_x+tx+2]
+                 +   shared_mem[center*shared_area+ty*s_stride_x+tx1]  + shared_mem[center*shared_area+(ty+2)*s_stride_x+tx1]
+                 +   shared_mem[north*shared_area +ty1*s_stride_x+tx1] + shared_mem[south*shared_area+ty1*s_stride_x+tx1]
+                 +   shared_mem[center*shared_area+ty1*s_stride_x+tx1] )/7.5 ; 
+        }
+		__syncthreads();
+
+#ifdef CUDA_CUDA_DEBUG
+    	if(blockIdx.z==0 && blockIdx.x==0 && blockIdx.y==1 ){
+            if((threadIdx.y==0)&&(threadIdx.x==0)){
+                //printf("dst addr: %d\n", base_global_idx + curSlice*global_area + ty1*n_cols + tx1);
+                printf("dst addr: %d\n", base_global_idx + curSlice*global_area + ty1*d_xpitch + tx1);
+                //printf("curSlice: %d, lenSlice: %d\n", curSlice,lenSlice);
+                printf("curSlice: %d, lenSlice: %d,gridDim.x=%d,gridDim.y=%d,gridDim.z=%d\n", curSlice,lenSlice,gridDim.x,gridDim.y,gridDim.z);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d, val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,center,ty1,tx,center*shared_area+ty1*s_stride_x+tx,shared_mem[center*shared_area+ty1*s_stride_x+tx]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,center,ty1,tx+2,center*shared_area+ty1*s_stride_x+tx+2,shared_mem[center*shared_area+ty1*s_stride_x+tx+2]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,center,ty,tx1,center*shared_area+ty*s_stride_x+tx1,shared_mem[center*shared_area+ty*s_stride_x+tx1]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,center,ty+2,tx1,center*shared_area+(ty+2)*s_stride_x+tx1,shared_mem[center*shared_area+(ty+2)*s_stride_x+tx1]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,north,ty1,tx1,north*shared_area+(ty1)*s_stride_x+tx1,shared_mem[north*shared_area+(ty1)*s_stride_x+tx1]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,south,ty1,tx1,south*shared_area+(ty1)*s_stride_x+tx1,shared_mem[south*shared_area+(ty1)*s_stride_x+tx1]);
+                printf("blockIdx.x=%d,blockIdx.y=%d,blockIdx.z=%d, shared_mem   : addr: z:%d,y:%d,x=%d,addr: %d,val: %f\n",blockIdx.x,blockIdx.y,blockIdx.z,center,ty1,tx1,center*shared_area+(ty1)*s_stride_x+tx1,shared_mem[center*shared_area+(ty1)*s_stride_x+tx1]);
+            }
+//            if(threadIdx.x==0 && threadIdx.y==0){
+//                int addr = 10*n_rows*n_cols + n_cols+1;
+//                int addr1 = 10*srows_area + 2*n_cols+1;
+//                printf("dst addr: %d,val: %f\n", addr, dst[addr] );
+//                printf("shared_row addr: %d,val: %f\n", addr1, shared_rows[addr1] );
+//            }
+//                
+//            if(legalCol1 && legalRow1){
+//                printf("addr: %d\n",base_global_idx+curSlice*global_area+ty1*n_cols+tx1 );
+//            }
+        }
+#endif
+        //----copy next slice to shared_mem[]----//
+        int ssSlice = curSlice+2;
+        int g_ssSlice = base_global_slice+ssSlice;
+        //srows_idx = srows_area*g_ssSlice + blockIdx.y*n_cols*2 +blockIdx.x*tile_x;
+        //scols_idx = scols_area*g_ssSlice + blockIdx.x*n_rows*2 +blockIdx.y*tile_y;
+        srows_idx = srows_area*g_ssSlice + blockIdx.y*s_xpitch*2 +blockIdx.x*tile_x;
+        scols_idx = scols_area*g_ssSlice + blockIdx.x*s_ypitch*2 +blockIdx.y*tile_y;
+        bool legalSliceSS = g_ssSlice<n_slices;
+        dst_idx= base_global_idx + global_area*ssSlice;
+        s_idx  = shared_area*north;
+        if(legalSliceSS){
+            //--copy x=1~blockDim.x, y=1~blockDim.y from dst to shared_mem--//
+            if(ty>0){
+                //shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?dst[dst_idx+(ty+1)*n_cols+tx+1]:0; 
+				shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?dst[dst_idx+(ty+1)*d_xpitch+tx+1]:0; 
+            }
+            //--copy y=0, y=blockDim.y+1 , x=1~blockDim.x from shared_rows to shared_mem--/
+            if(ty==0){ //y=0, x=1~blockDim.x
+                shared_mem[s_idx+tx+1] = (legalCol1)?shared_rows[srows_idx+tx+1]:0;
+                //shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?shared_rows[srows_idx+(ty+1)*n_cols+tx+1]:0;
+                shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalCol1&&legalRow1)?shared_rows[srows_idx+(ty+1)*s_xpitch+tx+1]:0;
+            }
+            if(ty==1){//y=blockDim.y+1, x=1~blockDim.x
+                //shared_mem[s_idx+(ty+blockDim.y)*s_stride_x+tx+1] = (legalCol1&&legalRowN2)?shared_rows[srows_idx+(ty+2)*n_cols+tx+1]:((legalCol1&&legalRowNY)?dst[dst_idx+(ty+blockDim.y)*n_cols+tx+1]:0);
+				shared_mem[s_idx+(ty+blockDim.y)*s_stride_x+tx+1] = (legalCol1&&legalRowN2)?shared_rows[srows_idx+(ty+2)*s_xpitch+tx+1]:((legalCol1&&legalRowNY)?dst[dst_idx+(ty+blockDim.y)*d_xpitch+tx+1]:0);
+            }
+            //--copy x=0, x=blockDim.x+1, y= 0~blockDim.y+1 from shared_cols to shared_mem--/
+            //--[0,0],[0,blockDim.y+1],[blockDim.x+1,0],[blockDim.x+1, blockDim.y+1] never be used
+            if(tx==0){  //x=0, y=1~blockDim.y   
+                shared_mem[s_idx+(ty+1)*s_stride_x] = (legalRow1)?shared_cols[scols_idx+ty+1]:0;
+            }
+            if(tx==1){  //x=blockDim.x+1,y=1~blockDim.y
+                //shared_mem[s_idx+(ty+1)*s_stride_x+tx+blockDim.x] = (legalColN2&&legalRow1)?shared_cols[scols_idx+(tx+2)*n_rows+ty+1]:((legalColNX&&legalRow1)?dst[dst_idx+(ty+1)*n_cols+tx+blockDim.x]:0);
+				shared_mem[s_idx+(ty+1)*s_stride_x+tx+blockDim.x] = (legalColN2&&legalRow1)?shared_cols[scols_idx+(tx+2)*s_ypitch+ty+1]:((legalColNX&&legalRow1)?dst[dst_idx+(ty+1)*d_xpitch+tx+blockDim.x]:0);
+            }
+        }
+        
+        center = ROTATE_UP(center,3);
+		south  = ROTATE_UP(south,3);
+		north  = ROTATE_UP(north,3);
+		__syncthreads();
+    }
+
+    //==============================compute plus copy 1 slices to shared_mem[]===============================//
+
+    //=========================copy plus compute last slice in one grid to shared_mem[]==========================//
+    int g_nnSlice = base_global_slice+ tile_z + 1;
+    bool legalSliceNN = g_nnSlice < n_slices;
+    if(legalSliceNN){
+        //----copy----//
+        //--copy x: 1~blockDim.x , y: 1~blockDimy
+        //slices_idx = (blockIdx.z+1)*global_area*2 +global_area + blockIdx.y*tile_y*n_cols + blockIdx.x*tile_x;
+        slices_idx = (blockIdx.z+1)*sslices_area*2 +sslices_area +blockIdx.y*tile_y*s_xpitch + blockIdx.x*tile_x;
+        
+        s_idx = south*shared_area;
+
+        //--copy x: 1~blockDim.x , y: 1~blockDimy
+        //shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalRow1&&legalCol1)?shared_slices[slices_idx+(ty+1)*n_cols+tx+1]:0;
+        shared_mem[s_idx+(ty+1)*s_stride_x+tx+1] = (legalRow1&&legalCol1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+1]:0;
+        
+        //--copy y=0,y=blockDim.y+1, x=1~blockDim.x --//
+        if(ty ==0){
+            //shared_mem[s_idx+ty*s_stride_x+ tx+1] = (legalRow&&legalCol1)?shared_slices[slices_idx+ty*n_cols+tx+1]:0;
+            shared_mem[s_idx+ty*s_stride_x+ tx+1] = (legalRow&&legalCol1)?shared_slices[slices_idx+ty*s_xpitch+tx+1]:0;
+        }
+        if(ty==1){
+            //shared_mem[s_idx+(blockDim.y+ty)*s_stride_x+ tx+1] = (legalRowNY&&legalCol1)?shared_slices[slices_idx+(ty+blockDim.y)*n_cols+tx+1]:0;
+            shared_mem[s_idx+(blockDim.y+ty)*s_stride_x+ tx+1] = (legalRowNY&&legalCol1)?shared_slices[slices_idx+(ty+blockDim.y)*s_xpitch+tx+1]:0;
+        }
+        //--copy x= 0, x=blockDim.x+1, y=1~blockDim.x--//
+        if(tx==0){
+            //shared_mem[s_idx+(ty+1)*s_stride_x + tx] = (legalRow1)?shared_slices[slices_idx+(ty+1)*n_cols+tx]:0;
+            shared_mem[s_idx+(ty+1)*s_stride_x + tx] = (legalRow1)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx]:0;
+        }
+        if(tx==1){
+            //shared_mem[s_idx+(ty+1)*s_stride_x + blockDim.x + tx] = (legalRow1&&legalColNX)?shared_slices[slices_idx+(ty+1)*n_cols+tx+blockDim.x]:0;
+            shared_mem[s_idx+(ty+1)*s_stride_x + blockDim.x + tx] = (legalRow1&&legalColNX)?shared_slices[slices_idx+(ty+1)*s_xpitch+tx+blockDim.x]:0;
+        }
+        __syncthreads();
+        //----compute----//
+        if(legalCol2 && legalRow2){
+            //dst[base_global_idx + curSlice*global_area + ty1*n_cols + tx1] = 
+            dst[base_global_idx + curSlice*global_area + ty1*d_xpitch + tx1] = 
+                 (   shared_mem[center*shared_area+ty1*s_stride_x+tx]  + shared_mem[center*shared_area+ty1*s_stride_x+tx+2]
+                 +   shared_mem[center*shared_area+ty*s_stride_x+tx1]  + shared_mem[center*shared_area+(ty+2)*s_stride_x+tx1]
+                 +   shared_mem[north*shared_area +ty1*s_stride_x+tx1] + shared_mem[south*shared_area+ty1*s_stride_x+tx1]
+                 +   shared_mem[center*shared_area+ty1*s_stride_x+tx1] )/7.5 ; 
+        }
+    }
+
+	__syncthreads();
+    //=========================copy plus compute last slice in one grid to shared_mem[]==========================//
+#ifdef CUDA_DARTS_DEBUG
+
+	if((blockIdx.x==0)&&(blockIdx.y==1)&&(blockIdx.z==0)){
+        if(((threadIdx.x==0)||(threadIdx.x==1)||(threadIdx.x==2))&&(threadIdx.y==0)&&(threadIdx.z==0)){
+            
+            int d_addr0 = base_global_idx+0*global_area+threadIdx.x+d_xpitch+1;
+            int d_addr1 = base_global_idx+1*global_area+threadIdx.x+d_xpitch+1;
+            int d_addr2 = base_global_idx+2*global_area+threadIdx.x+d_xpitch+1;
+		    printf("3D kernel: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,0,d_addr0,dst[d_addr0]);
+		    printf("3D kernel: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,1,d_addr1,dst[d_addr1]);
+		    printf("3D kernel: blockIdx.x=%d, blockIdx.y=%d,blockIdx.z=%d,dst        : z:%d, addr:%d, val = %f\n",blockIdx.x, blockIdx.y,blockIdx.z,2,d_addr2,dst[d_addr2]);
+        }
+
+    }
+
+	if((blockIdx.x==0)&&(blockIdx.y==0)&&(blockIdx.z==0)&&(threadIdx.x==0)&&(threadIdx.y==0)&&(threadIdx.z==0)){
+		printf("3D kernel finish!\n");
+	}
+#endif
+
+}
+
+
 void gpu_kernel37(dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
 	int sharedMemSize = sizeof(double)*(1+HALO*2)*((tile_x+2)*(tile_y+2));
 #ifdef CUDA_DARTS_DEBUG
@@ -1301,3 +1949,17 @@ void gpu_kernel37_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double
 		printf("gpu kernel37 return to host, but kernel haven't finished!\n");
 #endif
 }
+
+void gpu_kernel37_stream_p(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int d_xpitch,int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch, int s_zpitch,  int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z){
+	int sharedMemSize = sizeof(double)*(1+HALO*2)*((tile_x+2)*(tile_y+2));
+#ifdef CUDA_DARTS_DEBUG
+		printf("sharedMemSize: %d B, total sharedMemSize: %d B\n",sharedMemSize, sharedMemSize*dimGrid.x*dimGrid.y*dimGrid.z);
+		printf("gpu_kernel37: dimGrid.x= %d dimGrid.y= %d, dimGrid.z= %d\n",dimGrid.x,dimGrid.y,dimGrid.z);
+#endif
+		gpu_stencil37_hack3<<<dimGrid,dimBlock,sharedMemSize,stream>>>(d_dst,sharedRows,sharedCols,sharedSlices,d_xpitch,d_ypitch,d_zpitch, s_xpitch,s_ypitch,s_zpitch,n_rows,n_cols,n_slices,tile_x,tile_y,tile_z);
+#ifdef CUDA_DARTS_DEBUG
+		printf("gpu kernel37 return to host, but kernel haven't finished!\n");
+#endif
+}
+
+

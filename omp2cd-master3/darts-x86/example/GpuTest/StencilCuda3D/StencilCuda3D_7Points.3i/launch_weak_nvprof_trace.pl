@@ -15,7 +15,7 @@ my @threads = (
 );
 
 
-my $n_iter = 11;
+my $n_iter = 10;
 my $n_reps = 5; 
 my $its = 1;
 

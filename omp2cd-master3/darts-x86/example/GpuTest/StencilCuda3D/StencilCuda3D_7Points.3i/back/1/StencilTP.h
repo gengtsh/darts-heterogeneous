@@ -6,6 +6,7 @@
 #include "conf.h"
 #include "stencil.h"
 //#include <math.h>
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include "DARTS.h"
@@ -41,24 +42,26 @@ DEF_TP(StencilTP)
 
 	bool hard;
     double GpuRatio;
+    bool streamming;
 	double softGpuRatio=0.0;
 	int32_t nCPU = 0;
 	int32_t nGPU = 0;
-	int64_t tWL=0;
 	
 	Stencil3D7ptCpuLoopCD *CpuLoop37 = NULL;
     Stencil3D7ptCpuSyncCD	CpuSync37;
 	Stencil3D7ptSwapCD Swap37;
 
-//	Stencil3D7ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps37;
-//    Stencil3D7ptGpuKernelPureGpuWithStreamsCD GpuKernelPureGpuWithStreams37;
+	Stencil3D7ptGpuKernelWithAllTimeStepsCD GpuKernelWithAllTimeSteps37;
+    Stencil3D7ptGpuKernelPureGpuWithStreamsCD GpuKernelPureGpuWithStreams37;
 //    Stencil3D7ptGpuKernelHybridWithStreamsCD GpuKernelHybridWithStreams37;
     SyncCD	sync;
     Codelet *signalUp;
-	
+
+    int32_t gpuIdx_xyz;
 	int32_t gpuSlices=0;
 	int32_t gpuRows=0;
 	int32_t gpuCols=0;
+    int32_t gpuTileCRS[3];//Columns, Rows,Slices
 
 	int32_t cpuSlices=0;
 	int32_t cpuRows=0;
@@ -82,25 +85,25 @@ DEF_TP(StencilTP)
 	int gpuTile_x = 0;
 	int gpuTile_y = 0;
     int gpuTile_z = 0;
+    int gpuTile_xyz[3];
 
+    int gpuBlockDimx = 0;
+    int gpuBlockDimy = 0;
+    int gpuBlockDimz = 0;
 
-    int blockDimx = 0;
-    int blockDimy = 0;
-    int blockDimz = 0;
+    int gpuGridDimx = 0;
+    int gpuGridDimy = 0;
+    int gpuGridDimz = 0;
+    int gpuTileGridDim_xyz[3]; 
 
-    int gridDimx = 0;
-    int gridDimy = 0;
-    int gridDimz = 0;
-
-    double d_size = 0;
+    double  d_size = 0;
     int64_t d_size_sharedCols = 0;
     int64_t d_size_sharedRows = 0;
     int64_t d_size_sharedSlices = 0;
-
+    double req_size=0;
 
 	double *d_dst = NULL;
 	dim3 dimGrid_hack1;
-    double req_size=0;
 	double cmCpu = 10;	//cpu(total 32 cores) compute ability
 	double cmGpu = 10;	//Gpu compute ability
 	bool CpuIvGpu = false; // CPU to invoke GPU;
@@ -148,16 +151,17 @@ DEF_TP(StencilTP)
 //	int32_t	cpuColsBase   = 100;
     
 	int32_t lastCnt = 0;
-    int32_t gpuWLMax= 0;
-    int32_t gpuMemMax = 0;
-    
+    int64_t gpuMemMax = 0;
+    int64_t gpuAvMem = GPU_AVMEM_SIZE*GB; 
 
-    bool invokeStreams = false;
-    int nStream = 4 ;
-	cudaStream_t *stream ;
+    int nStream = 0 ;
+    int gnStream = 0 ; //group number of stream
+    int tnStream = 0 ; //total number of stream 
+    int vnStream = 0 ;
+    cudaStream_t *stream ;
 
 
-    StencilTP(double * inimatrix,const uint64_t n_rows,const uint64_t n_cols, const uint64_t n_slices,double * newmatrix,uint64_t ts,bool hard,double GpuRatio, Codelet *up)
+    StencilTP(double * inimatrix,const uint64_t n_rows,const uint64_t n_cols, const uint64_t n_slices,double * newmatrix,uint64_t ts,bool hard,double GpuRatio,bool streamming, Codelet *up)
 	:Initial(inimatrix)
 	,nRows(n_rows)
 	,nCols(n_cols)
@@ -167,6 +171,7 @@ DEF_TP(StencilTP)
 	,tsInit(ts)
     ,hard(hard)
     ,GpuRatio(GpuRatio)
+    ,streamming(streamming)
 	,sync(1,1,this,LONGWAIT)
 	,signalUp(up)
 	{
@@ -218,7 +223,7 @@ DEF_TP(StencilTP)
 	    		cudaGetDeviceCount(&deviceCount);
 	    		cudaDeviceProp props;
 	    		cudaGetDeviceProperties(&props,0);
-
+                int ccKernels =props.concurrentKernels; 
 #ifdef CUDA_DARTS_DEBUG		
 	    		std::cout<<"gpu device count: "<<deviceCount<<std::endl;
 	    		std::cout<<"shared memory per block: "<<props.sharedMemPerBlock/KB<<"KB"<<std::endl;
@@ -228,7 +233,9 @@ DEF_TP(StencilTP)
 	    		std::cout<<"Threads per MP:"<<props.maxThreadsPerMultiProcessor<<std::endl;
 	    		std::cout<<"MB count:"<<props.multiProcessorCount<<std::endl;
 	    		std::cout<<"Global memory: "<<props.totalGlobalMem/MB<<"MB"<<std::endl;
+                std::cout<<"concurrent kernels ability: "<<ccKernels<<std::endl; 
 #endif
+
 
 	    		size_t gpu_mem_total_t = 0;
 	    		size_t gpu_mem_avail_t = 0;
@@ -236,59 +243,166 @@ DEF_TP(StencilTP)
 	    		cudaMemGetInfo(&gpu_mem_avail_t,&gpu_mem_total_t);
 	    		gpu_mem_valid_t = gpu_mem_avail_t - XMB;
                 
-                gpuMemMax =(2*GB)> gpu_mem_valid_t?gpu_mem_avail_t: 2*GB;
-//
-//	            tile_x = (nCols>GRID_TILE37_X)?GRID_TILE37_X:nCols; //16
-//	            tile_y = (nRows>GRID_TILE37_Y)?GRID_TILE37_Y:nRows; //16
-//                tile_z = (nSlices>GRID_TILE37_Z)?GRID_TILE37_Z:nSlices; //100 tile_z +2 < NUM_THREAD
-//
-//                blockDimx = (nCols-2)> tile_x? tile_x:(nCols-2);
-//                blockDimy = (nRows-2)> tile_y? tile_y:(nRows-2);
-//                blockDimz = 1;
-//
-//	            gridDimx = std::ceil(1.0*(nCols)/blockDimx);
-//	            gridDimy = std::ceil(1.0*(nRows)/blockDimy);
-//                gridDimz = std::ceil(1.0*(nSlices)/tile_z);
-//                d_size = sizeof(double)*nRows*nCols*nSlices;  
-//                d_size_sharedCols = sizeof(double)*nRows*nSlices*gridDimx*2;
-//                d_size_sharedRows = sizeof(double)*nCols*nSlices*gridDimy*2;
-//                d_size_sharedSlices = sizeof(double)*nRows*nCols*gridDimz*2;
-//                req_size = d_size + d_size_sharedCols + d_size_sharedRows + d_size_sharedSlices;
-//
-//                gpuWLMax = std::floor(1.0*gpuMemMax/(sizeof(double)*(nRows*nCols+nRows*gridDimx*2+nCols*gridDimy*2+1.0*nRows*nCols*(1/tile_z))));
-//
-//#ifdef CUDA_DARTS_DEBUG		
-//	    		std::cout<<"gpuWLMax: "<<gpuWLMax<<std::endl;
-//#endif
-//                if (GpuRatio == 1.0){
-//                    
-//                    if(req_size < gpuMemMax){
-//                        nCPU = 0;
-//                        nGPU = 1;
-//                        gpuWL = tWL;
-//                        cpuWL = 0;
-//                        gpuPos = 0;
-//
-//	    				GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
-//                        add(&GpuKernelWithAllTimeSteps37);	
-//                    }else{
-//                        
-//                        nCPU=0;
-//                        nGPU = std::ceil(req_size/gpuMemMax);
-//                        gpuWL = tWL;
-//                        gpuPos=0;
-//                        invokeStreams = true;
-//                        stream = new cudaStream_t[nStream];
-//                        for(int i=0;i<nStream;++i){
-//                            cudaStreamCreate(&stream[i]);
-//                        }
-//                        GpuKernelPureGpuWithStreams37 = Stencil3D7ptGpuKernelPureGpuWithStreamsCD{0,1,this,GPUMETA};
-//                        add(&GpuKernelPureGpuWithStreams37);
-//                    }
-//
-//                }else{
-//
-//                    if(req_size< gpuMemMax){
+                gpuMemMax =gpuAvMem> gpu_mem_valid_t?gpu_mem_avail_t: gpuAvMem;
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"gpu avail memory: "<<gpu_mem_avail_t/KB<<"KB"<<std::endl;
+	    		std::cout<<"gpu valid memory: "<<gpu_mem_valid_t/KB<<"KB"<<std::endl;
+                std::cout<<"gpu memory avail Max: "<<gpuMemMax/KB<<"KB"<<std::endl;
+#endif
+
+	    	    gpuPos = 0;
+                gpuSlices = nSlices;
+				gpuRows = nRows;
+				gpuCols = nCols;
+                gpuTileCRS[0]=gpuCols;                
+                gpuTileCRS[1]=gpuRows;                
+                gpuTileCRS[2]=gpuSlices;
+			   
+
+                gpuTile_x = (gpuCols    >GRID_TILE37_X)?GRID_TILE37_X:gpuCols;
+				gpuTile_y = (gpuRows    >GRID_TILE37_Y)?GRID_TILE37_Y:gpuRows;
+				gpuTile_z = (gpuSlices  >GRID_TILE37_Z)?GRID_TILE37_Z:gpuSlices;
+		        gpuTile_xyz[0]=gpuTile_x;
+		        gpuTile_xyz[1]=gpuTile_y;
+		        gpuTile_xyz[2]=gpuTile_z;
+
+                
+                gpuBlockDimx = (gpuCols-2  )>gpuTile_x?gpuTile_x:(gpuCols-2);
+				gpuBlockDimy = (gpuRows-2  )>gpuTile_y?gpuTile_y:(gpuRows-2);
+				gpuBlockDimz = 1;
+
+				
+				gpuGridDimx = std::ceil(1.0*gpuCols/gpuBlockDimx);
+				gpuGridDimy = std::ceil(1.0*gpuRows/gpuBlockDimy);
+				gpuGridDimz = std::ceil(1.0*gpuSlices/gpuTile_z);
+                
+                gpuTileGridDim_xyz[0]=gpuGridDimx;
+                gpuTileGridDim_xyz[1]=gpuGridDimy;
+                gpuTileGridDim_xyz[2]=gpuGridDimz;
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"gpuGridDimx: "<<gpuGridDimx<<std::endl;;
+	    		std::cout<<"gpuGridDimy: "<<gpuGridDimy<<std::endl;;
+	    		std::cout<<"gpuGridDimz: "<<gpuGridDimz<<std::endl;;
+#endif
+
+
+                d_size = sizeof(double)*gpuRows*gpuCols*gpuSlices;  
+                d_size_sharedCols   = sizeof(double)*gpuRows*gpuSlices*gpuGridDimx*2;
+                d_size_sharedRows   = sizeof(double)*gpuCols*gpuSlices*gpuGridDimy*2;
+                d_size_sharedSlices = sizeof(double)*gpuRows*gpuCols  *gpuGridDimz*2;
+                req_size = d_size + d_size_sharedCols + d_size_sharedRows + d_size_sharedSlices;
+                //gpuWLMax = std::floor(1.0*gpuMemMax/(sizeof(double)*(gpuRows*gpuCols+gpuRows*gpuGridDimx*2+gpuCols*gpuGridDimy*2+1.0*gpuRows*gpuCols*(1/gpuTile_z))));
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"req size: "<<req_size/KB<<"KB,gupMemMax: "<<gpuMemMax/KB<<"KB!"<<std::endl;
+#endif
+                if (GpuRatio == 1.0){
+                    gpuPos      = 0;
+					gpuSlices	= nSlices;
+					gpuRows		= nRows;
+					gpuCols		= nCols;
+
+                    if(streamming==false){
+                        if(req_size<gpuMemMax){
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		            std::cout<<"gpu require size is less than gpuMemMax and not use streamming! "<<std::endl;
+#endif
+                            nGPU	= 1;
+                            gnStream = 1;
+						    nStream	= 4;
+                            tnStream = nStream;
+						    stream = new cudaStream_t[tnStream];
+                            for(int i=0;i<tnStream;++i){
+                                cudaStreamCreate(&stream[i]);
+                            }
+                            GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
+                            add(&GpuKernelWithAllTimeSteps37);	
+                            }else{
+                                exit(-1);
+                            }
+                    }else{
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		        std::cout<<"gpu require size is greater than gpuMemMax or forse to use streamming! "<<std::endl;
+#endif
+                        nGPU = std::ceil(req_size/gpuMemMax);
+                        nStream = 5;
+                        gnStream= 4;//may change
+                        //vnStream = nGPU*gnStream;
+                        int ncut;
+                        ncut = (nGPU==1)?2:nGPU;
+                        vnStream = 1;
+                        int sz = sizeof(gpuTileGridDim_xyz)/sizeof(gpuTileGridDim_xyz[0]);
+                        gpuIdx_xyz=std::min_element(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3)-gpuTileGridDim_xyz;
+                        int gridBig = std::ceil(1.0*gpuTileGridDim_xyz[gpuIdx_xyz]/ncut);                          
+                        int maxGrid=0;
+                        for(int k = 0; k<sz;++k){
+                            int vn = std::ceil(1.0*gpuTileGridDim_xyz[k]/gridBig);
+                            vnStream *=vn;
+                            maxGrid = (maxGrid > vn)? maxGrid:vn; 
+                            gpuTileGridDim_xyz[k]=gridBig;
+                        }
+                        gnStream = maxGrid; 
+#ifdef CUDA_DARTS_DEBUG
+                        std::cout<<"gridBig    : "<<gridBig<<std::endl;
+                        std::cout<<"gpu cutting: "<<" Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
+                        std::cout<<"gpu gnStream: "<<gnStream<<std::endl;
+                        std::cout<<"gpu vnStream: "<<vnStream<<std::endl;
+
+#endif
+                        //for (int i=0;i<2;i++){ 
+                        //    int gx = gpuTileGridDim_xyz[0];
+                        //    //check whether all x y z are the same
+                        //    if(std::all_of(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3,[gx](int x){return x==gx;})){
+                        //        gpuIdx_xyz=2;//cut based on slice
+                        //    }else{
+                        //        gpuIdx_xyz=std::max_element(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3)-gpuTileGridDim_xyz;//find the max among  gridDim of row,cols,slices
+                        //    }
+                        //
+#ifdef CUDA_DARTS_DEBUG
+                        //    std::cout<<"gpu cutting " <<i<<" based on : (0:x(columns); 1:y(rows);2:z(slices)):"<<gpuIdx_xyz<<std::endl;
+#endif
+                        //    int ncut = (i==0)?nGPU:gnStream;
+                        //    gpuTileGridDim_xyz[gpuIdx_xyz] =  std::ceil(1.0*gpuTileGridDim_xyz[gpuIdx_xyz]/ncut) ;
+
+#ifdef CUDA_DARTS_DEBUG
+                        //    std::cout<<"gpu cutting "<<i<<" Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
+#endif
+                        //}
+                        
+                        gpuTileCRS[0]=((gpuTileGridDim_xyz[0]*gpuTile_x)>gpuCols  )?gpuCols:  ( gpuTileGridDim_xyz[0]*gpuTile_x);
+                        gpuTileCRS[1]=((gpuTileGridDim_xyz[1]*gpuTile_y)>gpuRows  )?gpuRows:  ( gpuTileGridDim_xyz[1]*gpuTile_y);
+                        gpuTileCRS[2]=((gpuTileGridDim_xyz[2]*gpuTile_z)>gpuSlices)?gpuSlices:( gpuTileGridDim_xyz[2]*gpuTile_z);
+
+                        tnStream= vnStream*nStream; 
+                        stream = new cudaStream_t[tnStream];
+                        for(int i=0;i<tnStream;++i){
+                            cudaStreamCreate(&stream[i]);
+                        }
+                        GpuKernelPureGpuWithStreams37 = Stencil3D7ptGpuKernelPureGpuWithStreamsCD{0,1,this,GPUMETA};
+                        add(&GpuKernelPureGpuWithStreams37);
+                    
+#ifdef CUDA_DARTS_DEBUG
+                        std::cout<<"gpu count: "<<nGPU<<std::endl;
+                        std::cout<<"gpu gnStream: "<<gnStream<<std::endl;
+                        std::cout<<"gpu total stream: "<<tnStream<<std::endl;
+                        std::cout<<"gpu cutting Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
+                        std::cout<<"gpu cutting tile: x: "<< gpuTileCRS[0]<<",y: "<<gpuTileCRS[1]<<", z: "<<gpuTileCRS[2]<<std::endl;
+
+#endif
+                    }
+
+#ifdef CUDA_DARTS_DEBUG		
+	    		std::cout<<"gpu : gpuSlices "<<gpuSlices<<std::endl;
+	    		std::cout<<"gpu : gpuRows "<<gpuRows<<std::endl;
+	    		std::cout<<"gpu : gpuCols "<<gpuCols<<std::endl;
+#endif
+                }else{
+
+                    if(req_size< gpuMemMax){
 //                       
 //                        nCPU = 0;
 //                        nGPU = 1;
@@ -299,7 +413,7 @@ DEF_TP(StencilTP)
 //	    				GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
 //                        add(&GpuKernelWithAllTimeSteps37);	
 //
-//                    }else{
+                    }else{
 //
 //#ifdef CUDA_DARTS_DEBUG		
 //	    		std::cout<<"CPU&GPU Hybrid! "<<std::endl;
@@ -356,9 +470,9 @@ DEF_TP(StencilTP)
 //	    		        nCPUInit = nCPU;
 //	    		        nGPUInit = nGPU;
 //      
-//                    }
+                    }
 //
-//                }
+                }
                  
             
             }
@@ -371,19 +485,15 @@ DEF_TP(StencilTP)
 		std::cout<<"gpuPos = "<<gpuPos<<std::endl;
 		std::cout<<"cpuPos = "<<cpuPos<<std::endl;
        
-        std::cout<<"invokeStreams = "<<invokeStreams<<std::endl;
 #endif
 	}
 	
 	virtual ~StencilTP(){
         delete []CpuLoop37;
-
-        if(invokeStreams==true){
-			for(int i=0;i<nStream;++i){
-				cudaStreamDestroy(stream[i]);
-			}
-            delete [] stream;
-        }
+		for(int i=0;i<tnStream;++i){
+			cudaStreamDestroy(stream[i]);
+		}
+        delete [] stream;
 #ifdef CUDA_DARTS_DEBUG
 		std::cout<<"~StencilTP finish!"<<std::endl;
 #endif

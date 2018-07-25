@@ -157,6 +157,7 @@ DEF_TP(StencilTP)
     int nStream = 0 ;
     int gnStream = 0 ; //group number of stream
     int tnStream = 0 ; //total number of stream 
+    int vnStream = 0 ;
     cudaStream_t *stream ;
 
 
@@ -320,7 +321,7 @@ DEF_TP(StencilTP)
                             GpuKernelWithAllTimeSteps37 = Stencil3D7ptGpuKernelWithAllTimeStepsCD{0,1,this,GPUMETA};
                             add(&GpuKernelWithAllTimeSteps37);	
                             }else{
-								exit(-1);
+                                exit(-1);
                             }
                     }else{
 
@@ -330,33 +331,53 @@ DEF_TP(StencilTP)
                         nGPU = std::ceil(req_size/gpuMemMax);
                         nStream = 5;
                         gnStream= 4;//may change
-                        for (int i=0;i<2;i++){ 
-                            int gx = gpuTileGridDim_xyz[0];
-                            if(std::all_of(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3,[gx](int x){return x==gx;})){
-                            //if((gpuTileGridDim_xyz[0]==gpuTileGridDim_xyz[1] )&&(gpuTileGridDim_xyz[0]==gpuTileGridDim_xyz[2] )){
-                                gpuIdx_xyz=2;//cut based on slice
-                            }else{
-                                gpuIdx_xyz=std::max_element(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3)-gpuTileGridDim_xyz;//find the max among  gridDim of row,cols,slices
-                            }
-                        
+                        //vnStream = nGPU*gnStream;
+                        int ncut;
+                        ncut = (nGPU==1)?2:nGPU;
+                        vnStream = 1;
+                        int sz = sizeof(gpuTileGridDim_xyz)/sizeof(gpuTileGridDim_xyz[0]);
+                        gpuIdx_xyz=std::min_element(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3)-gpuTileGridDim_xyz;
+                        int gridBig = std::ceil(1.0*gpuTileGridDim_xyz[gpuIdx_xyz]/ncut);                          
+                        int maxGrid=0;
+                        for(int k = 0; k<sz;++k){
+                            int vn = std::ceil(1.0*gpuTileGridDim_xyz[k]/gridBig);
+                            vnStream *=vn;
+                            maxGrid = (maxGrid > vn)? maxGrid:vn; 
+                            gpuTileGridDim_xyz[k]=gridBig;
+                        }
+                        gnStream = maxGrid; 
 #ifdef CUDA_DARTS_DEBUG
-                            std::cout<<"gpu cutting " <<i<<" based on : (0:x(columns); 1:y(rows);2:z(slices)):"<<gpuIdx_xyz<<std::endl;
+                        std::cout<<"gridBig    : "<<gridBig<<std::endl;
+                        std::cout<<"gpu cutting: "<<" Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
+                        std::cout<<"gpu gnStream: "<<gnStream<<std::endl;
+                        std::cout<<"gpu vnStream: "<<vnStream<<std::endl;
+
 #endif
-                            int ncut = (i==0)?nGPU:gnStream;
-                            gpuTileGridDim_xyz[gpuIdx_xyz] =  std::ceil(1.0*gpuTileGridDim_xyz[gpuIdx_xyz]/ncut) ;
+                        //for (int i=0;i<2;i++){ 
+                        //    int gx = gpuTileGridDim_xyz[0];
+                        //    //check whether all x y z are the same
+                        //    if(std::all_of(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3,[gx](int x){return x==gx;})){
+                        //        gpuIdx_xyz=2;//cut based on slice
+                        //    }else{
+                        //        gpuIdx_xyz=std::max_element(gpuTileGridDim_xyz,gpuTileGridDim_xyz+3)-gpuTileGridDim_xyz;//find the max among  gridDim of row,cols,slices
+                        //    }
+                        //
+#ifdef CUDA_DARTS_DEBUG
+                        //    std::cout<<"gpu cutting " <<i<<" based on : (0:x(columns); 1:y(rows);2:z(slices)):"<<gpuIdx_xyz<<std::endl;
+#endif
+                        //    int ncut = (i==0)?nGPU:gnStream;
+                        //    gpuTileGridDim_xyz[gpuIdx_xyz] =  std::ceil(1.0*gpuTileGridDim_xyz[gpuIdx_xyz]/ncut) ;
 
 #ifdef CUDA_DARTS_DEBUG
-                            std::cout<<"gpu cutting "<<i<<" Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
+                        //    std::cout<<"gpu cutting "<<i<<" Grid: x: "<< gpuTileGridDim_xyz[0]<<",y: "<<gpuTileGridDim_xyz[1]<<", z: "<< gpuTileGridDim_xyz[2]<<std::endl;
 #endif
-                        }
-                        //for(int i=0;i<3;++i){
-                        //    gpuTileCRS[i]=gpuTileGridDim_xyz[i]*gpuTile_xyz[i]; 
                         //}
+                        
                         gpuTileCRS[0]=((gpuTileGridDim_xyz[0]*gpuTile_x)>gpuCols  )?gpuCols:  ( gpuTileGridDim_xyz[0]*gpuTile_x);
                         gpuTileCRS[1]=((gpuTileGridDim_xyz[1]*gpuTile_y)>gpuRows  )?gpuRows:  ( gpuTileGridDim_xyz[1]*gpuTile_y);
                         gpuTileCRS[2]=((gpuTileGridDim_xyz[2]*gpuTile_z)>gpuSlices)?gpuSlices:( gpuTileGridDim_xyz[2]*gpuTile_z);
 
-                        tnStream= nGPU*gnStream*nStream; 
+                        tnStream= vnStream*nStream; 
                         stream = new cudaStream_t[tnStream];
                         for(int i=0;i<tnStream;++i){
                             cudaStreamCreate(&stream[i]);

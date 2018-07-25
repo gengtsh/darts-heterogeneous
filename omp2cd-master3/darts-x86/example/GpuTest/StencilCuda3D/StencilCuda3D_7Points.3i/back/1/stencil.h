@@ -8,9 +8,15 @@
 //#define CUDA_CUDA_DEBUG
 
 #ifdef __cplusplus
+
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include<device_launch_parameters.h>
+//#include<conio.h>
 extern "C"
 {
 #endif
+
 
 //#define KB 1024
 //#define MB 1024*1024
@@ -64,6 +70,35 @@ inline void swap_ptr(void** left, void** right) {
 //void stencil_arg_copy    ( stencil_arg_t* dest, stencil_arg_t* sourc );
 
 
+void gpuAssert(cudaError_t code,const char *file,const int line,bool abort);   
+#define gpuErrchk(ans){gpuAssert((ans),__FILE__,__LINE__,abort);}
+
+struct struct_streams_par{
+    cudaMemcpy3DParms *htodPtr;
+    cudaMemcpy3DParms *dtohPtr;
+    int nRowsChunk;
+    int nColsChunk;
+    int nSlicesChunk;
+    dim3 dimGrid_slices;
+    dim3 dimGrid_rows;
+    dim3 dimGrid_cols;
+    dim3 dimGrid;
+    dim3 dimBlock_slices;
+    dim3 dimBlock_rows;
+    dim3 dimBlock_cols;
+    dim3 dimBlock;
+    int64_t devDstPos;
+    int64_t devSSlicesPos;
+    int64_t devSRowsPos;
+    int64_t devSColsPos;
+};
+
+
+
+
+
+void test_copy3d(dim3 dimGrid,dim3 dimBlock, double *dst,int tile_x,int tile_y,int tile_z );
+
 void stencil2D4pt        ( double* __restrict__ dst,    double* __restrict__ src, 
                            const size_t     n_rows, const size_t     n_cols,
                            const size_t     n_tsteps );
@@ -109,6 +144,14 @@ void gpu_kernel37_cp_rows_stream(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock
 void gpu_kernel37_cp_cols_stream(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
 
 void gpu_kernel37_stream( cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z);
+
+void gpu_kernel37_cp_slices_stream_p(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices, int d_xpitch,int d_ypitch,int d_zpitch,int s_xpitch,int s_ypitch,int s_zpitch,  int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
+
+void gpu_kernel37_cp_rows_stream_p(cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices,int d_xpitch,int d_zpitch,int s_xpitch,int s_ypitch,int s_zpitch, int d_ypitch, int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
+void gpu_kernel37_cp_cols_stream_p(cudaStream_t &stream, dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedCols, double * sharedRows, double * sharedSlices,int d_xpitch,int d_ypitch, int d_zpitch,int s_xpitch,int s_ypitch,int s_zpitch,int n_rows, int n_cols, int n_slices,int tile_x,int tile_y, int tile_z);
+
+void gpu_kernel37_stream_p( cudaStream_t &stream,dim3 dimGrid,dim3 dimBlock,double * d_dst, double * sharedRows, double * sharedCols, double * sharedSlices,int d_xpitch, int d_ypitch,int d_zpitch,int s_xpitch,int s_ypitch,int s_zpitch, int n_rows,int n_cols, int n_slices,int tile_x, int tile_y, int tile_z);
+
 #ifdef __cplusplus
 }
 #endif

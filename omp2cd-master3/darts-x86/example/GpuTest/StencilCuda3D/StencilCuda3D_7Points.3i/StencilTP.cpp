@@ -540,19 +540,14 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	
     const int szdb = sizeof(double);
     
-    int gpuIdx_xyz          = FRAME(gpuIdx_xyz);
+    int gpuIdx_xyz              = FRAME(gpuIdx_xyz);
     int *gpuTileCRS             = FRAME(gpuTileCRS);
-    int *gpuTileGridDim_xyz     = FRAME(gpuTileGridDim_xyz);
     
-
     cudaError err0,err1,err2,err3,err4;
 	int gpuTile_x = FRAME(gpuTile_x); //16
 	int gpuTile_y = FRAME(gpuTile_y); //16
     int gpuTile_z = FRAME(gpuTile_z); //50
 
-    int gpuBlockDimx = FRAME(gpuBlockDimx);   // tile_x
-    int gpuBlockDimy = FRAME(gpuBlockDimy);   // tile_y
-    int gpuBlockDimz = FRAME(gpuBlockDimz);   // 1
 
     int gnStream = FRAME(gnStream);
 	
@@ -580,7 +575,6 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	size_t d_xpitch = devPitchedPtr.pitch/szdb ;
     size_t d_ypitch = extent.height;
     size_t d_zpitch = extent.depth/gnStream;
-    //int64_t dev_size = devPitchedPtr.pitch * extent.height*extent.depth/(gnStream*szdb);
     int64_t dev_size = d_xpitch * d_ypitch * d_zpitch;
 
 #ifdef CUDA_DARTS_DEBUG
@@ -591,7 +585,7 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 #endif
 
     cudaMemcpy3DParms p ={0};
-    p.srcPtr    = make_cudaPitchedPtr((void *)h_src,gpuCols*szdb,gpuCols,gpuRows);
+    p.srcPtr    = make_cudaPitchedPtr((void *)h_src,gpuCols*szdb,gpuCols*szdb,gpuRows);
     p.dstPtr    = devPitchedPtr;
     p.extent.width  = gpuTileCols2*szdb;
     p.extent.height = gpuTileRows2;
@@ -600,7 +594,7 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	
 	cudaMemcpy3DParms pdh ={0};
     pdh.srcPtr    = devPitchedPtr;
-    pdh.dstPtr    = make_cudaPitchedPtr((void *)h_dst,gpuCols*szdb,gpuCols,gpuRows);
+    pdh.dstPtr    = make_cudaPitchedPtr((void *)h_dst,gpuCols*szdb,gpuCols*szdb,gpuRows);
     pdh.extent.width  = gpuTileCols2*szdb;
     pdh.extent.height = gpuTileRows2;
     pdh.extent.depth  = gpuTileSlices2;
@@ -613,44 +607,55 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
     std::cout<<"pdh.dstPtr: pointer: "<<pdh.dstPtr.ptr<<",pitch: "<<pdh.dstPtr.pitch<<",xsize: "<<pdh.dstPtr.xsize<<", ysize: "<<pdh.dstPtr.ysize<<std::endl;
 #endif
 
-//    err0=cudaMemcpy3D(&p);
-//#ifdef CUDA_ERROR_CHECKING
-//    gpuErrchk(err0);
-//#endif
-//
-//#ifdef CUDA_DARTS_DEBUG
-//    dim3 dimGrid_t (1,10,1);
-//	dim3 dimBlock_t(272,1,1);
-//    test_copy3d(dimGrid_t,dimBlock_t,p.dstPtr.ptr,272,1,1);
-//#endif
-	
-    int64_t srows_size = gpuTileCols2*gpuTileGridDim_xyz[1]*gpuTileSlices2*2;
-	int64_t scols_size = gpuTileRows2*gpuTileGridDim_xyz[0]*gpuTileSlices2*2;
-    int64_t sslices_size = gpuTileCols2*gpuTileRows2*gpuTileGridDim_xyz[2]*2;
+    
+    int gpuBlockDimx = gpuTileCols>gpuTile_x?gpuTile_x:gpuTileCols;
+	int gpuBlockDimy = gpuTileRows>gpuTile_y?gpuTile_y:gpuTileRows;
+	int gpuBlockDimz = 1;
+	int gpuGridDimx2 = std::ceil(1.0*gpuTileCols2/gpuBlockDimx);
+	int gpuGridDimy2 = std::ceil(1.0*gpuTileRows2/gpuBlockDimy);
+	int gpuGridDimz2 = std::ceil(1.0*gpuTileSlices2/gpuTile_z);
 
 
-	double d_size 				= szdb*d_xpitch*gpuTileRows2*gpuTileSlices2;
-    double d_size_sharedCols	= szdb*scols_size;
-	double d_size_sharedRows	= szdb*srows_size;
-	double d_size_sharedSlices	= szdb*sslices_size;
-	
-	//err1 = cudaMalloc( (void **) &d_dst, d_size*gnStream);
-	err2 = cudaMalloc( (void **) &d_sharedCols, d_size_sharedCols*gnStream);
+    int64_t srows_size = gpuTileCols2*gpuGridDimy2*gpuTileSlices2*2;
+	int64_t scols_size = gpuTileRows2*gpuGridDimx2*gpuTileSlices2*2;
+    int64_t sslices_size = gpuTileCols2*gpuTileRows2*gpuGridDimz2*2;
+
+
+    int64_t t_d_size_sharedCols     = gnStream*szdb*scols_size;    	
+    int64_t t_d_size_sharedRows     = gnStream*szdb*srows_size;    	
+    int64_t t_d_size_sharedSlices   = gnStream*szdb*sslices_size;	
+
+    //err1 = cudaMalloc( (void **) &d_dst, d_size*gnStream);
+	err2 = cudaMalloc(  &d_sharedCols, (t_d_size_sharedCols));
 #ifdef CUDA_ERROR_CHECKING
 	gpuErrchk(err2);
 #endif
-    err3 = cudaMalloc( (void **) &d_sharedRows, d_size_sharedRows*gnStream);
+    err3 = cudaMalloc( (void **) &d_sharedRows, (t_d_size_sharedRows));
 #ifdef CUDA_ERROR_CHECKING
 	gpuErrchk(err3);
 #endif
-    err4 = cudaMalloc( (void **) &d_sharedSlices, d_size_sharedSlices*gnStream);
+    err4 = cudaMalloc( (void **) &d_sharedSlices, (t_d_size_sharedSlices));
 #ifdef CUDA_ERROR_CHECKING
 	gpuErrchk(err4);
 #endif
 
+#ifdef CUDA_DARTS_DEBUG
+    std::cout<<"device dst   size :"<< (dev_size*szdb*gnStream)<<std::endl;
+    std::cout<<"sharedCols   size :"<< (t_d_size_sharedCols)<<std::endl;
+    std::cout<<"sharedRows   size :"<< (t_d_size_sharedRows)<<std::endl;
+    std::cout<<"sharedSlices size :"<< (t_d_size_sharedSlices)<<std::endl;
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+    std::cout<<"device dst   address:"<<p.dstPtr.ptr   <<" to "<<p.dstPtr.ptr   + (dev_size*szdb*gnStream)   <<std::endl;
+    std::cout<<"sharedCols   address:"<<d_sharedCols   <<" to "<<d_sharedCols   + t_d_size_sharedCols/szdb   <<std::endl;
+    std::cout<<"sharedRows   address:"<<d_sharedRows   <<" to "<<d_sharedRows   + t_d_size_sharedRows/szdb   <<std::endl;
+    std::cout<<"sharedSlices address:"<<d_sharedSlices <<" to "<< d_sharedSlices+ t_d_size_sharedSlices/szdb   <<std::endl;
+#endif
+
 	size_t s_xpitch = gpuTileCols2;
     size_t s_ypitch = gpuTileRows2;
-    size_t s_zpitch = gpuTileSlices;
+    size_t s_zpitch = gpuTileSlices2;
 
 #ifdef CUDA_DARTS_DEBUG
     std::cout<<"s_xpitch:"<<s_xpitch<<std::endl;
@@ -670,11 +675,7 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 	std::cout<<std::setprecision(18)<<std::endl;
 	std::cout<<"GpuKernelPureGpuWithStreams37: gpu memory total: "<<gpu_mem_total_t<<std::endl;
 	std::cout<<"GpuKernelPureGpuWithStreams37: gpu memory available: "<<gpu_mem_avail_t<<std::endl;
-	std::cout<<"GpuKernelPureGpuWithStreams37 : require memory size:"<<(d_size + d_size_sharedCols + d_size_sharedRows)*gnStream<<std::endl;
-	std::cout<<"GpuKernelPureGpuWithStreams37: d_size:"<<d_size<<",allocate: "<< d_size*gnStream<<std::endl;
-	std::cout<<"GpuKernelPureGpuWithStreams37: d_size_sharedCols:"<<d_size_sharedCols<<std::endl;
-	std::cout<<"GpuKernelPureGpuWithStreams37: d_size_sharedRows:"<<d_size_sharedRows<<std::endl;
-	std::cout<<"GpuKernelPureGpuWithStreams37: d_size_sharedSlices:"<<d_size_sharedSlices<<std::endl;
+	std::cout<<"GpuKernelPureGpuWithStreams37 : require memory size:"<< (dev_size*szdb*gnStream)  + (t_d_size_sharedCols + t_d_size_sharedRows+t_d_size_sharedSlices)<<std::endl;
 #endif
 
 
@@ -686,46 +687,40 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
     int numThreads= gpuTile_x*gpuTile_y;
 
 
-	int gpuGridDimx2 = std::ceil(1.0*gpuTileCols2/gpuBlockDimx);
-	int gpuGridDimy2 = std::ceil(1.0*gpuTileRows2/gpuBlockDimy);
-	int gpuGridDimz2 = std::ceil(1.0*gpuTileSlices2/gpuTile_z);
+
     
-    int blockDimx_slices = (gpuTileCols2>numThreads)?numThreads:gpuTileCols2; 
+    int blockDimx_slices ;//= (gpuTileCols2>numThreads)?numThreads:gpuTileCols2; 
 	int blockDimy_slices = 1;
 	int blockDimz_slices = 1;
-	int gridDimx_slices = std::ceil(1.0*gpuTileCols2/blockDimx_slices);
-	int gridDimy_slices = gpuGridDimy2;//gpuTileGridDim_xyz[1];   
-    int gridDimz_slices = gpuGridDimz2;//gpuTileGridDim_xyz[2];
+	int gridDimx_slices ;//= std::ceil(1.0*gpuTileCols2/blockDimx_slices);
+	int gridDimy_slices ;//= gpuGridDimy2;//gpuTileGridDim_xyz[1];   
+    int gridDimz_slices ;//= gpuGridDimz2;//gpuTileGridDim_xyz[2];
 
-	int blockDimx_rows = (gpuTileCols2>numThreads)?numThreads:gpuTileCols2;
+	int blockDimx_rows  ;//= (gpuTileCols2>numThreads)?numThreads:gpuTileCols2;
 	int blockDimy_rows = 1;
 	int blockDimz_rows = 1;
-	int gridDimx_rows = std::ceil(1.0*gpuTileCols2/blockDimx_rows);
-	int gridDimy_rows = gpuGridDimy2; //gpuTileGridDim_xyz[1];
-	int gridDimz_rows = gpuGridDimz2; //gpuTileGridDim_xyz[2];
+	int gridDimx_rows ;//= std::ceil(1.0*gpuTileCols2/blockDimx_rows);
+	int gridDimy_rows ;//= gpuGridDimy2; //gpuTileGridDim_xyz[1];
+	int gridDimz_rows ;//= gpuGridDimz2; //gpuTileGridDim_xyz[2];
 
 	int blockDimx_cols = 1 ;
-	int blockDimy_cols = (gpuTileRows2>numThreads)?numThreads:gpuTileRows2;
+	int blockDimy_cols; // = (gpuTileRows2>numThreads)?numThreads:gpuTileRows2;
 	int blockDimz_cols = 1 ;
-	int gridDimx_cols = gpuGridDimx2; //gpuTileGridDim_xyz[0];
-	int gridDimy_cols = std::ceil(1.0*gpuTileRows2/blockDimy_cols);
-	int gridDimz_cols = gpuGridDimz2; //gpuTileGridDim_xyz[2];
+	int gridDimx_cols ;//= gpuGridDimx2; //gpuTileGridDim_xyz[0];
+	int gridDimy_cols ;//= std::ceil(1.0*gpuTileRows2/blockDimy_cols);
+	int gridDimz_cols ;//= gpuGridDimz2; //gpuTileGridDim_xyz[2];
 	
-
-   
-    
-    dim3 dimGrid (gpuGridDimx2, gpuGridDimy2,gpuGridDimz2);
-	dim3 dimBlock(gpuBlockDimx,gpuBlockDimy,gpuBlockDimz);
+    dim3 dimGrid; //(gpuGridDimx2, gpuGridDimy2,gpuGridDimz2);
+	dim3 dimBlock;//(gpuBlockDimx,gpuBlockDimy,gpuBlockDimz);
 	
-	dim3 dimGrid_slices(gridDimx_slices,gridDimy_slices,gridDimz_slices);
-	dim3 dimBlock_slices(blockDimx_slices,blockDimy_slices,blockDimz_slices);
+	dim3 dimGrid_slices; //(gridDimx_slices,gridDimy_slices,gridDimz_slices);
+	dim3 dimBlock_slices;//(blockDimx_slices,blockDimy_slices,blockDimz_slices);
 	
-    dim3 dimGrid_rows(gridDimx_rows,gridDimy_rows,gridDimz_rows);
-	dim3 dimBlock_rows(blockDimx_rows,blockDimy_rows,blockDimz_rows);
+    dim3 dimGrid_rows; //(gridDimx_rows,gridDimy_rows,gridDimz_rows);
+	dim3 dimBlock_rows;//(blockDimx_rows,blockDimy_rows,blockDimz_rows);
 
-	dim3 dimGrid_cols(gridDimx_cols,gridDimy_cols,gridDimz_cols);
-	dim3 dimBlock_cols(blockDimx_cols,blockDimy_cols,blockDimz_cols);
-
+	dim3 dimGrid_cols; //(gridDimx_cols,gridDimy_cols,gridDimz_cols);
+	dim3 dimBlock_cols;//(blockDimx_cols,blockDimy_cols,blockDimz_cols);
     
     cudaEvent_t *cuEvent = new cudaEvent_t[tnStream];
     cudaError *err = new cudaError[tnStream];
@@ -738,13 +733,12 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
     d_dst = devPitchedPtr.ptr;	
 	FRAME(d_dst) = d_dst;
     double pos0 = FRAME(gpuPos); 
-    int vnStream = nGPU*gnStream;
+    //int vnStream = nGPU*gnStream;
+    int vnStream = FRAME(vnStream);
+
 	int nb_x = std::ceil(1.0*gpuCols/gpuTileCols);//x: how many gpu Tile CRS [x] 
 	int nb_y = std::ceil(1.0*gpuRows/gpuTileRows);//y: how many gpu Tile CRS [y] 
 	int nb_z = std::ceil(1.0*gpuSlices/gpuTileSlices);//z: how many gpu Tile CRS [z] 
-
-
-    struct_streams_par *streams_par = new struct_streams_par [tnStream];
 
 
 #ifdef CUDA_DARTS_DEBUG
@@ -753,6 +747,7 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
     std::cout<<"nb_z: "<< nb_z <<std::endl;
 #endif
 
+    struct_streams_par *streams_par = new struct_streams_par [tnStream];
 
     size_t ts = FRAME(ts);
     while(ts-- >0){
@@ -764,21 +759,31 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
         p.srcPtr.ptr = h_src;
         pdh.dstPtr.ptr = h_dst;
         for(int i=0;i<vnStream;++i){
-        //for(int i=0;i<3;i=i+2){
+        //for(int i=0;i<3;i=i+1){
         //    int i=2;{
 #ifdef CUDA_ERROR_CHECKING
                 err1 = cudaGetLastError();
 				gpuErrchk(err1);
 #endif
-                int posx = i%nb_x;
-				int posy = i/nb_x;
 				int posz = i/(nb_x*nb_y);
-				int ps = i%gnStream;
+				int posy = i/nb_x-posz*nb_y;
+                int posx = i%nb_x;
+                
+                int ps = i%gnStream;
 
                 int nRowsChunk		= (((posy+1)*gpuTileRows)	>=gpuRows)	?(gpuRows-posy*gpuTileRows)	 :(gpuTileRows2) ;
 				int nColsChunk		= (((posx+1)*gpuTileCols)	>=gpuCols)	?(gpuCols-posx*gpuTileCols)	 :(gpuTileCols2) ;
 				int nSlicesChunk	= (((posz+1)*gpuTileSlices)	>=gpuSlices)?(gpuSlices-posz*gpuTileSlices):(gpuTileSlices2) ;
                 
+#ifdef CUDA_DARTS_DEBUG
+
+                std::cout<<"stream #: "<<i<<" posx: "<<posx<<std::endl;
+                std::cout<<"stream #: "<<i<<" posy: "<<posy<<std::endl;
+                std::cout<<"stream #: "<<i<<" posz: "<<posz<<std::endl;
+                std::cout<<"stream #: "<<i<<" nColsChunk   = "<< nColsChunk	 <<std::endl;
+                std::cout<<"stream #: "<<i<<" nRowsChunk   = "<< nRowsChunk	 <<std::endl;
+                std::cout<<"stream #: "<<i<<" nSlicesChunk = "<< nSlicesChunk   <<std::endl;
+#endif
                 
                 blockDimx_slices = (nColsChunk>numThreads)?numThreads:nColsChunk; 
 	            blockDimx_rows   = (nColsChunk>numThreads)?numThreads:nColsChunk;
@@ -793,42 +798,36 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 gpuGridDimz2 = std::ceil(1.0*nSlicesChunk/gpuTile_z);
 	
 	            gridDimx_slices = std::ceil(1.0*nColsChunk/blockDimx_slices);
-	            gridDimy_slices = gpuGridDimy2;//gpuTileGridDim_xyz[1];   
-                gridDimz_slices = gpuGridDimz2;//gpuTileGridDim_xyz[2];
+	            gridDimy_slices = gpuGridDimy2;  
+                gridDimz_slices = gpuGridDimz2;
 
 	            gridDimx_rows = std::ceil(1.0*nColsChunk/blockDimx_rows);
-	            gridDimy_rows = gpuGridDimy2; //gpuTileGridDim_xyz[1];
-	            gridDimz_rows = gpuGridDimz2; //gpuTileGridDim_xyz[2];
+	            gridDimy_rows = gpuGridDimy2; 
+	            gridDimz_rows = gpuGridDimz2; 
 
-	            gridDimx_cols = gpuGridDimx2; //gpuTileGridDim_xyz[0];
+	            gridDimx_cols = gpuGridDimx2; 
 	            gridDimy_cols = std::ceil(1.0*nRowsChunk/blockDimy_cols);
-	            gridDimz_cols = gpuGridDimz2; //gpuTileGridDim_xyz[2];
-                
-                //dimGrid_slices  = dim3 (gridDimx_slices,gridDimy_slices,gridDimz_slices);
-                //dimGrid_rows    = dim3 (gridDimx_rows,gridDimy_rows,gridDimz_rows);
-	            //dimGrid_cols    = dim3 (gridDimx_cols,gridDimy_cols,gridDimz_cols);
-                //dimGrid         = dim3 (gpuGridDimx2, gpuGridDimy2,gpuGridDimz2);
+	            gridDimz_cols = gpuGridDimz2; 
                 
 
 #ifdef CUDA_DARTS_DEBUG
 
-                std::cout<<"GpuKernelPureGpuWithStreams37: blockDimx_slices:"<<blockDimx_slices<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: blockDimy_slices:"<<blockDimy_slices<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimx_slices:"<<gridDimx_slices<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimy_slices:"<<gridDimy_slices<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimz_slices:"<<gridDimz_slices<<std::endl;
+                std::cout<<"stream #: "<<i<<" blockDimx_slices:"<<blockDimx_slices<<std::endl;
+	            std::cout<<"stream #: "<<i<<" blockDimy_slices:"<<blockDimy_slices<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimx_slices:"<<gridDimx_slices<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimy_slices:"<<gridDimy_slices<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimz_slices:"<<gridDimz_slices<<std::endl;
+                std::cout<<"stream #: "<<i<<" blockDimx_rows:"<<blockDimx_rows<<std::endl;
+	            std::cout<<"stream #: "<<i<<" blockDimy_rows:"<<blockDimy_rows<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimx_rows:"<<gridDimx_rows<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimy_rows:"<<gridDimy_rows<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimz_rows:"<<gridDimz_rows<<std::endl;
 	            
-                std::cout<<"GpuKernelPureGpuWithStreams37: blockDimx_rows:"<<blockDimx_rows<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: blockDimy_rows:"<<blockDimy_rows<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimx_rows:"<<gridDimx_rows<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimy_rows:"<<gridDimy_rows<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimz_rows:"<<gridDimz_rows<<std::endl;
-	            
-                std::cout<<"GpuKernelPureGpuWithStreams37: blockDimx_cols:"<<blockDimx_cols<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: blockDimy_cols:"<<blockDimy_cols<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimx_cols:"<<gridDimx_cols<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimy_cols:"<<gridDimy_cols<<std::endl;
-	            std::cout<<"GpuKernelPureGpuWithStreams37: grimDimz_cols:"<<gridDimz_cols<<std::endl;
+                std::cout<<"stream #: "<<i<<" blockDimx_cols:"<<blockDimx_cols<<std::endl;
+	            std::cout<<"stream #: "<<i<<" blockDimy_cols:"<<blockDimy_cols<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimx_cols:"<<gridDimx_cols<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimy_cols:"<<gridDimy_cols<<std::endl;
+	            std::cout<<"stream #: "<<i<<" grimDimz_cols:"<<gridDimz_cols<<std::endl;
 
 #endif
                 
@@ -838,15 +837,13 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 				if((i/gnStream) !=0){
 					int pre = (i-gnStream)*nStream;
 					err[pre]=cudaStreamWaitEvent(FRAME(stream[idxSM]),cuEvent[pre+nSMM1],0);
-
 #ifdef CUDA_DARTS_DEBUG
                     std::cout<<"i: "<<i<<" ,event: "<<idxSM<<" waiting for event: "<<pre+nSMM1<<std::endl;
 #endif
-				}
 #ifdef CUDA_ERROR_CHECKING
-					gpuErrchk(err0);
+					gpuErrchk(err[pre]);
 #endif
-                
+                }           
                 int64_t d_posz = ps*gpuTileSlices2;
                 
                 p.srcPos = make_cudaPos(posx*gpuTileCols*szdb,posy*gpuTileRows,posz*gpuTileSlices);
@@ -855,42 +852,6 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 p.extent.width  = nColsChunk*szdb;
                 p.extent.height = nRowsChunk;
                 p.extent.depth  = nSlicesChunk;
-
-                pdh.srcPos = make_cudaPos(1*szdb,1,d_posz+1);
-                pdh.dstPos = make_cudaPos((posx*gpuTileCols+1)*szdb,posy*gpuTileRows+1,posz*gpuTileSlices+1);
-
-				int nRowsChunkM2	= (((posy+1)*gpuTileRows)	>=gpuRows)	?(gpuRows-posy*gpuTileRows-2)	 :(gpuTileRows) ;
-				int nColsChunkM2	= (((posx+1)*gpuTileCols)	>=gpuCols)	?(gpuCols-posx*gpuTileCols-2)	 :(gpuTileCols) ;
-				int nSlicesChunkM2	= (((posz+1)*gpuTileSlices)	>=gpuSlices)?(gpuSlices-posz*gpuTileSlices-2):(gpuTileSlices) ;
-                pdh.extent.width  = nColsChunkM2*szdb;
-                pdh.extent.height = nRowsChunkM2;
-                pdh.extent.depth  = nSlicesChunkM2;
-
-                //int64_t dev_pos   = ps*dev_size;
-                //int64_t srows_pos = ps*srows_size;
-                //int64_t scols_pos = ps*scols_size;
-                //int64_t sslices_pos = ps*sslices_size;
-
-                streams_par[idxSM].htodPtr = &p;
-                streams_par[idxSM].dtohPtr = &pdh; 
-                streams_par[idxSM].devDstPos    = ps*dev_size;
-                streams_par[idxSM].devSRowsPos  = ps*srows_size;   
-                streams_par[idxSM].devSColsPos  = ps*scols_size;   
-                streams_par[idxSM].devSSlicesPos= ps*sslices_size;      
-   
-	            streams_par[idxSM].dimBlock_slices = dim3 (blockDimx_slices,blockDimy_slices,blockDimz_slices);
-	            streams_par[idxSM].dimBlock_rows   = dim3 (blockDimx_rows,blockDimy_rows,blockDimz_rows);
-	            streams_par[idxSM].dimBlock_cols   = dim3 (blockDimx_cols,blockDimy_cols,blockDimz_cols);
-	            streams_par[idxSM].dimBlock        = dim3 (gpuBlockDimx,gpuBlockDimy,gpuBlockDimz);
-
-
-                streams_par[idxSM].dimGrid_slices  = dim3 (gridDimx_slices,gridDimy_slices,gridDimz_slices);
-                streams_par[idxSM].dimGrid_rows    = dim3 (gridDimx_rows,gridDimy_rows,gridDimz_rows);
-	            streams_par[idxSM].dimGrid_cols    = dim3 (gridDimx_cols,gridDimy_cols,gridDimz_cols);
-                streams_par[idxSM].dimGrid         = dim3 (gpuGridDimx2, gpuGridDimy2,gpuGridDimz2);
-                streams_par[idxSM].nRowsChunk  = nRowsChunk  ;	
-                streams_par[idxSM].nColsChunk  = nColsChunk  ;
-                streams_par[idxSM].nSlicesChunk= nSlicesChunk; 
 
 #ifdef CUDA_DARTS_DEBUG
                 std::cout<<"GpuKernelWithStream multiple streams: "<<idxSM <<" memory copy begin!"<<std::endl;
@@ -918,47 +879,118 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 std::cout<<"copy3d HToD: stream #"<<i<<" p.extent.height: "<<p.extent.height<<std::endl;
                 std::cout<<"copy3d HToD: stream #"<<i<<" p.extent.depth: " <<p.extent.depth<<std::endl;
 #endif
-                //err0=cudaMemcpy3DAsync(&p,FRAME(stream[idxSM]));
+                
+                pdh.srcPos = make_cudaPos(1*szdb,1,d_posz+1);
+                pdh.dstPos = make_cudaPos((posx*gpuTileCols+1)*szdb,posy*gpuTileRows+1,posz*gpuTileSlices+1);
+
+				int nRowsChunkM2	= (((posy+1)*gpuTileRows)	>=gpuRows)	?(gpuRows-posy*gpuTileRows-2)	 :(gpuTileRows) ;
+				int nColsChunkM2	= (((posx+1)*gpuTileCols)	>=gpuCols)	?(gpuCols-posx*gpuTileCols-2)	 :(gpuTileCols) ;
+				int nSlicesChunkM2	= (((posz+1)*gpuTileSlices)	>=gpuSlices)?(gpuSlices-posz*gpuTileSlices-2):(gpuTileSlices) ;
+
+                pdh.extent.width  = nColsChunkM2*szdb;
+                pdh.extent.height = nRowsChunkM2;
+                pdh.extent.depth  = nSlicesChunkM2;
+
+                streams_par[idxSM].htodPtr = &p;
+                streams_par[idxSM].dtohPtr = &pdh; 
+                streams_par[idxSM].devDstPos    = ps*dev_size;
+                streams_par[idxSM].devSRowsPos  = ps*srows_size;
+                streams_par[idxSM].devSColsPos  = ps*scols_size;
+                streams_par[idxSM].devSSlicesPos= ps*sslices_size; 	 
+   
+	            streams_par[idxSM].dimBlock_slices = dim3 (blockDimx_slices,blockDimy_slices,blockDimz_slices);
+	            streams_par[idxSM].dimBlock_rows   = dim3 (blockDimx_rows,blockDimy_rows,blockDimz_rows);
+	            streams_par[idxSM].dimBlock_cols   = dim3 (blockDimx_cols,blockDimy_cols,blockDimz_cols);
+	            streams_par[idxSM].dimBlock        = dim3 (gpuBlockDimx,gpuBlockDimy,gpuBlockDimz);
+
+
+                streams_par[idxSM].dimGrid_slices  = dim3 (gridDimx_slices,gridDimy_slices,gridDimz_slices);
+                streams_par[idxSM].dimGrid_rows    = dim3 (gridDimx_rows,gridDimy_rows,gridDimz_rows);
+	            streams_par[idxSM].dimGrid_cols    = dim3 (gridDimx_cols,gridDimy_cols,gridDimz_cols);
+                streams_par[idxSM].dimGrid         = dim3 (gpuGridDimx2, gpuGridDimy2,gpuGridDimz2);
+                streams_par[idxSM].nRowsChunk  = nRowsChunk  ;	
+                streams_par[idxSM].nColsChunk  = nColsChunk  ;
+                streams_par[idxSM].nSlicesChunk= nSlicesChunk; 
+
+#ifdef CUDA_DARTS_DEBUG
+                std::cout<<"stream: "<<i<<" device dst   address from: "<<p.dstPtr.ptr  + streams_par[idxSM].devDstPos    <<" to: "<<p.dstPtr.ptr  + streams_par[idxSM].devDstPos    + dev_size      <<std::endl;
+                std::cout<<"stream: "<<i<<" sharedSlices address from: "<<d_sharedSlices+ streams_par[idxSM].devSSlicesPos  <<" to: "<<d_sharedSlices+ streams_par[idxSM].devSSlicesPos  + sslices_size    <<std::endl;
+                std::cout<<"stream: "<<i<<" sharedRows   address from: "<<d_sharedRows  + streams_par[idxSM].devSRowsPos  <<" to: "<<d_sharedRows  + streams_par[idxSM].devSRowsPos  + srows_size    <<std::endl;
+                std::cout<<"stream: "<<i<<" sharedCols   address from: "<<d_sharedCols  + streams_par[idxSM].devSColsPos<<" to: "<<d_sharedCols  + streams_par[idxSM].devSColsPos+ scols_size <<std::endl;
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
+   
                 err0=cudaMemcpy3DAsync(streams_par[idxSM].htodPtr,FRAME(stream[idxSM]));
 
 #ifdef CUDA_ERROR_CHECKING
                 gpuErrchk(err0);
 #endif
-                
+  
 #ifdef CUDA_DARTS_DEBUG
-               // {
-               //     
-			   //     //err1 = cudaDeviceSynchronize();
-               //     dim3 dimGrid_t (1,1,1);
-	           //     dim3 dimBlock_t(10,1,1);
-               //     
-               //     double *sptr    = p.srcPtr.ptr;
-               //     int spitch      = p.srcPtr.pitch/szdb;
-               //     int sposx       = p.srcPos.x/szdb; 
-               //     int sposy       = p.srcPos.y; 
-               //     int sposz       = p.srcPos.z;
-               //     int sxsize      = p.srcPtr.xsize;
-               //     int sysize      = p.srcPtr.ysize;
-               //     
-               //     double *dptr    = p.dstPtr.ptr;
-               //     int dpitch      = p.dstPtr.pitch/szdb;
-               //     int dposx       = p.dstPos.x; 
-               //     int dposy       = p.dstPos.y; 
-               //     int dposz       = p.dstPos.z;
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
 
-               //     int dxsize      = p.dstPtr.xsize;
-               //     int dysize      = p.dstPtr.ysize;
+#ifdef CUDA_DARTS_DEBUG
+                {
+                    
+#ifdef CUDA_ERROR_CHECKING
+                err1 = cudaGetLastError();
+				gpuErrchk(err1);
+#endif
+			        err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				    gpuErrchk(err1);
+#endif
+                    dim3 dimGrid_t (1,1,1);
+	                dim3 dimBlock_t(10,1,1);
+                    
+                    double *sptr    = p.srcPtr.ptr;
+                    int spitch      = p.srcPtr.pitch/szdb;
+                    int sposx       = p.srcPos.x/szdb; 
+                    int sposy       = p.srcPos.y; 
+                    int sposz       = p.srcPos.z;
+                    int sxsize      = p.srcPtr.xsize;
+                    int sysize      = p.srcPtr.ysize;
+                    
+                    double *dptr    = p.dstPtr.ptr;
+                    int dpitch      = p.dstPtr.pitch/szdb;
+                    int dposx       = p.dstPos.x; 
+                    int dposy       = p.dstPos.y; 
+                    int dposz       = p.dstPos.z;
 
-               //     int stride= 0;
-               //     std::cout<<"Async cp p: i: "<<i<<std::endl;
-               //     std::cout<<"Async cp p: p.srcPtr value: "<<std::endl;
-               //     test_copy3d(dimGrid_t,dimBlock_t,sptr,sposz*spitch*sysize +sposx+1*spitch*sysize+sposy*spitch+2*spitch+stride,1,1);
-			   //     //err1 = cudaDeviceSynchronize();
-               //     std::cout<<"Async cp p: p.dstPtr value: "<<std::endl;
-               //     test_copy3d(dimGrid_t,dimBlock_t,dptr,dposz*dysize*dpitch+dposx + 1*dpitch*dysize+dposy*dpitch+2*dpitch+stride,1,1);
-               // 
-			   //     //err1 = cudaDeviceSynchronize();
-               // }
+                    int dxsize      = p.dstPtr.xsize;
+                    int dysize      = p.dstPtr.ysize;
+
+                    int stride= 0;
+                    std::cout<<"Async cp p: i: "<<i<<std::endl;
+                    std::cout<<"Async cp p: p.srcPtr value: "<<std::endl;
+                    test_copy3d(dimGrid_t,dimBlock_t,sptr,sposz*spitch*sysize +sposx+1*spitch*sysize+sposy*spitch+2*spitch+stride,1,1);
+
+#ifdef CUDA_ERROR_CHECKING
+                    err1 = cudaGetLastError();
+				    gpuErrchk(err1);
+#endif
+                    err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				    gpuErrchk(err1);
+#endif
+                    std::cout<<"Async cp p: p.dstPtr value: "<<std::endl;
+                    test_copy3d(dimGrid_t,dimBlock_t,dptr,dposz*dysize*dpitch+dposx + 1*dpitch*dysize+dposy*dpitch+2*dpitch+stride,1,1);
+
+#ifdef CUDA_ERROR_CHECKING
+                    err1 = cudaGetLastError();
+				    gpuErrchk(err1);
+#endif
+                    err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				gpuErrchk(err1);
+#endif
+                }
 #endif
 
 #ifdef CUDA_DARTS_DEBUG
@@ -976,19 +1008,44 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 }
 #endif
 
-                gpu_kernel37_cp_slices_stream_p(FRAME(stream[idxSM+1]),streams_par[idxSM].dimGrid_slices,streams_par[idxSM].dimBlock_slices,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaGetLastError();
+				gpuErrchk(err1);
+#endif
+
+#ifdef CUDA_DARTS_DEBUG
+                std::cout<<"stream: "<<i<<" sharedCols   address from: "<<d_sharedCols  + streams_par[idxSM].devSColsPos<<" to: "<<d_sharedCols  + streams_par[idxSM].devSColsPos+ scols_size <<std::endl;
+#endif
+                gpu_kernel37_cp_cols_stream_p(FRAME(stream[idxSM+1]),streams_par[idxSM].dimGrid_cols,streams_par[idxSM].dimBlock_cols,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
                 err[idxSM+1]=cudaEventRecord(cuEvent[idxSM+1],FRAME(stream[idxSM+1]));
+
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
+                
+#ifdef CUDA_DARTS_DEBUG
+                std::cout<<"stream: "<<i<<" sharedRows   address from: "<<d_sharedRows  + streams_par[idxSM].devSRowsPos  <<" to: "<<d_sharedRows  + streams_par[idxSM].devSRowsPos  + srows_size    <<std::endl;
+#endif
+                
                 gpu_kernel37_cp_rows_stream_p(FRAME(stream[idxSM+2]),streams_par[idxSM].dimGrid_rows,streams_par[idxSM].dimBlock_rows,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
                 err[idxSM+2]=cudaEventRecord(cuEvent[idxSM+2],FRAME(stream[idxSM+2]));
-                gpu_kernel37_cp_cols_stream_p(FRAME(stream[idxSM+3]),streams_par[idxSM].dimGrid_cols,streams_par[idxSM].dimBlock_cols,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
-				err[idxSM+3]=cudaEventRecord(cuEvent[idxSM+3],FRAME(stream[idxSM+3]));
                 
-                //gpu_kernel37_cp_slices_stream_p(FRAME(stream[idxSM+1]),dimGrid_slices,dimBlock_slices,d_dst+dev_pos,d_sharedRows+srows_pos, d_sharedCols+scols_pos, d_sharedSlices+sslices_pos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch, nRowsChunk, nColsChunk,nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
-                //err[idxSM+1]=cudaEventRecord(cuEvent[idxSM+1],FRAME(stream[idxSM+1]));
-                //gpu_kernel37_cp_rows_stream_p(FRAME(stream[idxSM+2]),dimGrid_rows,dimBlock_rows,d_dst+dev_pos,d_sharedRows+srows_pos, d_sharedCols+scols_pos, d_sharedSlices+sslices_pos, d_xpitch,d_ypitch,d_zpitch,s_xpitch,s_ypitch,s_zpitch, nRowsChunk, nColsChunk,nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
-				//err[idxSM+2]=cudaEventRecord(cuEvent[idxSM+2],FRAME(stream[idxSM+2]));
-                //gpu_kernel37_cp_cols_stream_p(FRAME(stream[idxSM+3]),dimGrid_cols,dimBlock_cols,d_dst+dev_pos,d_sharedRows+srows_pos, d_sharedCols+scols_pos, d_sharedSlices+sslices_pos,d_xpitch,d_ypitch,d_zpitch,s_xpitch,s_ypitch,s_zpitch,  nRowsChunk, nColsChunk,nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
-				//err[idxSM+3]=cudaEventRecord(cuEvent[idxSM+3],FRAME(stream[idxSM+3]));
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
+                
+#ifdef CUDA_DARTS_DEBUG
+                std::cout<<"stream: "<<i<<" sharedSlices address from: "<<d_sharedSlices+ streams_par[idxSM].devSSlicesPos  <<" to: "<<d_sharedSlices+ streams_par[idxSM].devSSlicesPos  + sslices_size    <<std::endl;
+#endif
+                gpu_kernel37_cp_slices_stream_p(FRAME(stream[idxSM+3]),streams_par[idxSM].dimGrid_slices,streams_par[idxSM].dimBlock_slices,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
+                err[idxSM+3]=cudaEventRecord(cuEvent[idxSM+3],FRAME(stream[idxSM+3]));
+                
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
         
 #ifdef CUDA_ERROR_CHECKING
                 for(int k=1;k<nSMM1;++k){
@@ -1005,9 +1062,17 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
 				}
 #endif
       
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaGetLastError();
+				gpuErrchk(err1);
+#endif
+  
                 gpu_kernel37_stream_p(FRAME(stream[idxSMM1]),streams_par[idxSM].dimGrid,streams_par[idxSM].dimBlock,d_dst+streams_par[idxSM].devDstPos,d_sharedRows+streams_par[idxSM].devSRowsPos, d_sharedCols+ streams_par[idxSM].devSColsPos, d_sharedSlices+ streams_par[idxSM].devSSlicesPos,d_xpitch,d_ypitch, d_zpitch,s_xpitch,s_ypitch,s_zpitch,streams_par[idxSM].nRowsChunk, streams_par[idxSM].nColsChunk,streams_par[idxSM].nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
-                //gpu_kernel37_stream_p(FRAME(stream[idxSMM1]),dimGrid,dimBlock,d_dst+dev_pos,d_sharedRows+srows_pos,d_sharedCols+scols_pos,d_sharedSlices+sslices_pos,d_xpitch,d_ypitch,d_zpitch, s_xpitch,s_ypitch,s_zpitch,nRowsChunk,nColsChunk,nSlicesChunk,gpuTile_x,gpuTile_y,gpuTile_z);
         
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
 
 #ifdef CUDA_DARTS_DEBUG
                 std::cout<<"copy3d DToH: stream #"<<i<<" srcPos.x: "        <<pdh.srcPos.x<<std::endl;
@@ -1032,52 +1097,77 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 std::cout<<"copy3d DToH: stream #"<<i<<" dph.extent.depth: "    <<pdh.extent.depth<<std::endl;
 
 #endif
-                //err0=cudaMemcpy3DAsync(&pdh,FRAME(stream[idxSMM1]));
+
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaGetLastError();
+				gpuErrchk(err1);
+#endif
                 err0=cudaMemcpy3DAsync(streams_par[idxSM].dtohPtr,FRAME(stream[idxSMM1]));
 #ifdef CUDA_ERROR_CHECKING
                 gpuErrchk(err0);
 #endif
 
+#ifdef CUDA_DARTS_DEBUG
+                err1 = cudaDeviceSynchronize();
+				gpuErrchk(err1);
+#endif
 				err[idxSMM1]=cudaEventRecord(cuEvent[idxSMM1],FRAME(stream[idxSMM1]));
-
 #ifdef CUDA_ERROR_CHECKING
                 gpuErrchk(err[idxSMM1]);
 #endif
 
 #ifdef CUDA_DARTS_DEBUG
-               // {
-               // 
-			   //     //err1 = cudaDeviceSynchronize();
-               //     
-               //     dim3 dimGrid_t (1,1,1);
-	           //     dim3 dimBlock_t(10,1,1);
+                {
 
-               //     double *sptr    = pdh.srcPtr.ptr;
-               //     int spitch      = pdh.srcPtr.pitch/szdb;
-               //     int sposx       = pdh.srcPos.x/szdb; 
-               //     int sposy       = pdh.srcPos.y; 
-               //     int sposz       = pdh.srcPos.z; 
-               //     int sxsize      = pdh.srcPtr.xsize;
-               //     int sysize      = pdh.srcPtr.ysize;
-               //     
-               //     double *dptr    = pdh.dstPtr.ptr;
-               //     int dpitch      = pdh.dstPtr.pitch/szdb;
-               //     int dposx       = pdh.dstPos.x/szdb; 
-               //     int dposy       = pdh.dstPos.y; 
-               //     int dposz       = pdh.dstPos.z;
-               //     int dxsize      = pdh.dstPtr.xsize;
-               //     int dysize      = pdh.dstPtr.ysize;
+#ifdef CUDA_DARTS_DEBUG
+                    err1 = cudaGetLastError();
+				    gpuErrchk(err1);
+#endif
+                    err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				    gpuErrchk(err1);
+#endif
+                    dim3 dimGrid_t (1,1,1);
+	                dim3 dimBlock_t(10,1,1);
 
-               //     
-               //     int stride= 0;
-               //     std::cout<<"Async cp pdh: i: "<<i<<std::endl;
-               //     std::cout<<"Async cp pdh: pdh.srcPtr value: "<<std::endl;
-               //     test_copy3d(dimGrid_t,dimBlock_t,sptr,sposz*spitch*sysize +sposx+0*spitch*sysize+sposy*spitch+1*spitch+stride,1,1);
-			   //     //err1 = cudaDeviceSynchronize();
-               //     std::cout<<"Async cp pdh: pdh.dstPtr value: "<<std::endl;
-               //     test_copy3d(dimGrid_t,dimBlock_t,dptr,dposz*dpitch*dysize +dposx+0*dpitch*dysize+dposy*dpitch+1*dpitch+stride,1,1);
-			   //     //err1 = cudaDeviceSynchronize();
-               // }
+                    double *sptr    = pdh.srcPtr.ptr;
+                    int spitch      = pdh.srcPtr.pitch/szdb;
+                    int sposx       = pdh.srcPos.x/szdb; 
+                    int sposy       = pdh.srcPos.y; 
+                    int sposz       = pdh.srcPos.z; 
+                    int sxsize      = pdh.srcPtr.xsize;
+                    int sysize      = pdh.srcPtr.ysize;
+                    
+                    double *dptr    = pdh.dstPtr.ptr;
+                    int dpitch      = pdh.dstPtr.pitch/szdb;
+                    int dposx       = pdh.dstPos.x/szdb; 
+                    int dposy       = pdh.dstPos.y; 
+                    int dposz       = pdh.dstPos.z;
+                    int dxsize      = pdh.dstPtr.xsize;
+                    int dysize      = pdh.dstPtr.ysize;
+
+                    
+                    int stride= 0;
+                    std::cout<<"Async cp pdh: i: "<<i<<std::endl;
+                    std::cout<<"Async cp pdh: pdh.srcPtr value: "<<std::endl;
+                    test_copy3d(dimGrid_t,dimBlock_t,sptr,sposz*spitch*sysize +sposx+0*spitch*sysize+sposy*spitch+1*spitch+stride,1,1);
+
+                    err1 = cudaGetLastError();
+				    gpuErrchk(err1);
+                    err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				gpuErrchk(err1);
+#endif
+                    std::cout<<"Async cp pdh: pdh.dstPtr value: "<<std::endl;
+                    test_copy3d(dimGrid_t,dimBlock_t,dptr,dposz*dpitch*dysize +dposx+0*dpitch*dysize+dposy*dpitch+1*dpitch+stride,1,1);
+
+                    err1 = cudaGetLastError();
+				    gpuErrchk(err1);
+                    err1 = cudaDeviceSynchronize();
+#ifdef CUDA_ERROR_CHECKING
+				    gpuErrchk(err1);
+#endif
+                }
 #endif
 
 
@@ -1085,10 +1175,8 @@ Stencil3D7ptGpuKernelPureGpuWithStreamsCD::fire(void)
                 err1 = cudaGetLastError();
 				gpuErrchk(err1);
 #endif
-
         }
 		err1 = cudaDeviceSynchronize();
-
 #ifdef CUDA_ERROR_CHECKING
 		gpuErrchk(err1);
 #endif	
