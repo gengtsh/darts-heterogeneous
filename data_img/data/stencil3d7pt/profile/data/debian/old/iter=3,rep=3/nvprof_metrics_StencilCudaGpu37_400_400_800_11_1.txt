@@ -1,0 +1,1077 @@
+==26017== NVPROF is profiling process 26017, command: ./StencilCudaGpu37 400 400 800 1 1
+==26017== Some kernel(s) will be replayed on device 0 in order to collect all events/metrics.
+==26017== Profiling application: ./StencilCudaGpu37 400 400 800 1 1
+==26017== Profiling result:
+==26017== Event result:
+"Device","Kernel","Invocations","Event Name","Min","Max","Avg","Total"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_read_sectors",1999577,1999577,1999577,1999577
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_read_sectors",2000794,2000794,2000794,2000794
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_write_sectors",2000001,2000001,2000001,2000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_write_sectors",2000000,2000000,2000000,2000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sector_misses",1000001,1000001,1000001,1000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sector_misses",999805,999805,999805,999805
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sector_misses",999804,999804,999804,999804
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sector_misses",1000346,1000346,1000346,1000346
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sector_misses",1000372,1000372,1000372,1000372
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_sector_queries",999724,999724,999724,999724
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_sector_queries",999724,999724,999724,999724
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_sector_queries",1000276,1000276,1000276,1000276
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_sector_queries",1000276,1000276,1000276,1000276
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sysmem_sector_queries",1,1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sysmem_sector_queries",4,4,4,4
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sysmem_sector_queries",4,4,4,4
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_read_sector_queries",999843,999843,999843,999843
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_read_sector_queries",999837,999837,999837,999837
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_read_sector_queries",1000388,1000388,1000388,1000388
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_read_sector_queries",1000376,1000376,1000376,1000376
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_write_sector_queries",1000001,1000001,1000001,1000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_write_sector_queries",1000001,1000001,1000001,1000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_write_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_write_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"elapsed_cycles_sm",13165390,13165390,13165390,13165390
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_64bit",16000000,16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_64bit",16000000,16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_64bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_00",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_01",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_02",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_03",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_04",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_05",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_06",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_07",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_cas_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warps_launched",6400,6400,6400,6400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"threads_launched",204800,204800,204800,204800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed",8400800,8400800,8400800,8400800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued1",5010234,5010234,5010234,5010234
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued2",3133802,3133802,3133802,3133802
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"thread_inst_executed",268710400,268710400,268710400,268710400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_request",637600,637600,637600,637600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_request",637600,637600,637600,637600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_cycles",12905883,12905883,12905883,12905883
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_warps",808684538,808684538,808684538,808684538
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_cta_launched",800,800,800,800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"not_predicated_off_thread_inst_executed",229644800,229644800,229644800,229644800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"uncached_global_load_transaction",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_store_transaction",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_ld_mem_divergence_replays",480000,480000,480000,480000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_st_mem_divergence_replays",480000,480000,480000,480000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_load_transactions",1201994,1201994,1201994,1201994
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_store_transactions",1119411,1119411,1119411,1119411
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gred_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_read_sectors",640041,640041,640041,640041
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_read_sectors",640046,640046,640046,640046
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_write_sectors",640001,640001,640001,640001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_write_sectors",640000,640000,640000,640000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sector_misses",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sector_misses",320001,320001,320001,320001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sector_misses",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sector_misses",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sector_misses",320041,320041,320041,320041
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sector_misses",320040,320040,320040,320040
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sector_misses",320022,320022,320022,320022
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sector_misses",320024,320024,320024,320024
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sysmem_sector_queries",1,1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_read_sector_queries",320155,320155,320155,320155
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_read_sector_queries",320141,320141,320141,320141
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_read_sector_queries",320124,320124,320124,320124
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_read_sector_queries",320168,320168,320168,320168
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_write_sector_queries",320001,320001,320001,320001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_write_sector_queries",320001,320001,320001,320001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_write_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_write_sector_queries",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"elapsed_cycles_sm",4231836,4231836,4231836,4231836
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_64bit",5120000,5120000,5120000,5120000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_64bit",5120000,5120000,5120000,5120000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_64bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_00",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_01",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_02",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_03",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_04",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_05",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_06",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_07",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_cas_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warps_launched",6400,6400,6400,6400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"threads_launched",204800,204800,204800,204800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed",2598400,2598400,2598400,2598400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued1",1373476,1373476,1373476,1373476
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued2",1097776,1097776,1097776,1097776
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"thread_inst_executed",83148800,83148800,83148800,83148800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_request",204800,204800,204800,204800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_request",204800,204800,204800,204800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_cycles",4109479,4109479,4109479,4109479
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_warps",257091646,257091646,257091646,257091646
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_cta_launched",800,800,800,800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"not_predicated_off_thread_inst_executed",70348800,70348800,70348800,70348800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"uncached_global_load_transaction",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_store_transaction",320000,320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_ld_mem_divergence_replays",153600,153600,153600,153600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_st_mem_divergence_replays",153600,153600,153600,153600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_load_transactions",390435,390435,390435,390435
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_store_transactions",364725,364725,364725,364725
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gred_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_read_sectors",20783394,20783394,20783394,20783394
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_read_sectors",20798585,20798585,20798585,20798585
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_write_sectors",18523547,18523547,18523547,18523547
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_write_sectors",18536273,18536273,18536273,18536273
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sector_misses",9279000,9279000,9279000,9279000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sector_misses",9251099,9251099,9251099,9251099
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sector_misses",9285855,9285855,9285855,9285855
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sector_misses",9276208,9276208,9276208,9276208
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sector_misses",10402144,10402144,10402144,10402144
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sector_misses",10381840,10381840,10381840,10381840
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sector_misses",10383777,10383777,10383777,10383777
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sector_misses",10387141,10387141,10387141,10387141
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_l1_sector_queries",9844845,9844845,9844845,9844845
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_l1_sector_queries",9846521,9846521,9846521,9846521
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_l1_sector_queries",9845251,9845251,9845251,9845251
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_l1_sector_queries",9846279,9846279,9846279,9846279
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_sector_queries",14890534,14890534,14890534,14890534
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_sector_queries",14885708,14885708,14885708,14885708
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_sector_queries",14890504,14890504,14890504,14890504
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_sector_queries",14885089,14885089,14885089,14885089
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_hit_sectors",4497306,4497306,4497306,4497306
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_hit_sectors",4501808,4501808,4501808,4501808
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_hit_sectors",4482925,4482925,4482925,4482925
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_hit_sectors",4496487,4496487,4496487,4496487
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sysmem_sector_queries",1,1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_read_sector_queries",14890797,14890797,14890797,14890797
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_read_sector_queries",14885977,14885977,14885977,14885977
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_read_sector_queries",14892172,14892172,14892172,14892172
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_read_sector_queries",14885321,14885321,14885321,14885321
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_write_sector_queries",9844846,9844846,9844846,9844846
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_write_sector_queries",9846522,9846522,9846522,9846522
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_write_sector_queries",9845255,9845255,9845255,9845255
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_write_sector_queries",9846279,9846279,9846279,9846279
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"elapsed_cycles_sm",370468966,370468966,370468966,370468966
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_64bit",167566035,167566035,167566035,167566035
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_64bit",126406392,126406392,126406392,126406392
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_64bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_00",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_01",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_02",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_03",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_04",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_05",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_06",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_07",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_cas_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warps_launched",80000,80000,80000,80000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"threads_launched",2560000,2560000,2560000,2560000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed",691776920,691776920,691776920,691776920
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued1",505286361,505286361,505286361,505286361
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued2",170861731,170861731,170861731,170861731
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"thread_inst_executed",15705546664,15705546664,15705546664,15705546664
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load",27790350,27790350,27790350,27790350
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store",14230000,14230000,14230000,14230000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_request",14047450,14047450,14047450,14047450
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_request",3970050,3970050,3970050,3970050
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_cycles",370842588,370842588,370842588,370842588
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_warps",14798251402,14798251402,14798251402,14798251402
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_cta_launched",10000,10000,10000,10000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"not_predicated_off_thread_inst_executed",15161762360,15161762360,15161762360,15161762360
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"uncached_global_load_transaction",28227185,28227185,28227185,28227185
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_store_transaction",15562596,15562596,15562596,15562596
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_replay",27631277,27631277,27631277,27631277
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_replay",3726250,3726250,3726250,3726250
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_ld_mem_divergence_replays",14187310,14187310,14187310,14187310
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_st_mem_divergence_replays",11592546,11592546,11592546,11592546
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_load_transactions",55421627,55421627,55421627,55421627
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_store_transactions",17957435,17957435,17957435,17957435
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_load_transactions",28238317,28238317,28238317,28238317
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_store_transactions",15562814,15562814,15562814,15562814
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gred_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex0_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex1_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex2_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex3_cache_sector_misses",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_read_sectors",7092245,7092245,7092245,7092245
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_read_sectors",7105128,7105128,7105128,7105128
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp0_write_sectors",2000001,2000001,2000001,2000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"fb_subp1_write_sectors",2000000,2000000,2000000,2000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sector_misses",1000001,1000001,1000001,1000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sector_misses",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sector_misses",3541571,3541571,3541571,3541571
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sector_misses",3557863,3557863,3557863,3557863
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sector_misses",3554565,3554565,3554565,3554565
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sector_misses",3563206,3563206,3563206,3563206
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_l1_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_sector_queries",4000000,4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_sector_queries",4000000,4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_sector_queries",4000000,4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_sector_queries",4000000,4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_l1_hit_sectors",443251,443251,443251,443251
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_l1_hit_sectors",459088,459088,459088,459088
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_l1_hit_sectors",432508,432508,432508,432508
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_l1_hit_sectors",429866,429866,429866,429866
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_tex_hit_sectors",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_thread_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_32b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_64b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp0_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp1_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp2_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_subp3_gld_warp_count_128b",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_read_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_write_sysmem_sector_queries",1,1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_write_sysmem_sector_queries",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_read_sector_queries",4000095,4000095,4000095,4000095
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_read_sector_queries",4000069,4000069,4000069,4000069
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_read_sector_queries",4000068,4000068,4000068,4000068
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_read_sector_queries",4000068,4000068,4000068,4000068
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp0_total_write_sector_queries",1000001,1000001,1000001,1000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp1_total_write_sector_queries",1000005,1000005,1000005,1000005
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp2_total_write_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_subp3_total_write_sector_queries",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"elapsed_cycles_sm",90835528,90835528,90835528,90835528
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_64bit",16000000,16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_64bit",16000000,16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_8bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_16bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_32bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_64bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"rocache_gld_inst_128bit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_00",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_01",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_02",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_03",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_04",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_05",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_06",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"prof_trigger_07",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_cas_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warps_launched",6400,6400,6400,6400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"threads_launched",204800,204800,204800,204800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed",7323200,7323200,7323200,7323200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued1",59334534,59334534,59334534,59334534
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued2",2140985,2140985,2140985,2140985
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"thread_inst_executed",233804800,233804800,233804800,233804800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_request",623200,623200,623200,623200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_request",623200,623200,623200,623200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_cycles",88416652,88416652,88416652,88416652
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"active_warps",5668173726,5668173726,5668173726,5668173726
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_cta_launched",800,800,800,800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"not_predicated_off_thread_inst_executed",208140800,208140800,208140800,208140800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_local_store_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_hit",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_global_load_miss",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"uncached_global_load_transaction",16000000,16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_store_transaction",1000000,1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_replay",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_ld_mem_divergence_replays",15480000,15480000,15480000,15480000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_st_mem_divergence_replays",480000,480000,480000,480000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_load_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_store_transactions",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_load_transactions",55524930,55524930,55524930,55524930
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"__l1_global_store_transactions",1103221,1103221,1103221,1103221
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atom_count",0,0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gred_count",0,0,0,0
+
+==26017== Metric result:
+"Device","Kernel","Invocations","Metric Name","Metric Description","Min","Max","Avg"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_global_hit_rate","L1 Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_local_hit_rate","L1 Local Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency","Multiprocessor Activity",97.664505%,97.664505%,97.664505%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc","Executed IPC",0.651778,0.651778,0.651778
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"achieved_occupancy","Achieved Occupancy",0.979065,0.979065,0.979065
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_requested_throughput","Requested Global Load Throughput",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_requested_throughput","Requested Global Store Throughput",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency_instance","Multiprocessor Activity",97.664505%,97.664505%,97.664505%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc_instance","Executed IPC",0.651778,0.651778,0.651778
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_replay_overhead","Instruction Replay Overhead",0.342472,0.342472,0.342472
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_replay_overhead","Shared Memory Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_replay_overhead","Global Memory Replay Overhead",0.114275,0.114275,0.114275
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_cache_replay_overhead","Global Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_hit_rate","Texture Cache Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_throughput","Texture Cache Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_throughput","Device Memory Read Throughput",105.987773GB/s,105.987773GB/s,105.987773GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_throughput","Device Memory Write Throughput",105.977970GB/s,105.977970GB/s,105.977970GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_throughput","Global Store Throughput",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_throughput","Global Load Throughput",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_replay_overhead","Local Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_efficiency","Shared Memory Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_efficiency","Global Memory Load Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_efficiency","Global Memory Store Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_hit_rate","L2 Hit Rate (L1 Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_hit_rate","L2 Hit Rate (Texture Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_throughput","L2 Throughput (L1 Reads)",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_throughput","L2 Throughput (Texture Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_memory_overhead","Local Memory Overhead",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_execution_efficiency","Warp Execution Efficiency",99.957147%,99.957147%,99.957147%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_requested_throughput","Requested Non-Coherent Global Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issued_ipc","Issued IPC",0.876932,0.876932,0.876932
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_per_warp","Instructions per warp",1312.625000,1312.625000,1312.625000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slot_utilization","Issue Slot Utilization",15.830244%,15.830244%,15.830244%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions_per_request","Local Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions_per_request","Local Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions_per_request","Shared Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions_per_request","Shared Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions_per_request","Global Load Transactions Per Request",1.923077,1.923077,1.923077
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions_per_request","Global Store Transactions Per Request",1.923077,1.923077,1.923077
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions","Local Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions","Local Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions","Shared Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions","Shared Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions","Global Load Transactions",1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions","Global Store Transactions",1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_transactions","System Memory Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_transactions","System Memory Write Transactions",9,9,9
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_transactions","Texture Cache Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_transactions","Device Memory Read Transactions",4000371,4000371,4000371
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_transactions","Device Memory Write Transactions",4000001,4000001,4000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_transactions","L2 Read Transactions",4000444,4000444,4000444
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_transactions","L2 Write Transactions",4000002,4000002,4000002
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_throughput","Local Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_throughput","Local Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_throughput","Shared Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_throughput","Shared Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_throughput","L2 Throughput (Reads)",105.989707GB/s,105.989707GB/s,105.989707GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_throughput","L2 Throughput (Writes)",105.977996GB/s,105.977996GB/s,105.977996GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_throughput","System Memory Read Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_throughput","System Memory Write Throughput",250.033203KB/s,250.033203KB/s,250.032227KB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_nonpred_execution_efficiency","Warp Non-Predicated Execution Efficiency",85.425198%,85.425198%,85.425198%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_issued","Issued Control-Flow Instructions",155798,155798,155798
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_executed","Executed Control-Flow Instructions",153600,153600,153600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_issued","Issued Load/Store Instructions",3122375,3122375,3122375
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_executed","Executed Load/Store Instructions",1275200,1275200,1275200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp","Floating Point Operations(Single Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_add","Floating Point Operations(Single Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_mul","Floating Point Operation(Single Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_fma","Floating Point Operations(Single Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp","Floating Point Operations(Double Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_add","Floating Point Operations(Double Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_mul","Floating Point Operations(Double Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_fma","Floating Point Operations(Double Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_special","Floating Point Operations(Single Precision Special)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_inst_fetch","Issue Stall Reasons (Instructions Fetch)",1.570512%,1.570512%,1.570512%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_exec_dependency","Issue Stall Reasons (Execution Dependency)",8.511722%,8.511722%,8.511722%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_dependency","Issue Stall Reasons (Data Request)",63.768312%,63.768312%,63.768312%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_texture","Issue Stall Reasons (Texture)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_sync","Issue Stall Reasons (Synchronization)",20.029945%,20.029945%,20.029945%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_other","Issue Stall Reasons (Other)",0.189740%,0.189740%,0.189740%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_utilization","L1/Shared Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_utilization","L2 Cache Utilization","Low (2)","Low (2)","Low (2)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_utilization","Texture Cache Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_utilization","Device Memory Utilization","High (8)","High (8)","High (8)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_utilization","System Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_fu_utilization","Load/Store Function Unit Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"alu_fu_utilization","Arithmetic Function Unit Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_fu_utilization","Control-Flow Function Unit Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_fu_utilization","Texture Function Unit Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed","Instructions Executed",8400800,8400800,8400800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued","Instructions Issued",11275517,11275517,11275517
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slots","Issue Slots",8141756,8141756,8141756
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_throughput","L2 Throughput (Non-Coherent Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_transactions","L2 Non-Coherent Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_cache_global_hit_rate","Non-Coherent Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_throughput","Non-Coherent Global Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_efficiency","Non-Coherent Global Load Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_throughput","L2 Throughput (Atomic requests)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_32","FP Instructions(Single)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_64","FP Instructions(Double)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_integer","Integer Instructions",164172800,164172800,164172800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_bit_convert","Bit-Convert Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_control","Control-Flow Instructions",2457600,2457600,2457600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_compute_ld_st","Load/Store Instructions",32000000,32000000,32000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_misc","Misc Instructions",30400000,30400000,30400000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_inter_thread_communication","Inter-Thread Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_replay_overhead","Atomic Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions","Atomic Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions_per_request","Atomic Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_utilization","System Memory Read Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_utilization","System Memory Write Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_transactions","L2 Read Transactions (L1 read requests)",4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_transactions","L2 Write Transactions (L1 write requests)",4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_tex_read_transactions","L2 Transactions (Texture Reads)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_throughput","L2 Throughput (L1 Writes)",105.977943GB/s,105.977943GB/s,105.977943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_transactions","L2 Transactions (Atomic requests)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_transactions","ECC Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_throughput","ECC Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_pipe_busy","Issue Stall Reasons (Pipe Busy)",1.477775%,1.477775%,1.477775%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_constant_memory_dependency","Issue Stall Reasons (Immediate constant)",0.032702%,0.032702%,0.032702%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_sp_efficiency","FLOP Efficiency(Peak Single)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_dp_efficiency","FLOP Efficiency(Peak Double)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_throttle","Issue Stall Reasons (Memory Throttle)",3.599858%,3.599858%,3.599858%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_not_selected","Issue Stall Reasons (Not Selected)",0.819435%,0.819435%,0.819435%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"eligible_warps_per_cycle","Eligible Warps Per Active Cycle",1.134620,1.134620,1.134620
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_rows(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_throughput","Atomic Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_global_hit_rate","L1 Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_local_hit_rate","L1 Local Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency","Multiprocessor Activity",97.232076%,97.232076%,97.232076%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc","Executed IPC",0.631605,0.631605,0.631605
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"achieved_occupancy","Achieved Occupancy",0.977510,0.977510,0.977510
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_requested_throughput","Requested Global Load Throughput",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_requested_throughput","Requested Global Store Throughput",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency_instance","Multiprocessor Activity",97.232076%,97.232076%,97.232076%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc_instance","Executed IPC",0.631605,0.631605,0.631605
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_replay_overhead","Instruction Replay Overhead",0.375049,0.375049,0.375049
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_replay_overhead","Shared Memory Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_replay_overhead","Global Memory Replay Overhead",0.118227,0.118227,0.118227
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_cache_replay_overhead","Global Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_hit_rate","Texture Cache Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_throughput","Texture Cache Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_throughput","Device Memory Read Throughput",106.077387GB/s,106.077387GB/s,106.077387GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_throughput","Device Memory Write Throughput",106.070261GB/s,106.070261GB/s,106.070261GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_throughput","Global Store Throughput",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_throughput","Global Load Throughput",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_replay_overhead","Local Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_efficiency","Shared Memory Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_efficiency","Global Memory Load Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_efficiency","Global Memory Store Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_hit_rate","L2 Hit Rate (L1 Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_hit_rate","L2 Hit Rate (Texture Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_throughput","L2 Throughput (L1 Reads)",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_throughput","L2 Throughput (Texture Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_memory_overhead","Local Memory Overhead",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_execution_efficiency","Warp Execution Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_requested_throughput","Requested Non-Coherent Global Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issued_ipc","Issued IPC",0.867384,0.867384,0.867384
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_per_warp","Instructions per warp",406.000000,406.000000,406.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slot_utilization","Issue Slot Utilization",15.014769%,15.014769%,15.014769%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions_per_request","Local Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions_per_request","Local Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions_per_request","Shared Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions_per_request","Shared Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions_per_request","Global Load Transactions Per Request",1.923077,1.923077,1.923077
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions_per_request","Global Store Transactions Per Request",1.923077,1.923077,1.923077
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions","Local Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions","Local Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions","Shared Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions","Shared Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions","Global Load Transactions",320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions","Global Store Transactions",320000,320000,320000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_transactions","System Memory Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_transactions","System Memory Write Transactions",1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_transactions","Texture Cache Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_transactions","Device Memory Read Transactions",1280087,1280087,1280087
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_transactions","Device Memory Write Transactions",1280001,1280001,1280001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_transactions","L2 Read Transactions",1280588,1280588,1280588
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_transactions","L2 Write Transactions",1280002,1280002,1280002
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_throughput","Local Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_throughput","Local Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_throughput","Shared Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_throughput","Shared Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_throughput","L2 Throughput (Reads)",106.118904GB/s,106.118904GB/s,106.118904GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_throughput","L2 Throughput (Writes)",106.070343GB/s,106.070343GB/s,106.070343GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_throughput","System Memory Read Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_throughput","System Memory Write Throughput",86.892578KB/s,86.892578KB/s,86.889648KB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_nonpred_execution_efficiency","Warp Non-Predicated Execution Efficiency",84.605911%,84.605911%,84.605911%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_issued","Issued Control-Flow Instructions",83424,83424,83424
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_executed","Executed Control-Flow Instructions",57600,57600,57600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_issued","Issued Load/Store Instructions",1028700,1028700,1028700
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_executed","Executed Load/Store Instructions",409600,409600,409600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp","Floating Point Operations(Single Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_add","Floating Point Operations(Single Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_mul","Floating Point Operation(Single Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_fma","Floating Point Operations(Single Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp","Floating Point Operations(Double Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_add","Floating Point Operations(Double Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_mul","Floating Point Operations(Double Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_fma","Floating Point Operations(Double Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_special","Floating Point Operations(Single Precision Special)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_inst_fetch","Issue Stall Reasons (Instructions Fetch)",1.246346%,1.246346%,1.246346%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_exec_dependency","Issue Stall Reasons (Execution Dependency)",8.349356%,8.349356%,8.349356%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_dependency","Issue Stall Reasons (Data Request)",62.880502%,62.880502%,62.880502%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_texture","Issue Stall Reasons (Texture)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_sync","Issue Stall Reasons (Synchronization)",21.599766%,21.599766%,21.599766%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_other","Issue Stall Reasons (Other)",0.237489%,0.237489%,0.237489%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_utilization","L1/Shared Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_utilization","L2 Cache Utilization","Low (2)","Low (2)","Low (2)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_utilization","Texture Cache Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_utilization","Device Memory Utilization","High (8)","High (8)","High (8)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_utilization","System Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_fu_utilization","Load/Store Function Unit Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"alu_fu_utilization","Arithmetic Function Unit Utilization","Low (2)","Low (2)","Low (2)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_fu_utilization","Control-Flow Function Unit Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_fu_utilization","Texture Function Unit Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed","Instructions Executed",2598400,2598400,2598400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued","Instructions Issued",3572927,3572927,3572927
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slots","Issue Slots",2475099,2475099,2475099
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_throughput","L2 Throughput (Non-Coherent Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_transactions","L2 Non-Coherent Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_cache_global_hit_rate","Non-Coherent Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_throughput","Non-Coherent Global Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_efficiency","Non-Coherent Global Load Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_throughput","L2 Throughput (Atomic requests)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_32","FP Instructions(Single)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_64","FP Instructions(Double)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_integer","Integer Instructions",49561600,49561600,49561600
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_bit_convert","Bit-Convert Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_control","Control-Flow Instructions",1024000,1024000,1024000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_compute_ld_st","Load/Store Instructions",10240000,10240000,10240000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_misc","Misc Instructions",9523200,9523200,9523200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_inter_thread_communication","Inter-Thread Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_replay_overhead","Atomic Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions","Atomic Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions_per_request","Atomic Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_utilization","System Memory Read Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_utilization","System Memory Write Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_transactions","L2 Read Transactions (L1 read requests)",1280000,1280000,1280000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_transactions","L2 Write Transactions (L1 write requests)",1280000,1280000,1280000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_tex_read_transactions","L2 Transactions (Texture Reads)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_throughput","L2 Throughput (L1 Writes)",106.070178GB/s,106.070178GB/s,106.070178GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_transactions","L2 Transactions (Atomic requests)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_transactions","ECC Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_throughput","ECC Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_pipe_busy","Issue Stall Reasons (Pipe Busy)",1.121545%,1.121545%,1.121545%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_constant_memory_dependency","Issue Stall Reasons (Immediate constant)",0.081253%,0.081253%,0.081253%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_sp_efficiency","FLOP Efficiency(Peak Single)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_dp_efficiency","FLOP Efficiency(Peak Double)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_throttle","Issue Stall Reasons (Memory Throttle)",3.765919%,3.765919%,3.765919%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_not_selected","Issue Stall Reasons (Not Selected)",0.717822%,0.717822%,0.717822%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"eligible_warps_per_cycle","Eligible Warps Per Active Cycle",1.036751,1.036751,1.036751
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_slices(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_throughput","Atomic Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_global_hit_rate","L1 Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_local_hit_rate","L1 Local Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency","Multiprocessor Activity",99.942695%,99.942695%,99.942695%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc","Executed IPC",1.867438,1.867438,1.867438
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"achieved_occupancy","Achieved Occupancy",0.624181,0.624181,0.624181
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_requested_throughput","Requested Global Load Throughput",40.041943GB/s,40.041943GB/s,40.041943GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_requested_throughput","Requested Global Store Throughput",30.206345GB/s,30.206345GB/s,30.206345GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency_instance","Multiprocessor Activity",99.942695%,99.942695%,99.942695%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc_instance","Executed IPC",1.867438,1.867438,1.867438
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_replay_overhead","Instruction Replay Overhead",0.224391,0.224391,0.224391
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_replay_overhead","Shared Memory Replay Overhead",0.045329,0.045329,0.045329
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_replay_overhead","Global Memory Replay Overhead",0.037266,0.037266,0.037266
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_cache_replay_overhead","Global Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_hit_rate","Texture Cache Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_throughput","Texture Cache Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_throughput","Device Memory Read Throughput",39.746079GB/s,39.746079GB/s,39.746079GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_throughput","Device Memory Write Throughput",35.423579GB/s,35.423579GB/s,35.423579GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_throughput","Global Store Throughput",37.644089GB/s,37.644089GB/s,37.644089GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_throughput","Global Load Throughput",56.922542GB/s,56.922542GB/s,56.922542GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_replay_overhead","Local Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_efficiency","Shared Memory Efficiency",44.880171%,44.880171%,44.880171%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_efficiency","Global Memory Load Efficiency",70.344614%,70.344614%,70.344614%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_efficiency","Global Memory Store Efficiency",80.241935%,80.241935%,80.241935%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_hit_rate","L2 Hit Rate (L1 Reads)",30.189710%,30.189710%,30.189710%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_hit_rate","L2 Hit Rate (Texture Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_throughput","L2 Throughput (L1 Reads)",56.922542GB/s,56.922542GB/s,56.922542GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_throughput","L2 Throughput (Texture Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_memory_overhead","Local Memory Overhead",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_execution_efficiency","Warp Execution Efficiency",70.947486%,70.947486%,70.947486%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_requested_throughput","Requested Non-Coherent Global Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issued_ipc","Issued IPC",2.287629,2.287629,2.287629
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_per_warp","Instructions per warp",8647.211500,8647.211500,8647.211500
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slot_utilization","Issue Slot Utilization",45.654012%,45.654012%,45.654012%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions_per_request","Local Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions_per_request","Local Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions_per_request","Shared Memory Load Transactions Per Request",1.994276,1.994276,1.994276
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions_per_request","Shared Memory Store Transactions Per Request",1.261942,1.261942,1.261942
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions_per_request","Global Load Transactions Per Request",2.010501,2.010501,2.010501
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions_per_request","Global Store Transactions Per Request",3.920000,3.920000,3.920000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions","Local Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions","Local Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions","Shared Load Transactions",55421627,55421627,55421627
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions","Shared Store Transactions",17957435,17957435,17957435
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions","Global Load Transactions",28227185,28227185,28227185
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions","Global Store Transactions",15562596,15562596,15562596
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_transactions","System Memory Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_transactions","System Memory Write Transactions",1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_transactions","Texture Cache Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_transactions","Device Memory Read Transactions",41581979,41581979,41581979
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_transactions","Device Memory Write Transactions",37059820,37059820,37059820
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_transactions","L2 Read Transactions",59554267,59554267,59554267
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_transactions","L2 Write Transactions",39382902,39382902,39382902
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_throughput","Local Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_throughput","Local Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_throughput","Shared Memory Load Throughput",423.797506GB/s,423.797506GB/s,423.797506GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_throughput","Shared Memory Store Throughput",137.316722GB/s,137.316722GB/s,137.316722GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_throughput","L2 Throughput (Reads)",56.924867GB/s,56.924867GB/s,56.924867GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_throughput","L2 Throughput (Writes)",37.644094GB/s,37.644094GB/s,37.644094GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_throughput","System Memory Read Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_throughput","System Memory Write Throughput",1.001953KB/s,1.001953KB/s,1.000977KB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_nonpred_execution_efficiency","Warp Non-Predicated Execution Efficiency",68.491021%,68.491021%,68.491021%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_issued","Issued Control-Flow Instructions",115922520,115922520,115922520
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_executed","Executed Control-Flow Instructions",107397154,107397154,107397154
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_issued","Issued Load/Store Instructions",132858244,132858244,132858244
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_executed","Executed Load/Store Instructions",55766954,55766954,55766954
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp","Floating Point Operations(Single Precision)",252812784,252812784,252812784
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_add","Floating Point Operations(Single Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_mul","Floating Point Operation(Single Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_fma","Floating Point Operations(Single Precision FMA)",126406392,126406392,126406392
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp","Floating Point Operations(Double Precision)",2148908664,2148908664,2148908664
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_add","Floating Point Operations(Double Precision Add)",758438352,758438352,758438352
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_mul","Floating Point Operations(Double Precision Mul)",126406392,126406392,126406392
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_fma","Floating Point Operations(Double Precision FMA)",632031960,632031960,632031960
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_special","Floating Point Operations(Single Precision Special)",126406392,126406392,126406392
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_inst_fetch","Issue Stall Reasons (Instructions Fetch)",5.226932%,5.226932%,5.226932%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_exec_dependency","Issue Stall Reasons (Execution Dependency)",26.862523%,26.862523%,26.862523%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_dependency","Issue Stall Reasons (Data Request)",22.322802%,22.322802%,22.322802%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_texture","Issue Stall Reasons (Texture)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_sync","Issue Stall Reasons (Synchronization)",21.140254%,21.140254%,21.140254%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_other","Issue Stall Reasons (Other)",2.469496%,2.469496%,2.469496%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_utilization","L1/Shared Memory Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_utilization","L2 Cache Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_utilization","Texture Cache Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_utilization","Device Memory Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_utilization","System Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_fu_utilization","Load/Store Function Unit Utilization","Mid (4)","Mid (4)","Mid (4)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"alu_fu_utilization","Arithmetic Function Unit Utilization","Mid (5)","Mid (5)","Mid (5)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_fu_utilization","Control-Flow Function Unit Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_fu_utilization","Texture Function Unit Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed","Instructions Executed",691776920,691776920,691776920
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued","Instructions Issued",847005223,847005223,847005223
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slots","Issue Slots",676148809,676148809,676148809
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_throughput","L2 Throughput (Non-Coherent Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_transactions","L2 Non-Coherent Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_cache_global_hit_rate","Non-Coherent Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_throughput","Non-Coherent Global Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_efficiency","Non-Coherent Global Load Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_throughput","L2 Throughput (Atomic requests)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_32","FP Instructions(Single)",505625568,505625568,505625568
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_64","FP Instructions(Double)",1516876704,1516876704,1516876704
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_integer","Integer Instructions",8089448704,8089448704,8089448704
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_bit_convert","Bit-Convert Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_control","Control-Flow Instructions",282929688,282929688,282929688
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_compute_ld_st","Load/Store Instructions",1347817171,1347817171,1347817171
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_misc","Misc Instructions",2377343710,2377343710,2377343710
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_inter_thread_communication","Inter-Thread Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_replay_overhead","Atomic Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions","Atomic Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions_per_request","Atomic Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_utilization","System Memory Read Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_utilization","System Memory Write Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_transactions","L2 Read Transactions (L1 read requests)",59551835,59551835,59551835
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_transactions","L2 Write Transactions (L1 write requests)",39382896,39382896,39382896
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_tex_read_transactions","L2 Transactions (Texture Reads)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_throughput","L2 Throughput (L1 Writes)",37.644089GB/s,37.644089GB/s,37.644089GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_transactions","L2 Transactions (Atomic requests)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_transactions","ECC Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_throughput","ECC Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_pipe_busy","Issue Stall Reasons (Pipe Busy)",6.871664%,6.871664%,6.871664%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_constant_memory_dependency","Issue Stall Reasons (Immediate constant)",0.001121%,0.001121%,0.001121%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_sp_efficiency","FLOP Efficiency(Peak Single)",0.177712%,0.177712%,0.177712%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_dp_efficiency","FLOP Efficiency(Peak Double)",4.531648%,4.531648%,4.531648%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_throttle","Issue Stall Reasons (Memory Throttle)",8.585772%,8.585772%,8.585772%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_not_selected","Issue Stall Reasons (Not Selected)",6.519435%,6.519435%,6.519435%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"eligible_warps_per_cycle","Eligible Warps Per Active Cycle",4.227416,4.227416,4.227416
+"GeForce GTX TITAN (0)","gpu_stencil37_hack2(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_throughput","Atomic Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_global_hit_rate","L1 Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_cache_local_hit_rate","L1 Local Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency","Multiprocessor Activity",97.337082%,97.337082%,97.337082%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc","Executed IPC",0.082469,0.082469,0.082469
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"achieved_occupancy","Achieved Occupancy",0.992928,0.992928,0.992928
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_requested_throughput","Requested Global Load Throughput",15.365828GB/s,15.365828GB/s,15.365828GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_requested_throughput","Requested Global Store Throughput",15.365828GB/s,15.365828GB/s,15.365828GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sm_efficiency_instance","Multiprocessor Activity",97.337082%,97.337082%,97.337082%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ipc_instance","Executed IPC",0.082469,0.082469,0.082469
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_replay_overhead","Instruction Replay Overhead",7.687985,7.687985,7.687985
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_replay_overhead","Shared Memory Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_replay_overhead","Global Memory Replay Overhead",2.179375,2.179375,2.179375
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"global_cache_replay_overhead","Global Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_hit_rate","Texture Cache Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_throughput","Texture Cache Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_throughput","Device Memory Read Throughput",54.538597GB/s,54.538597GB/s,54.538597GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_throughput","Device Memory Write Throughput",15.365832GB/s,15.365832GB/s,15.365832GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_throughput","Global Store Throughput",15.365828GB/s,15.365828GB/s,15.365828GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_throughput","Global Load Throughput",61.463311GB/s,61.463311GB/s,61.463311GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_replay_overhead","Local Memory Cache Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_efficiency","Shared Memory Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_efficiency","Global Memory Load Efficiency",25.000000%,25.000000%,25.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_efficiency","Global Memory Store Efficiency",100.000000%,100.000000%,100.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_hit_rate","L2 Hit Rate (L1 Reads)",11.029456%,11.029456%,11.029456%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_hit_rate","L2 Hit Rate (Texture Reads)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_throughput","L2 Throughput (L1 Reads)",61.463311GB/s,61.463311GB/s,61.463311GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_texture_read_throughput","L2 Throughput (Texture Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_memory_overhead","Local Memory Overhead",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_execution_efficiency","Warp Execution Efficiency",99.770592%,99.770592%,99.770592%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_requested_throughput","Requested Non-Coherent Global Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issued_ipc","Issued IPC",0.719508,0.719508,0.719508
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_per_warp","Instructions per warp",1144.250000,1144.250000,1144.250000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slot_utilization","Issue Slot Utilization",17.382336%,17.382336%,17.382336%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions_per_request","Local Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions_per_request","Local Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions_per_request","Shared Memory Load Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions_per_request","Shared Memory Store Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions_per_request","Global Load Transactions Per Request",30.769231,30.769231,30.769231
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions_per_request","Global Store Transactions Per Request",1.923077,1.923077,1.923077
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_transactions","Local Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_transactions","Local Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_transactions","Shared Load Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_transactions","Shared Store Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gld_transactions","Global Load Transactions",16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"gst_transactions","Global Store Transactions",1000000,1000000,1000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_transactions","System Memory Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_transactions","System Memory Write Transactions",1,1,1
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_cache_transactions","Texture Cache Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_read_transactions","Device Memory Read Transactions",14197373,14197373,14197373
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_write_transactions","Device Memory Write Transactions",4000001,4000001,4000001
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_transactions","L2 Read Transactions",16000300,16000300,16000300
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_transactions","L2 Write Transactions",4000006,4000006,4000006
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_load_throughput","Local Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"local_store_throughput","Local Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_load_throughput","Shared Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"shared_store_throughput","Shared Memory Store Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_read_throughput","L2 Throughput (Reads)",61.464463GB/s,61.464463GB/s,61.464463GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_write_throughput","L2 Throughput (Writes)",15.365851GB/s,15.365851GB/s,15.365851GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_throughput","System Memory Read Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_throughput","System Memory Write Throughput",4.027344KB/s,4.027344KB/s,4.026367KB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"warp_nonpred_execution_efficiency","Warp Non-Predicated Execution Efficiency",88.819095%,88.819095%,88.819095%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_issued","Issued Control-Flow Instructions",800273,800273,800273
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_executed","Executed Control-Flow Instructions",620800,620800,620800
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_issued","Issued Load/Store Instructions",57057112,57057112,57057112
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_executed","Executed Load/Store Instructions",1246400,1246400,1246400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp","Floating Point Operations(Single Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_add","Floating Point Operations(Single Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_mul","Floating Point Operation(Single Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_fma","Floating Point Operations(Single Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp","Floating Point Operations(Double Precision)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_add","Floating Point Operations(Double Precision Add)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_mul","Floating Point Operations(Double Precision Mul)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_dp_fma","Floating Point Operations(Double Precision FMA)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_count_sp_special","Floating Point Operations(Single Precision Special)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_inst_fetch","Issue Stall Reasons (Instructions Fetch)",0.125348%,0.125348%,0.125348%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_exec_dependency","Issue Stall Reasons (Execution Dependency)",1.051904%,1.051904%,1.051904%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_dependency","Issue Stall Reasons (Data Request)",4.556840%,4.556840%,4.556840%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_texture","Issue Stall Reasons (Texture)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_sync","Issue Stall Reasons (Synchronization)",31.000363%,31.000363%,31.000363%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_other","Issue Stall Reasons (Other)",0.035400%,0.035400%,0.035400%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l1_shared_utilization","L1/Shared Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_utilization","L2 Cache Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_utilization","Texture Cache Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"dram_utilization","Device Memory Utilization","Low (3)","Low (3)","Low (3)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_utilization","System Memory Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ldst_fu_utilization","Load/Store Function Unit Utilization","High (7)","High (7)","High (7)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"alu_fu_utilization","Arithmetic Function Unit Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"cf_fu_utilization","Control-Flow Function Unit Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"tex_fu_utilization","Texture Function Unit Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_executed","Instructions Executed",7323200,7323200,7323200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_issued","Instructions Issued",63623849,63623849,63623849
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"issue_slots","Issue Slots",61483177,61483177,61483177
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_throughput","L2 Throughput (Non-Coherent Reads)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_l2_read_transactions","L2 Non-Coherent Read Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_cache_global_hit_rate","Non-Coherent Global Hit Rate",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_throughput","Non-Coherent Global Memory Load Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"nc_gld_efficiency","Non-Coherent Global Load Efficiency",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_throughput","L2 Throughput (Atomic requests)",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_32","FP Instructions(Single)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_fp_64","FP Instructions(Double)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_integer","Integer Instructions",144704000,144704000,144704000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_bit_convert","Bit-Convert Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_control","Control-Flow Instructions",2662400,2662400,2662400
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_compute_ld_st","Load/Store Instructions",32000000,32000000,32000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_misc","Misc Instructions",25907200,25907200,25907200
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"inst_inter_thread_communication","Inter-Thread Instructions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_replay_overhead","Atomic Replay Overhead",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions","Atomic Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_transactions_per_request","Atomic Transactions Per Request",0.000000,0.000000,0.000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_read_utilization","System Memory Read Utilization","Idle (0)","Idle (0)","Idle (0)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"sysmem_write_utilization","System Memory Write Utilization","Low (1)","Low (1)","Low (1)"
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_read_transactions","L2 Read Transactions (L1 read requests)",16000000,16000000,16000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_transactions","L2 Write Transactions (L1 write requests)",4000000,4000000,4000000
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_tex_read_transactions","L2 Transactions (Texture Reads)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_l1_write_throughput","L2 Throughput (L1 Writes)",15.365828GB/s,15.365828GB/s,15.365828GB/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"l2_atomic_transactions","L2 Transactions (Atomic requests)",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_transactions","ECC Transactions",0,0,0
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"ecc_throughput","ECC Throughput",0.000000B/s,0.000000B/s,0.000000B/s
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_pipe_busy","Issue Stall Reasons (Pipe Busy)",9.504070%,9.504070%,9.504070%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_constant_memory_dependency","Issue Stall Reasons (Immediate constant)",0.003547%,0.003547%,0.003547%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_sp_efficiency","FLOP Efficiency(Peak Single)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"flop_dp_efficiency","FLOP Efficiency(Peak Double)",0.000000%,0.000000%,0.000000%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_memory_throttle","Issue Stall Reasons (Memory Throttle)",44.999202%,44.999202%,44.999202%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"stall_not_selected","Issue Stall Reasons (Not Selected)",8.723325%,8.723325%,8.723325%
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"eligible_warps_per_cycle","Eligible Warps Per Active Cycle",6.311081,6.311081,6.311081
+"GeForce GTX TITAN (0)","gpu_stencil37_hack1_cp_cols(double*, double*, double*, double*, int, int, int, int, int, int)",1,"atomic_throughput","Atomic Throughput",0.000000B/s,0.000000B/s,0.000000B/s
