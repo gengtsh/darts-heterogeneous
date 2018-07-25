@@ -1,0 +1,6 @@
+==20233== NVPROF is profiling process 20233, command: ./StencilCudaGpu37 1000 1000 800 2 5
+==20233== Profiling application: ./StencilCudaGpu37 1000 1000 800 2 5
+==20233== Profiling result:
+No kernels were profiled.
+==20233== Warning: Some profiling data are not recorded. Make sure cudaProfilerStop() or cuProfilerStop() is called before application exit to flush profile data.
+======== Error: Application received signal 9

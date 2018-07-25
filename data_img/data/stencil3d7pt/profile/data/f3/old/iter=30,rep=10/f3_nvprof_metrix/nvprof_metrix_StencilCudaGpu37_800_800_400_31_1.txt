@@ -1,0 +1,2 @@
+==11704== NVPROF is profiling process 11704, command: ./StencilCudaGpu37 800 800 400 30 10
+==11704== Some kernel(s) will be replayed on device 0 in order to collect all events/metrics.
