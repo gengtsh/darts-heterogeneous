@@ -1,6 +1,0 @@
-==20211== NVPROF is profiling process 20211, command: ./StencilCudaGpu37 1000 1000 800 1 5
-==20211== Profiling application: ./StencilCudaGpu37 1000 1000 800 1 5
-==20211== Profiling result:
-No kernels were profiled.
-==20211== Warning: Some profiling data are not recorded. Make sure cudaProfilerStop() or cuProfilerStop() is called before application exit to flush profile data.
-======== Error: Application received signal 9
