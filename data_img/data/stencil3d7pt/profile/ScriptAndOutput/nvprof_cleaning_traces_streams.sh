@@ -4,7 +4,7 @@ stream_version="gpu_streams"
 
 declare -a Machines=("ccsl" "f3" "supermicro" "debian")
 
-declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" "cudaMemGetInfo" "cudaLaunch" "cudaMalloc" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" "cudaLaunch (gpu_stencil37_hack2_cp_slices" "\"gpu_stencil37_hack2_cp_slices" "cudaLaunch (gpu_stencil37_hack2_cp_rows" "\"gpu_stencil37_hack2_cp_rows" "cudaLaunch (gpu_stencil37_hack2_cp_cols" "\"gpu_stencil37_hack2_cp_cols" "cudaLaunch (gpu_stencil37_hack2" "\"gpu_stencil37_hack2")
+declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" "cudaMemGetInfo" "cudaLaunch" "cudaMalloc\"" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" "cudaLaunch (gpu_stencil37_hack2_cp_slices" "\"gpu_stencil37_hack2_cp_slices" "cudaLaunch (gpu_stencil37_hack2_cp_rows" "\"gpu_stencil37_hack2_cp_rows" "cudaLaunch (gpu_stencil37_hack2_cp_cols" "\"gpu_stencil37_hack2_cp_cols" "cudaLaunch (gpu_stencil37_hack2" "\"gpu_stencil37_hack2")
 
 declare -a total_times_traces=("total_CUDA memcpy HtoD" "total_CUDA memcpy DtoH" "total_kernel_execution_time" "total_CUDA_functions" "total_running_time")
 
@@ -64,23 +64,23 @@ for machine in "${Machines[@]}"; do
 					if [[ "${metric_total}" == "total_CUDA_functions" ]]; then
                             K0=`grep  "${Traces[0]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K1=`grep  "${Traces[1]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
-                            K2=`grep  "${Traces[2]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
+                           # K2=`grep  "${Traces[2]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K3=`grep  "${Traces[3]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K4=`grep  "${Traces[4]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                            K5=`grep  "${Traces[5]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K6=`grep  "${Traces[6]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K7=`grep  "${Traces[7]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
                             K8=`grep  "${Traces[11]}" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | sed -e 's/,/ /g' |  awk '{print $2}' | Rscript -e 'd<-scan("stdin", quiet=TRUE)' -e 'cat(sum(d), sep=",")'`
-                            total_sum=`echo $K0 $K1 $K2 $K3 $K4 $K5 $K6 $K7 | awk '{print $1 + $2 + $3 + $4 $5 + $6 + $7 + $8 + $9}'`
+                            total_sum=`echo $K0 $K1 $K3 $K4 $K5 $K6 $K7 | awk '{print $1 + $2 + $3 + $4 + $5 + $6 + $7 }'`
                             tempTraceValues="0, 0, 0, 0, $total_sum"
 						fi
 						if [[ "${metric_total}" ==  "total_running_time" ]]; then
-                            KMalloc1=`grep "cudaMalloc3D" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | head -1 | awk -F, '{print $1}'`
-                            KMalloc2=`grep "cudaMalloc3D" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | head -1 | awk -F, '{print $2}'`                  
-                            KFree1=`grep "cudaFree" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | tail -1 | awk -F, '{print $1}'`
-                            KFree2=`grep "cudaFree" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | tail -1 | awk -F, '{print $2}'`
+                            KMalloc1=`grep "cudaMalloc\"" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | head -1 | awk -F, '{print $1}'`
+                            KMalloc2=`grep "cudaMalloc\"" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | head -1 | awk -F, '{print $2}'`                  
+                            KFree1=`grep "cudaFree\"" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | tail -1 | awk -F, '{print $1}'`
+                            KFree2=`grep "cudaFree\"" ../data/"${machine}/${stream_version}/nvprof_trace_StencilCudaGpu37_${sizesYXZ}_${coreThreadMachine}_${iter}.txt" | tail -1 | awk -F, '{print $2}'`
                             
-                            total_sum=`echo $KMalloc1 $KMalloc2 $KFree1 $KFree2 | awk '{print $3 - $1 + $2 + $4}'`
+                            total_sum=`echo $KMalloc1 $KMalloc2 $KFree1 $KFree2 | awk '{print $3 - $1 + $4}'`
                             tempTraceValues="0, 0, 0, 0, $total_sum"                            
 						fi        
             
