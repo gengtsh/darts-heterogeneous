@@ -101,7 +101,7 @@ for my $tp (@gputest){
 
 
 my @checks = ("total_CUDA memcpy HtoD", "total_CUDA memcpy DtoH" ,"total_kernel_execution_time" ,"total_CUDA_functions" ,"total_running_time" );
-my @outputNames = ("transHtoD","transDtoH","kernel","cudadriver","gpu_running");
+my @outputNames = ("transHtoD","transDtoH","kernel","cudadriver","gpu_running","overlap");
 
 my $out_suf0  = "overlap";
 
