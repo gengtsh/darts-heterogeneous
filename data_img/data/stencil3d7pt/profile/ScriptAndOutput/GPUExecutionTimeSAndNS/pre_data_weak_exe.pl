@@ -195,7 +195,7 @@ for my $server (@servers){
 			push @v_exe_time, [@line];
 		}
 	}
-	
+	chdir($datapath) or die "Can't chdir to $datapath $!";	
 	my $file_out = $etype.'_'.$etype1.'_'.$server.'.csv';
 	open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
 	print $fh join(',',@$_) . "\n" for (@v_exe_time);

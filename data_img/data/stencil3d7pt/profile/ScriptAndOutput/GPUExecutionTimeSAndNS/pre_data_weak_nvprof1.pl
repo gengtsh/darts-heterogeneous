@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use File::Basename;
 
+
 use Cwd;
 
 #use Cwd qw(abs_path);
@@ -15,6 +16,7 @@ my @servers = qw/f3 supermicro debian ccsl/;
 my @gputest = qw/gpu_streams gpu_streamNot/;
 
 my $prefix = "nvprofTraces";
+
 
 
 my @sz_zxy = (
@@ -56,7 +58,6 @@ my %h_total;
 my %h_items;
 my %h_test;
 
-my @checks = ("total_CUDA memcpy HtoD", "total_CUDA memcpy DtoH" ,"total_kernel_execution_time" ,"total_CUDA_functions" ,"total_running_time" );
 
 
 
@@ -99,53 +100,125 @@ for my $tp (@gputest){
 ###print output
 
 
-my $out_suf = "overlap";
+my @checks = ("total_CUDA memcpy HtoD", "total_CUDA memcpy DtoH" ,"total_kernel_execution_time" ,"total_CUDA_functions" ,"total_running_time" );
+my @outputNames = ("transHtoD","transDtoH","kernel","cudadriver","gpu_running");
 
-my @out1;
+my $out_suf0  = "overlap";
+
+my @out0;
+
+my $postpose = "nvprof_postpose";
+if(-d $postpose ){
+	unlink glob "./$postpose/*";
+	rmdir $postpose;
+}
+unless(mkdir $postpose) {
+    die "Unable to create $postpose\n";
+}
+my $outpath = "$currpath/$postpose";;
+
 my @tmp =("stream Y/NO", "sever","size","volumn");
 my @its = map{"its=".$_} (1..10);
-push @out1,[@tmp,@its];
+push @out0,[@tmp,@its];
 
+chdir($outpath) or die "Can't chdir to $outpath $!";
 
-for my $tp (@gputest){
+for (my $ck =0; $ck<@outputNames;++$ck){
 	
-	
-	for my $sv(@servers){
-		for my $sz (@sz_zxy){
-		    my ($z,$x,$y) = @$sz;
+	my @out_ck;
+	push @out_ck,[@tmp,@its];
 
-			my $value = $z.'*'.$x.'*'.$y;
-			my $value1 = $x.'_'.$y.'_'.$z;
-			my $volumn = $z*$x*$y;
-			my @line;
-			
-			push @line,$tp, $sv,$value,$volumn;
-			
+	for my $tp (@gputest){
 		
-			for (my $it=1;$it<11;++$it){
-				if (((exists $h_total{$tp}{$sv}{$value1}{$it}))&&($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]!=0)){
-
-					my $overlap = ($h_total{$tp}{$sv}{$value1}{$it}{$checks[0]}[-1])
-					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[1]}[-1])
-					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[2]}[-1])
-					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[3]}[-1])
-					-	($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]);
-					
-					push @line,$overlap;
-					
-				}
-
-			}
-			if(@line>5){
-				push @out1,[@line];	
-			}
+		for my $sv(@servers){
+			for my $sz (@sz_zxy){
+				my ($z,$x,$y) = @$sz;
+	
+				my $value = $z.'*'.$x.'*'.$y;
+				my $value1 = $x.'_'.$y.'_'.$z;
+				my $volumn = $z*$x*$y;
+				my @line;
 			
+				push @line,$tp, $sv,$value,$volumn;
+			
+				
+				for (my $it=1;$it<11;++$it){
+					
+					if (((exists $h_total{$tp}{$sv}{$value1}{$it}))&&($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]!=0)){
+						my $vl;
+						if ($ck < (@outputNames-1)){
+							$vl = ($h_total{$tp}{$sv}{$value1}{$it}{$checks[0]}[-1]);
+						}else{
+							$vl = ($h_total{$tp}{$sv}{$value1}{$it}{$checks[0]}[-1])
+							+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[1]}[-1])
+							+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[2]}[-1])
+							+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[3]}[-1])
+							-	($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]);
+						}
+											
+		
+						
+						push @line,$vl;
+						
+					}
+	
+				}
+				if(@line>5){
+					push @out_ck,[@line];	
+				}
+				
+			}
+		
 		}
 	
 	}
+	
+	my $file_out = $prefix.'_'.$outputNames[$ck].'.csv';
+	open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
+	print $fh join(',',@$_) . "\n" for (@out_ck);
 
 }
-	my $file_out = $prefix.'_'.$out_suf.'.csv';
-	open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
-	print $fh join(',',@$_) . "\n" for (@out1);
+
+chdir($currpath) or die "Can't chdir to $outpath $!";
+
+#for my $tp (@gputest){
+#	
+#	for my $sv(@servers){
+#		for my $sz (@sz_zxy){
+#		    my ($z,$x,$y) = @$sz;
+#
+#			my $value = $z.'*'.$x.'*'.$y;
+#			my $value1 = $x.'_'.$y.'_'.$z;
+#			my $volumn = $z*$x*$y;
+#			my @line0;
+#		
+#			push @line0,$tp, $sv,$value,$volumn;
+#		
+#		
+#			for (my $it=1;$it<11;++$it){
+#				if (((exists $h_total{$tp}{$sv}{$value1}{$it}))&&($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]!=0)){
+#
+#					my $overlap = ($h_total{$tp}{$sv}{$value1}{$it}{$checks[0]}[-1])
+#					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[1]}[-1])
+#					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[2]}[-1])
+#					+	($h_total{$tp}{$sv}{$value1}{$it}{$checks[3]}[-1])
+#					-	($h_total{$tp}{$sv}{$value1}{$it}{$checks[4]}[-1]);
+#					
+#					push @line0,$overlap;
+#					
+#				}
+#
+#			}
+#			if(@line0>5){
+#				push @out0,[@line0];	
+#			}
+#			
+#		}
+#	
+#	}
+#
+#}
+#	my $file_out = $prefix.'_'.$out_suf0.'.csv';
+#	open my $fh, '>', $file_out or die "couldn't open $file_out: $!";
+#	print $fh join(',',@$_) . "\n" for (@out0);
 
