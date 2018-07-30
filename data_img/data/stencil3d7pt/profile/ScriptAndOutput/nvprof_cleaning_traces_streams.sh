@@ -1,10 +1,24 @@
 #!/bin/bash
 
-stream_version="gpu_streams"
+stream_version="gpu_streamNot"
 
 declare -a Machines=("ccsl" "f3" "supermicro" "debian")
 
-declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" "cudaMemGetInfo" "cudaLaunch" "cudaMalloc\"" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" "cudaLaunch (gpu_stencil37_hack2_cp_slices" "\"gpu_stencil37_hack2_cp_slices" "cudaLaunch (gpu_stencil37_hack2_cp_rows" "\"gpu_stencil37_hack2_cp_rows" "cudaLaunch (gpu_stencil37_hack2_cp_cols" "\"gpu_stencil37_hack2_cp_cols" "cudaLaunch (gpu_stencil37_hack2" "\"gpu_stencil37_hack2")
+if [[ "${stream_version}" == "gpu_streamNot" ]]; then
+    declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" \
+        "cudaMemGetInfo" "cudaLaunch" "cudaMalloc\"" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" \
+        "cudaLaunch (gpu_stencil37_hack1_cp_slices" "\"gpu_stencil37_hack1_cp_slices" "cudaLaunch (gpu_stencil37_hack1_cp_rows" \
+        "\"gpu_stencil37_hack1_cp_rows" "cudaLaunch (gpu_stencil37_hack1_cp_cols" "\"gpu_stencil37_hack1_cp_cols" \
+        "cudaLaunch (gpu_stencil37_hack2" "\"gpu_stencil37_hack2")
+fi
+
+if [[ "${stream_version}" == "gpu_streams" ]]; then
+    declare -a Traces=("cuDeviceGetAttribute" "cudaSetupArgument" "cudaMallocHost" "cudaGetDeviceCount" "cudaGetDeviceProperties" \
+        "cudaMemGetInfo" "cudaLaunch" "cudaMalloc\"" "cudaMemcpy" "CUDA memcpy HtoD" "CUDA memcpy DtoH" "cudaFree" \
+        "cudaLaunch (gpu_stencil37_hack2_cp_slices" "\"gpu_stencil37_hack2_cp_slices" "cudaLaunch (gpu_stencil37_hack2_cp_rows" \
+        "\"gpu_stencil37_hack2_cp_rows" "cudaLaunch (gpu_stencil37_hack2_cp_cols" "\"gpu_stencil37_hack2_cp_cols" \
+        "cudaLaunch (gpu_stencil37_hack2" "\"gpu_stencil37_hack2")
+fi
 
 declare -a total_times_traces=("total_CUDA memcpy HtoD" "total_CUDA memcpy DtoH" "total_kernel_execution_time" "total_CUDA_functions" "total_running_time")
 
@@ -32,7 +46,7 @@ for machine in "${Machines[@]}"; do
     
     for sizesZXY in "${ZXY[@]}"; do
         IFS='_' read -ra ADDR <<< "$sizesZXY"
-        sizesYXZ="${ADDR[2]}_${ADDR[1]}_${ADDR[0]}"            
+        sizesYXZ="${ADDR[1]}_${ADDR[2]}_${ADDR[0]}"            
         echo "${sizesYXZ}"
         for iter in `seq 1 9`; do
        	    for metric in "${Traces[@]}"; do
