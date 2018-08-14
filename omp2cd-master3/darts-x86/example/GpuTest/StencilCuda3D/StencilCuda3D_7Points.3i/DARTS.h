@@ -102,6 +102,9 @@ struct name : public darts::Codelet                    \
 //#define ADD(cd_name)       frame->add(frame->cd_name)
 #define ADD(cd_name)       add(frame->cd_name)
 #define RESET(field)        (*frame).field.resetCodelet()
+#define SETSYNC(field,dep,reset)        (*frame).field.setSync(dep,reset)
+
+#define CDSYNC(field) field.decDep()
 
 #define DARTS_EXIT() Runtime::finalSignal.decDep()
 #define EXIT_TP() return

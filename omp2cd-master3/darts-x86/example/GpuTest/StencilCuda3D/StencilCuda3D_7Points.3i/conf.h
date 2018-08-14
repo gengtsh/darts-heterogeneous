@@ -13,6 +13,22 @@
 #define GRID_TILECPU_Y 16
 #define GRID_TILECPU_Z 10
 
+#define DIM 3
+#define NUMTILES 3
+#define NUMASTREAMS 5
+#define NUMSSTREAMS 4
+#define NUMPAR 6
+//numchunkalloc >= (NumTile*Tile+2)
+#define NUMCHUNKALLOCX 80
+#define NUMCHUNKALLOCY 80
+#define NUMCHUNKALLOCZ 80
+
+#define INCX 10
+#define INCY 10
+#define INCZ 10
+
+#define NUMREC 10
+
 #define GPU_AVMEM_SIZE 2
 //GPU available memory size equals to GPU_AVMEM_SIZE*GB
 

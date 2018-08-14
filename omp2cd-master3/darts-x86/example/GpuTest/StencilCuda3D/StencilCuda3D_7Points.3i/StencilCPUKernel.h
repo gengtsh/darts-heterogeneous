@@ -19,4 +19,9 @@ void computeInner_stencil37(double *dst,double *src,size_t n_rows,size_t n_cols,
 
 void computeBlock_stencil37(double *dst,double *src,size_t n_rows,size_t n_cols,size_t n_slices,size_t n_rows_ck,size_t n_cols_ck,size_t n_slices_ck);
 
+void calcNextEP(int *arrncEdge, int *arrngEdge,int *arrncEdgeLeft, int *arrngEdgeLeft,int *cpos, int *gpos,int *arrnEdge, int *cvarEdge, int *gvarEdge,int *arrncEdgeMin,int *arrngEdgeMin,int cCnt,int gCnt, int nId,char *home);
+
+void calcNextEEL(int * arrncgEdge, int *arrncgEdgeLeft,int *arrnEdge, int *varEdge,int *arrncgEdgeMin,int id, int homeCnt, int visitCnt);
+
+
 #endif
