@@ -13,4 +13,5 @@
 #add_subdirectory (StencilCuda2.3.2.1)
 add_subdirectory (StencilCuda2.3.2.2)
 add_subdirectory (StencilCuda2.3.2.2.p)
+add_subdirectory (StencilCuda2.3.3.1)
 #add_subdirectory (StencilCuda2.4)
