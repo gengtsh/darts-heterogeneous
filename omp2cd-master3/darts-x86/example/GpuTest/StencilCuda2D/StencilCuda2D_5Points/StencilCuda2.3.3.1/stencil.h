@@ -1,10 +1,10 @@
 #ifndef STENCIL_H_GUARD
 #define STENCIL_H_GUARD
 
-#define VERIFICATION 
-#define CUDA_DARTS_DEBUG
-#define CUDA_ERROR_CHECKING
-#define VERIFICATION_PRINT 
+//#define VERIFICATION 
+//#define CUDA_DARTS_DEBUG
+//#define CUDA_ERROR_CHECKING
+//#define VERIFICATION_PRINT 
 //#define CUDA_CUDA_DEBUG
 
 #ifdef __cplusplus
