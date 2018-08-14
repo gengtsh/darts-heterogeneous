@@ -216,10 +216,7 @@ DEF_TP(StencilTP)
                 //nCPU = N_CORES;
 	    	    cpuPos = 0;
               
-                arrnCpuPos[0]=0;
-                arrnCpuPos[1]=0;
-                arrnCpuPos[2]=0;
-
+                setarrnValue(arrnCpuPos,0); 
 
                 chooseSmaller(arrnCpuTile,arrnCpuEdge,arrnCpuGridTileBase,0,0,0,0);
                 chooseSmaller(arrnCpuBlock,arrnCpuEdge,arrnCpuTile,-2,0,0,-2);
@@ -242,7 +239,7 @@ DEF_TP(StencilTP)
 		        std::cout<<"cpuBlockDimx = "<<arrnCpuBlock[0]<<std::endl;
 		        std::cout<<"cpuBlockDimy = "<<arrnCpuBlock[1]<<std::endl;
 		        std::cout<<"cpuBlockDimz = "<<arrnCpuBlock[2]<<std::endl;
-		        std::cout<<"cpuGridDimz = "<<arrnCpuGrid[0]<<std::endl;
+		        std::cout<<"cpuGridDimx = "<<arrnCpuGrid[0]<<std::endl;
 		        std::cout<<"cpuGridDimy = "<<arrnCpuGrid[1]<<std::endl;
 		        std::cout<<"cpuGridDimz = "<<arrnCpuGrid[2]<<std::endl;
 #endif

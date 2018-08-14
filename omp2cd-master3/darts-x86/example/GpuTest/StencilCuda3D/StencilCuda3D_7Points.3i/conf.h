@@ -27,7 +27,7 @@
 #define INCY 10
 #define INCZ 10
 
-#define NUMREC 10
+#define NUMREC 10 //record number: 10
 
 #define GPU_AVMEM_SIZE 2
 //GPU available memory size equals to GPU_AVMEM_SIZE*GB
