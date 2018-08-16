@@ -28,12 +28,9 @@
 # POSSIBILITY OF SUCH DAMAGE.                                                  # 
 #                                                                              #
 ################################################################################
-#add_subdirectory( Stencil2D_Naive )
-#add_subdirectory( Stencil2D_Naive_Tps_Ptr )
-#add_subdirectory( Stencil2D_InPlace_ASYN)
-#add_subdirectory( Stencil2D_InPlace_ASYN_Tps_M2)
+add_subdirectory( Stencil2D_Naive )
+add_subdirectory( Stencil2D_Naive_Tps_Ptr )
+add_subdirectory( Stencil2D_InPlace_ASYN)
+add_subdirectory( Stencil2D_InPlace_ASYN_Tps_M2)
 #add_subdirectory( Stencil2D_InPlace_FineGrain_M2)
-#add_subdirectory( Stencil2D_InPlace_FineGrain_M2V2)
-add_subdirectory( Test)
-add_subdirectory( NoBlocking)
-add_subdirectory( WithBlocking)
+add_subdirectory( Stencil2D_InPlace_FineGrain_M2V2)

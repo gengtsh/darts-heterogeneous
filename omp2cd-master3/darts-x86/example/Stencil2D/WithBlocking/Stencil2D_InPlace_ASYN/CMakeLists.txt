@@ -28,12 +28,11 @@
 # POSSIBILITY OF SUCH DAMAGE.                                                  # 
 #                                                                              #
 ################################################################################
-#add_subdirectory( Stencil2D_Naive )
-#add_subdirectory( Stencil2D_Naive_Tps_Ptr )
-#add_subdirectory( Stencil2D_InPlace_ASYN)
-#add_subdirectory( Stencil2D_InPlace_ASYN_Tps_M2)
-#add_subdirectory( Stencil2D_InPlace_FineGrain_M2)
-#add_subdirectory( Stencil2D_InPlace_FineGrain_M2V2)
-add_subdirectory( Test)
-add_subdirectory( NoBlocking)
-add_subdirectory( WithBlocking)
+
+add_executable(InPlaceAsynBk
+#               Stencil2D.cpp
+               Stencil2DKernel.cpp
+               Stencil2DRowDecomposition.cpp
+#			   Stencil2D_main.cpp)
+			   Stencil2D_main_tmp.cpp)
+target_link_libraries(InPlaceAsynBk darts)
