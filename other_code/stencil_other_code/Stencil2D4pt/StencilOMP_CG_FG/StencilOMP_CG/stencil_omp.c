@@ -1,9 +1,19 @@
-#include "stencil.h"
 
+#include <omp.h>
+#include <stdlib.h>
 #include <stdio.h>
 
+#include "stencil.h"
 #include <pmmintrin.h>
 
+#ifdef THREAD_TEST
+void test_threads(){
+#   pragma omp parallel
+    {
+        printf("test: threads # %d in %d threads\n", omp_get_thread_num(),omp_get_num_threads());
+    }
+}
+#endif
 
 /**
  *  Naïve 4pt stencil code for 2D arrays. 
@@ -27,6 +37,42 @@ stencil2D4pt ( double* restrict dst,    double* restrict src,
         SWAP_PTR(&DST,&SRC);
     }
 }
+
+
+void computeBlock_stencil25(double *dst,double *src,size_t n_rows,size_t n_cols,size_t n_rows_ck,size_t n_cols_ck){
+
+	typedef double (*Array2D)[n_cols];
+	Array2D DST = (Array2D) dst,
+			SRC = (Array2D) src;
+
+	for (size_t i = 1; i < n_rows_ck; ++i) {
+        for (size_t j = 1; j < n_cols_ck; ++j) {
+	        DST[i][j] = (SRC[i-1][j] + SRC[i+1][j] + SRC[i][j-1] + SRC[i][j+1]) / 5.5;
+        }
+    }
+}
+
+void stencil2D4ptSeq_wb ( double*__restrict__ dst,    double* __restrict__ src, const size_t     n_rows, const size_t     n_cols,const size_t     n_tsteps )
+{
+
+
+	int tile_x = (n_cols>GRID_TILECPU_X)?GRID_TILECPU_X:n_cols;
+	int tile_y = (n_rows>GRID_TILECPU_Y)?GRID_TILECPU_Y:n_rows;
+   
+    int pos;
+    for (size_t ts = 0; ts < n_tsteps; ++ts) {
+	    	for (size_t i = 0; i < n_rows; i=i+tile_y) {
+                for (size_t j = 0; j < n_cols; j=j+tile_x) {
+                    pos = i*n_cols+j;
+                    int n_rows_ck   = ((i+tile_y+1)>n_rows)   ?(n_rows-i-1  ):(tile_y+1);
+                    int n_cols_ck   = ((j+tile_x+1)>n_cols)   ?(n_cols-j-1  ):(tile_x+1);
+                    computeBlock_stencil25(dst+pos,src+pos,n_rows,n_cols,n_rows_ck,n_cols_ck);
+                }
+            }
+        swap_ptr(&dst,&src);
+    }
+}
+
 
 /**
  *  Naïve parallelization of a 4pt stencil code for 2D arrays. 
@@ -52,6 +98,24 @@ stencil2D4pt_omp ( double* restrict dst,    double* restrict src,
     }
 }
 
+
+void
+init_loop ( double* dst, double *src, const size_t n_rows, const size_t n_cols )
+{
+ 
+    typedef double (*Array2D)[n_cols];
+
+        Array2D DST = (Array2D) dst,
+                SRC = (Array2D) src;
+
+#pragma omp for nowait schedule(static) 
+        for (size_t i = 0; i < n_rows; ++i) 
+            for (size_t j = 0; j < n_cols; ++j){ 
+                DST[i][j]=SRC[i][j];
+            }
+    
+}
+
 /**
  *  Less naïve parallelization of a 4pt stencil code for 2D arrays. 
  */
@@ -69,7 +133,8 @@ stencil2D4pt_omp_v2 ( double* restrict dst,    double* restrict src,
         size_t n_ts = n_tsteps;
 
         while (n_ts-- > 0) {
-#           pragma omp for nowait
+//#           pragma omp for nowait
+#           pragma omp for nowait schedule(static)
             for (size_t i = 1; i < n_rows-1; ++i) {
                 for (size_t j = 1; j < n_cols-1; ++j) {
                     DST[i][j] = (SRC[i-1][j] + SRC[i+1][j] + SRC[i][j-1] + SRC[i][j+1]) / 4;
@@ -85,6 +150,40 @@ stencil2D4pt_omp_v2 ( double* restrict dst,    double* restrict src,
         }
     }
 }
+
+void
+stencil2D4pt_omp_simd ( double* restrict dst,    double* restrict src, 
+                      const size_t     n_rows, const size_t     n_cols,
+                      const size_t     n_tsteps )
+{
+    typedef double (*Array2D)[n_cols];
+
+#       pragma omp parallel default(none) shared(src, dst) firstprivate(n_rows,n_cols,n_tsteps)
+    {
+        Array2D DST = (Array2D) dst,
+                SRC = (Array2D) src;
+        size_t n_ts = n_tsteps;
+
+        while (n_ts-- > 0) {
+//#           pragma omp for nowait
+#           pragma omp for nowait schedule(static)
+            for (size_t i = 1; i < n_rows-1; ++i) {
+#               pragma omp simd 
+                for (size_t j = 1; j < n_cols-1; ++j) {
+                    DST[i][j] = (SRC[i-1][j] + SRC[i+1][j] + SRC[i][j-1] + SRC[i][j+1]) / 4;
+                }
+            }
+            SWAP_PTR(&DST,&SRC);
+//#           pragma omp single nowait
+//            {
+//              --n_ts;
+//            } // barrier here => flush!
+#           pragma omp barrier
+//#           pragma omp flush
+        }
+    }
+}
+
 
 void
 stencil2D4pt_simd2(double* restrict dst,    double* restrict src, 

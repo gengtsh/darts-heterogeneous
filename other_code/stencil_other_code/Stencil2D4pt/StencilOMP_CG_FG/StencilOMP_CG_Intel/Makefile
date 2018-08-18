@@ -17,6 +17,7 @@ MODULE_LOAD=. ${MODULESHOME}/init/bash && module load
 .PHONY: all 
 
 all: OMPLaplaceSolver 
+#all:  SeqLaplaceSolver
 #all: OMPLaplaceSolver SeqLaplaceSolver
 #all: LoadIntelLib OMPLaplaceSolver SeqLaplaceSolver
 .SECONDEXPANSION:

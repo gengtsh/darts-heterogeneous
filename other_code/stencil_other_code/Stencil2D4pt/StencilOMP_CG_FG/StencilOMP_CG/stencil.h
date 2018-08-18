@@ -1,6 +1,7 @@
 #ifndef STENCIL_H_GUARD
 #define STENCIL_H_GUARD
 #include "util.h"
+#include <omp.h>
 
 #define SWAP(type,left,right) do { \
     type tmp = left;               \
@@ -15,6 +16,11 @@ static inline void swap_ptr(void** left, void** right) {
 }
 
 #define SWAP_PTR(left,right) swap_ptr((void**)left,(void**)right)
+
+
+//#define THREAD_TEST 1
+#define GRID_TILECPU_X 48 
+#define GRID_TILECPU_Y 48
 
 typedef struct stencil_arg_s {
     double *dst, 
@@ -44,11 +50,29 @@ void stencil2D4pt        ( double* restrict dst,    double* restrict src,
 void stencil2D4pt_omp    ( double* restrict dst,    double* restrict src, 
                            const size_t     n_rows, const size_t     n_cols,
                            const size_t     n_tsteps );
+
+
+void init_loop ( double* restrict dst,    double* restrict src, 
+                           const size_t     n_rows, const size_t     n_cols );
+
 void stencil2D4pt_omp_v2 ( double* restrict dst,    double* restrict src, 
+                           const size_t     n_rows, const size_t     n_cols,
+                           const size_t     n_tsteps );
+
+
+void stencil2D4pt_omp_simd ( double* restrict dst,    double* restrict src, 
                            const size_t     n_rows, const size_t     n_cols,
                            const size_t     n_tsteps );
 
 void stencil2D4pt_simd2  ( double* restrict dst,    double* restrict src, 
                            const size_t     n_rows, const size_t     n_cols,
                            const size_t     n_tsteps );
+
+void test_threads();
+
+
+void stencil2D4ptSeq_wb ( double*__restrict__ dst,    double* __restrict__ src, const size_t     n_rows, const size_t     n_cols,const size_t     n_tsteps );
+
+void computeBlock_stencil25(double *dst,double *src,size_t n_rows,size_t n_cols,size_t n_rows_ck,size_t n_cols_ck);
+
 #endif // STENCIL_H_GUARD

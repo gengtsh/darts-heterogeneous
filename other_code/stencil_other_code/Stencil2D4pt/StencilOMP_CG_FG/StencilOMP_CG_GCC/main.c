@@ -220,6 +220,10 @@ main(int argc, char* argv[])
 
     outer_start = get_time();
     for (size_t i = 0; i < n_reps; ++i) {
+       
+        
+        
+        
         //memcpy(current_values, initial_matrix, sizeof(double*)*n_rows*n_cols);
         //memcpy(next_values,    initial_matrix, sizeof(double*)*n_rows*n_cols);
         init_loop(current_values,initial_matrix,n_rows,n_cols);
@@ -227,6 +231,7 @@ main(int argc, char* argv[])
         inner_start = get_time();
         //stencil2D4pt_omp_v2(next_values, current_values, n_rows, n_cols, n_tm_steps);
         stencil2D4pt_omp_simd(next_values, current_values, n_rows, n_cols, n_tm_steps);
+        //stencil2D4ptSeq_wb(next_values, current_values, n_rows, n_cols, n_tm_steps);
         inner_stop  = get_time() - inner_start;
         inner_avg  += inner_stop;
     
