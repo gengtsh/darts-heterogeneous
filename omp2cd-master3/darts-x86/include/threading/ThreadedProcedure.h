@@ -75,7 +75,7 @@ public:
         * Adds a codelet to the TP's list
         */
     void add(Codelet* toAdd);
-	unsigned int getRef();//Geng,for test
+	unsigned int getRef();
     unsigned int getID();
 };
 } // namespace darts

@@ -64,7 +64,7 @@ unsigned int ThreadedProcedure::getID()
     return this->mainCodeletID;
 }
 
-//Geng, for test
+
 unsigned int ThreadedProcedure::getRef()
 {
     return (ref_);
