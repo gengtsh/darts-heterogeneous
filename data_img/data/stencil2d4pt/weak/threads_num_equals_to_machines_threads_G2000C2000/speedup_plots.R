@@ -8,7 +8,7 @@ setwd(currPath)
 # cbbPalette <- gray(1:4/ 12)#c("red", "blue", "darkgray", "orange","black","brown", "lightblue","violet")
 
 df <- data.frame()
-for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
+for(j in c("ccsl", "debian", "f4", "supermicro")){
     if(j == "ccsl") threads <- 7
     if(j == "debian") threads <- 11
     if(j == "f4") threads <- 31
@@ -19,7 +19,7 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
     
     #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
-    names(data) <- c("size", "CPU-Sequence", "GPU-only", "EDRT-CPU", "EDRT-GPU", "EDRT-DAWL")
+    names(data) <- c("size", "CPU-Sequence", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
     
     
     if(j == "f4") j <- "Fatnode"
@@ -35,7 +35,7 @@ for(j in c("ccsl", "debian", "f4", "hive", "supermicro")){
 
 
 df <- df[df$apps != "CPU-Sequence",]
-df$apps <- factor(df$apps, levels = c("CPU-Sequential", "EDRT-DAWL", "EDRT-CPU", "EDRT-GPU", "GPU-only"))
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "DARTS-DAWL", "DARTS-CPU", "DARTS-GPU", "GPU-only"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=1.5)+

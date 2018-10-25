@@ -9,7 +9,7 @@ setwd(currPath)
 
 df <- data.frame()
 for(j in c("f4", "supermicro","debian","ccsl")){
-#for(j in c("ccsl", "debian", "f3", "hive", "supermicro")){
+#for(j in c("ccsl", "debian", "f3", "supermicro")){
     if(j == "ccsl") threads <- 7
     if(j == "debian") threads <- 11
     if(j == "f4") threads <- 31
@@ -20,7 +20,7 @@ for(j in c("f4", "supermicro","debian","ccsl")){
     
     #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
-    names(data) <- c("size", "CPU-Sequential", "GPU-only", "EDRT-CPU", "EDRT-GPU", "EDRT-DAWL")
+    names(data) <- c("size", "CPU-Sequential", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
     
     
     if(j == "f4") j <- "Fatnode"
@@ -40,7 +40,7 @@ df <- df[df$apps != "CPU-Sequential",]
 df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", 
                                       "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
-df$apps <- factor(df$apps, levels = c("CPU-Sequential", "EDRT-DAWL", "EDRT-CPU", "EDRT-GPU", "GPU-only"))
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "DARTS-DAWL", "DARTS-CPU", "DARTS-GPU", "GPU-only"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=2)+

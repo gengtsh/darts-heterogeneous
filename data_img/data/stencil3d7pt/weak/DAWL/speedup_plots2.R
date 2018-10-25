@@ -8,8 +8,8 @@ setwd(currPath)
 # cbbPalette <- gray(1:4/ 12)#c("red", "blue", "darkgray", "orange","black","brown", "lightblue","violet")
 
 df <- data.frame()
-for(j in c("f4", "supermicro","debian","ccsl")){
-#for(j in c("ccsl", "debian", "f3", "supermicro")){
+#for(j in c("f4", "supermicro","debian","ccsl")){
+for(j in c("ccsl", "debian", "f4", "supermicro")){
     if(j == "ccsl") threads <- 7
     if(j == "debian") threads <- 11
     if(j == "f4") threads <- 31
@@ -43,29 +43,29 @@ df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200"
 df$apps <- factor(df$apps, levels = c("CPU-Sequential", "DARTS-DAWL", "DARTS-CPU", "DARTS-GPU", "GPU-only"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
-  geom_line(size=2)+
-  geom_point(cex=5) +
+  geom_line(size=5)+
+  geom_point(cex=7) +
   scale_linetype_manual(values=c("dotted", "longdash","solid",  "twodash" ))+
   xlab("Size of the Problem") + 
   theme_bw() +
-    scale_colour_grey() +
+#    scale_colour_grey() +
   ylab("Speedup(baseline = CPU-Sequential)" ) +
-  theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
-  theme(axis.title = element_text(family = "Times", face="bold", size=40)) +
-  theme(axis.text  = element_text(family = "Times", face="bold", size=30, colour = "Black")) +
+  theme(plot.title = element_text(family = "Times", face="bold", size=50)) +
+  theme(axis.title = element_text(family = "Times", face="bold", size=50)) +
+  theme(axis.text  = element_text(family = "Times", face="bold", size=50, colour = "Black")) +
 #  scale_x_continuous(breaks=seq(0,50000,5000)) +
-  theme(axis.text.x= element_text(family = "Times", face="bold", size=25, colour = "Black", angle=15, hjust=0.85)) +
+  theme(axis.text.x= element_text(family = "Times", face="bold", size=30, colour = "Black", angle=15, hjust=0.85)) +
   theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
-  theme(legend.text  = element_text(family = "Times", face="bold", size=30)) +
+  theme(legend.text  = element_text(family = "Times", face="bold", size=50)) +
   theme(legend.direction = "horizontal", 
         legend.position = "bottom",
-        legend.key=element_rect(size=5),
-        legend.key.size = unit(9, "lines")) +
-  guides(col = guide_legend(nrow = 1)) +
+        legend.key=element_rect(size=50),
+        legend.key.size = unit(10, "lines")) +
+  guides(col = guide_legend(nrow = 10)) +
   # facet_grid(.~machine, scales="free") +
-  facet_wrap(~machine, ncol=1, scales="free_x") +
-  theme(strip.text = element_text(size=40))
-ggsave(paste("./speedUp-Stencil3D-New.pdf",sep=""), Graph, device = pdf, height=25, width=20)
+  facet_wrap(~machine, ncol=2, scales="free_x",nrow=2) +
+  theme(strip.text = element_text(size=50))
+ggsave(paste("./speedUp-Stencil3D-New2.pdf",sep=""), Graph, device = pdf, height=30, width=40)
 
 
 
