@@ -1,11 +1,12 @@
 library(ggplot2)
 library(stats)
 
-setwd("/home/marcos/GIT/darts-heterogeneous/others/data/strong/")
+#setwd("/home/marcos/GIT/darts-heterogeneous/others/data/strong/")
 cbbPalette <- c("#000000", "#F0E442", "#56B4E9", "#009E73", "#E69F00", "#0072B2", "#D55E00", "#CC79A7")
 
 df <- data.frame()
-for(machine in c("ccsl", "debian", "f4", "hive", "supermicro")){
+#for(machine in c("ccsl", "debian", "f4", "hive", "supermicro")){
+for(machine in c("ccsl", "debian", "f4", "supermicro")){
     for (sched in c("scatter", "compact")){
         for(app in c("StencilCUDA", "StencilCudaCpu", "StencilCudaHybrid3")){
             data <- read.csv(paste("./", machine, "_strong_G1C1_G0.5M_allsize_", sched, "/", app, "_1_strong_execution.dat", sep=""), header = T, sep = ",",stringsAsFactors = FALSE)
