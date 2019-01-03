@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use Cwd;
 #use List::Util qw[min max];
+use List::MoreUtils qw(first_index);
 
 my $currpath = Cwd::abs_path();
 print "$currpath\n";
@@ -17,35 +18,35 @@ my $nvprof = "nvprof_trace";
 
 my @sz_zxy = (
     [50  ,100 ,100 ],
-    [50  ,200 ,200 ],
-    [50  ,400 ,400 ],
-    [50  ,800 ,800 ],
-    [50  ,1000,1000],
-    [100 ,100 ,100 ],
-    [100 ,200 ,200 ],
-    [100 ,400 ,400 ],
-    [100 ,800 ,800 ],
-    [100 ,1000,1000],
-    [200 ,100 ,100 ],
-    [200 ,200 ,200 ],
-    [200 ,400 ,400 ],
-    [200 ,800 ,800 ],
-    [200 ,1000,1000],	
-    [400 ,100 ,100 ],
-    [400 ,200 ,200 ],
-    [400 ,400 ,400 ],
-    [400 ,800 ,800 ],
-    [400 ,1000,1000],
-    [800 ,100 ,100 ],
-    [800 ,200 ,200 ],
-    [800 ,400 ,400 ],
-    [800 ,800 ,800 ],
-	[800 ,1000,1000],	
-    [1000,100 ,100 ],
-    [1000,200 ,200 ],
-    [1000,400 ,400 ],
-    [1000,800 ,800 ],
-    [1000,1000,1000]
+   [50  ,200 ,200 ],
+   [50  ,400 ,400 ],
+   [50  ,800 ,800 ],
+   [50  ,1000,1000],
+   [100 ,100 ,100 ],
+   [100 ,200 ,200 ],
+   [100 ,400 ,400 ],
+   [100 ,800 ,800 ],
+   [100 ,1000,1000],
+   [200 ,100 ,100 ],
+   [200 ,200 ,200 ],
+   [200 ,400 ,400 ],
+   [200 ,800 ,800 ],
+   [200 ,1000,1000],	
+   [400 ,100 ,100 ],
+   [400 ,200 ,200 ],
+   [400 ,400 ,400 ],
+   [400 ,800 ,800 ],
+   [400 ,1000,1000],
+   [800 ,100 ,100 ],
+   [800 ,200 ,200 ],
+   [800 ,400 ,400 ],
+   [800 ,800 ,800 ],
+   [800 ,1000,1000],	
+   [1000,100 ,100 ],
+   [1000,200 ,200 ],
+   [1000,400 ,400 ],
+   [1000,800 ,800 ],
+   [1000,1000,1000]
 
 );
 
@@ -58,6 +59,7 @@ my $n_iter = 2;
 
 my %hash_table;
 
+my $nameIndex;
 my $callNum="callNum";
 my $totalExe="totalExe";
 my $avgExe="avgExe";
@@ -159,6 +161,8 @@ for my $sv(@servers){
 						$gridy	= $properties[3];
 						$gridz	= $properties[4];
 						$Throughput = $properties[12];
+						$nameIndex =  first_index{$_ =~ /Name/}@properties;
+						#print "\n";
 						
 						#pop @properties if $properties[$#properties]=~/ID/;
 						#map {print $_,","}@properties;
@@ -168,7 +172,6 @@ for my $sv(@servers){
 					}else{
 						next if $_ =~/ns/;
 						
-						
 						#%hash_property = ();
 						
 						my @data = (split /\s*,\s*/,$_);
@@ -176,27 +179,31 @@ for my $sv(@servers){
 						#print @data,"\n";
 						#print $#data,"\n";
 						#print $#properties,"\n";
-	
 						
-						
-						
-						my $dataLastIndex;
-						my $propLastIndex;
-						if ($properties[$#properties]=~/ID/){
-							$dataLastIndex = $#data-1;
-							$propLastIndex = $#properties-1;
-							
-						}else{
-							$dataLastIndex = $#data;
-							$propLastIndex = $#properties;
-						}
-						my %hash_property = map { $properties[$_] => $data[$_]}0..$propLastIndex;
+						my %hash_property = map { $properties[$_] => $data[$_]}0..$nameIndex-1;
 						map { $hash_property{$_} = 0 if $hash_property{$_} eq ""  } keys %hash_property;
-						
-						
-						$delete_name = $properties[$propLastIndex];
+						my $dataLastIndex = $#data - (($properties[$#properties]=~/ID/)? 1:0);
 						my $name ;
-						$name= join(",",@data[$propLastIndex..$dataLastIndex]);
+						$name= join(",",@data[$nameIndex..$dataLastIndex]);
+						
+					
+						##my $dataLastIndex;
+						##my $propLastIndex;
+						##if ($properties[$#properties]=~/ID/){
+						##	$dataLastIndex = $#data-1;
+						##	$propLastIndex = $#properties-1;
+						##	
+						##}else{
+						##	$dataLastIndex = $#data;
+						##	$propLastIndex = $#properties;
+						##}
+						##my %hash_property = map { $properties[$_] => $data[$_]}0..$propLastIndex;
+						##map { $hash_property{$_} = 0 if $hash_property{$_} eq ""  } keys %hash_property;
+						##
+						##
+						##$delete_name = $properties[$propLastIndex];
+						##my $name ;
+						##$name= join(",",@data[$propLastIndex..$dataLastIndex]);
 						#print $name;
 						#my $name = $data[$#properties];
 						
@@ -209,7 +216,7 @@ for my $sv(@servers){
 						#$name = "" . $name;
 						$name =~ s/\[([0-9]+)]//;
 						$name =~ s/\s+//g;
-						$hash_property{$properties[$propLastIndex]} = $name;
+						#$hash_property{$properties[$nameIndex]} = $name;
 						#map {print $properties[$_],$data[$_]}0..$#data;
 						#map {print $data[$_],","}0..$#data;
 						
@@ -256,7 +263,6 @@ for my $sv(@servers){
 							$hash_property{$avgThroughput}		= $hash_property{$totalThroughput}/$hash_property{$callNum};
 							
 							
-							
 							#if ($.== 20||$.==21||$.==55){
 							#	print $hash_property{$callNum},",";
 							#}
@@ -264,7 +270,7 @@ for my $sv(@servers){
 						
 						$hash_iter{$name} = \%hash_property;
 						
-						delete $hash_property{$delete_name};
+						#delete $hash_property{$delete_name};
 						
 						#if ($.== 20){
 						#	#print $name;
@@ -303,18 +309,18 @@ for my $sv(@servers){
 ###################print output##############################
 my $postpose = "nvprof_postpose";
 my @output_server;
+
+my @out_features;
+my @features = keys %hash_features;
+push @out_features,"machine","kernel","size(xyz)","iteration","metric";
+push @out_features,@features;
+push @output_server,[@out_features];
+#	map{print "output features: ", $_,"\n"} @out_features ;
+
 for my $sv(@servers){
 	for my $kernel (@kernels) {
 		
 		#my @out_kel;
-		my @out_features;
-		my @features = keys %hash_features;
-		push @out_features,"machine","kernel","size(xyz)","iteration","metric";
-		push @out_features,@features;
-		push @output_server,[@out_features];
-		
-	#	map{print "output features: ", $_,"\n"} @out_features ;
-		
 		
 	
 		#my $postfix = $postpose.'_'.$kernel;
