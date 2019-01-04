@@ -55,7 +55,7 @@ my @kernels = qw/StencilCudaGpu37/;
 my $n_cu ;
 my $n_su ;
 my $n_reps = 5; 
-my $n_iter = 2; 
+my $n_iter = 10; 
 
 my %hash_table;
 
