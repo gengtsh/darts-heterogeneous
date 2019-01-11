@@ -78,10 +78,10 @@ result_is_correct(const size_t  n_rows, const size_t  n_cols, const size_t n_sli
     
     for(size_t k = 0; is_correct && k < n_slices; ++k) 
         for(size_t i = 0; is_correct && i < n_rows; ++i) 
-	    	for(size_t j = 0; is_correct && j < n_cols; ++j){
+	    	for(size_t j = 0; is_correct && j < n_cols; ++j) 
 	    		if ( !( is_correct = fabs( RES[k][i][j] - ORIG[k][i][j] ) <= epsilon ) )
 	    			printf("Values mismatch! [%lu,%lu,%lu]\tORIG = %5.5f != RES = %5.5f\n",k,i, j,ORIG[k][i][j], RES[k][i][j]);
-            }
+
 	return is_correct;
 }
 
@@ -90,7 +90,6 @@ void print_results(const double *results, const size_t  n_rows_st,const size_t n
         std::cout<<"slice: "<<s<<std::endl;
         for(size_t k=n_rows_st;k<n_rows_ed;++k){
 		    for(size_t j=n_cols_st;j<n_cols_ed;++j){
-			    //std::cout<<std::setw(18)<< results[s*n_rows*n_cols+k*n_cols+j]<<",";
 			    std::cout<< results[s*n_rows*n_cols+k*n_cols+j]<<",";
 		    }
 		    std::cout<<"\n";
@@ -232,9 +231,8 @@ int main(int argc, char *argv[])
     std::cout<<"nRows:"<<nRows<<",nCols:"<<nCols<<",nSlices:"<<nSlices<<",timestep:"<<nTmSteps<<",nReps:"<<nReps<<std::endl;
 #endif
 
-    double GpuRatio = 1; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
-    bool    streamming = true;	
-    //bool    streamming = false;	
+    double GpuRatio = 1.0; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
+	
     double* OriginalMatrix = new double[nRows*nCols*nSlices];
 
 	double* InitialMatrix ; 	
@@ -273,7 +271,7 @@ int main(int argc, char *argv[])
             std::copy(OriginalMatrix, OriginalMatrix+nRows*nCols*nSlices, NewMatrix);
 			innerStart = getTime();//start time for kernal procedure
 			rt->run(
-                launch<StencilTP>(InitialMatrix,nRows,nCols,nSlices,NewMatrix,nTmSteps,hard, GpuRatio,streamming,&Runtime::finalSignal)
+                launch<StencilTP>(InitialMatrix,nRows,nCols,nSlices,NewMatrix,nTmSteps,hard, GpuRatio,&Runtime::finalSignal)
             );
 			innerStop = getTime() - innerStart;
 			innerAvg += innerStop;
@@ -355,12 +353,13 @@ int main(int argc, char *argv[])
 	}
 #endif
 	
+#ifdef CUDA_DARTS_DEBUG
 #ifdef VERIFICATION_PRINT
-	std::cout<<std::setprecision(10)<<std::endl;
+	std::cout<<std::setprecision(6)<<std::endl;
 	int kk = 0;
-	int ttk =5;
-	int jj = 0; 
-	int ttj =5;
+	int ttk = 10;
+	int jj =0; 
+	int ttj =10;
     int ss =0;
     int tts=3;
 	std::cout<<"Original Matrix:"<<std::endl;
@@ -369,6 +368,7 @@ int main(int argc, char *argv[])
 	print_results(seqOut,kk,ttk,jj,ttj,ss,tts,nRows,nCols,nSlices);
 	std::cout<<"Out Matrix:"<<std::endl;
 	print_results(dartsOut,kk,ttk,jj,ttj,ss,tts,nRows,nCols,nSlices);
+#endif
 #endif
 
 #ifdef VERIFICATION

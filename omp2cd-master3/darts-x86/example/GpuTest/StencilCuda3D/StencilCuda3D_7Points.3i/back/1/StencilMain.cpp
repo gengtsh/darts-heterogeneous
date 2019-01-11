@@ -232,9 +232,8 @@ int main(int argc, char *argv[])
     std::cout<<"nRows:"<<nRows<<",nCols:"<<nCols<<",nSlices:"<<nSlices<<",timestep:"<<nTmSteps<<",nReps:"<<nReps<<std::endl;
 #endif
 
-    double GpuRatio = 1; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
+    double GpuRatio = 1.0; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
     bool    streamming = true;	
-    //bool    streamming = false;	
     double* OriginalMatrix = new double[nRows*nCols*nSlices];
 
 	double* InitialMatrix ; 	
@@ -358,11 +357,11 @@ int main(int argc, char *argv[])
 #ifdef VERIFICATION_PRINT
 	std::cout<<std::setprecision(10)<<std::endl;
 	int kk = 0;
-	int ttk =5;
-	int jj = 0; 
-	int ttj =5;
+	int ttk =50 ;
+	int jj = 545; 
+	int ttj =555;
     int ss =0;
-    int tts=3;
+    int tts=50;
 	std::cout<<"Original Matrix:"<<std::endl;
 	print_results(OriginalMatrix,kk,ttk,jj,ttj,ss,tts,nRows,nCols,nSlices);
     std::cout<<"Seq Matrix:"<<std::endl;

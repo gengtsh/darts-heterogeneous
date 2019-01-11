@@ -1,0 +1,18 @@
+__global__ void test_kernel_3D(cudaPitchedPtr devPitchedPtr)
+{
+
+   int tidx = blockIdx.x*blockDim.x+threadIdx.x;
+   int tidy = blockIdx.y*blockDim.y+threadIdx.y;
+
+   char* devPtr = (char*) devPitchedPtr.ptr;
+   size_t pitch = devPitchedPtr.pitch;
+   size_t slicePitch = pitch * N;
+
+   for (int w = 0; w < W; w++)
+   {
+      char* slice = devPtr + w * slicePitch;
+      float* row = (float*)(slice + tidy * pitch);
+      row[tidx] = row[tidx] * row[tidx];
+   }
+}
+
