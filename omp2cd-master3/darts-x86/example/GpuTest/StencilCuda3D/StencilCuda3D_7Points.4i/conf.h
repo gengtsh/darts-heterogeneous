@@ -15,7 +15,7 @@
 
 #define DIM 3
 
-#define NUMTILESMAX 30
+#define NUMTILESMAX 20
 #define NUMTILES 3
 #define NUMASTREAMS 5
 #define NUMSSTREAMS 4
