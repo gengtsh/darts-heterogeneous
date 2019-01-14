@@ -115,7 +115,7 @@ if(-d $postpose ){
 unless(mkdir $postpose) {
     die "Unable to create $postpose\n";
 }
-my $outpath = "$currpath/$postpose";;
+my $outpath = "$currpath/$postpose";
 
 my @tmp =("stream Y/NO", "sever","size","volumn");
 my @its = map{"its=".$_} (1..10);
