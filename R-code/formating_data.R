@@ -55,6 +55,7 @@ for (version in versions){
     }
 }
 
+
 # if(version == "gpu_streamNot")
 #     write.csv(data_gpu_streamNot, file = "./ScriptAndOutput/GPUExecutionTimeSAndNS/data_gpu_streamNot.csv", row.names=FALSE)
 # if(version == "gpu_streams")
