@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
     std::cout<<"nRows:"<<nRows<<",nCols:"<<nCols<<",nSlices:"<<nSlices<<",timestep:"<<nTmSteps<<",nReps:"<<nReps<<std::endl;
 #endif
 
-    double GpuRatio = 0.6; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
+    double GpuRatio = 1; // 0: pure CPU, 1: pure GPU, (0,1) hybrid
     bool    streamming = true;	
     //bool    streamming = false;	
     double* OriginalMatrix = new double[nRows*nCols*nSlices];

@@ -20,7 +20,7 @@ for(j in c("ccsl", "debian", "f4", "supermicro")){
     
     #data <- read.csv(paste("./", j, "_", threads, "_1_weak_speedup.dat", sep=""), header = T, sep = ",")
     data <- read.csv(paste("./", j,"_weak_speedup.dat", sep=""), header = T, sep = ",")
-    names(data) <- c("size", "CPU-Sequential", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-DAWL")
+    names(data) <- c("size", "CPU-Sequential", "GPU-only", "DARTS-CPU", "DARTS-GPU", "DARTS-IDAWL")
     
     
     if(j == "f4") j <- "Fatnode"
@@ -40,7 +40,7 @@ df <- df[df$apps != "CPU-Sequential",]
 df$size <- factor(df$size, levels = c("50*200*200", "100*200*200", "200*200*200", "200*800*800", 
                                       "800*400*400", "400*800*800",    "800*800*800", "800*1000*1000", "1000*1000*1000"))
 
-df$apps <- factor(df$apps, levels = c("CPU-Sequential", "DARTS-DAWL", "DARTS-CPU", "DARTS-GPU", "GPU-only"))
+df$apps <- factor(df$apps, levels = c("CPU-Sequential", "DARTS-IDAWL", "DARTS-CPU", "DARTS-GPU", "GPU-only"))
 
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
   geom_line(size=5)+
