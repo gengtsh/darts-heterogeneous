@@ -11,6 +11,11 @@
 #include <unistd.h>
 #endif
 
+#include "Likwid.h"
+//#define LIKWID_DEBUG
+
+
+
 using namespace darts;
 
 CodeletFinal Runtime::finalSignal;
@@ -44,7 +49,45 @@ void* MCThread(void* args)
     myThread.threadTPsched = myMCSched->getParentScheduler();
     myThread.threadMCsched = myMCSched;
 
+#ifdef LIKWID_PERFMON
+
+#ifdef LIKWID_DEBUG
+    std::cout<<"thread "<<threadId<<" performance counter setup!"<<std::endl;
+#endif
+
+    //LIKWID_MARKER_THREADINIT;
+    LIKWID_MARKER_REGISTER("schedule");
+    LIKWID_MARKER_START("schedule");
+    
+    //std::string schedule;
+    //schedule = "schedule"+std::to_string(threadId);
+    //LIKWID_MARKER_REGISTER(schedule.c_str());
+    //LIKWID_MARKER_START(schedule.c_str());
+#endif    
+
+
     myMCSched->policy();
+    
+#ifdef LIKWID_PERFMON
+
+    LIKWID_MARKER_STOP("schedule");
+    //LIKWID_MARKER_STOP(schedule.c_str());
+#ifdef LIKWID_DEBUG
+    int nevents =10;
+    double events[10];
+    double time;
+    int count;
+    //LIKWID_MARKER_GET(schedule.c_str(),&nevents,events,&time,&count);
+    LIKWID_MARKER_GET("schedule",&nevents,events,&time,&count);
+    std::cout<<"region schedule measure "<< nevents<<" events, total measurement time is "<< time<<std::endl;
+    std::cout<<"region was called "<<count<<" times"<<" by thread "<<threadId<<std::endl;
+    for (int i=0; i<nevents;++i){
+        std::cout<<"event "<<i<<": "<<events[i]<<std::endl;
+    }   
+    std::cout<<""<<std::endl;
+#endif
+#endif
+    
     return 0;
 }
 
@@ -67,7 +110,44 @@ void* TPThread(void* args)
     myThread.threadTPsched = myTPSched;
     myThread.threadMCsched = NULL;
 
+
+#ifdef LIKWID_PERFMON
+    
+#ifdef LIKWID_DEBUG
+    std::cout<<"thread "<<threadId<<" performance counter setup!"<<std::endl;
+#endif
+    //LIKWID_MARKER_THREADINIT;
+    LIKWID_MARKER_REGISTER("schedule");
+    LIKWID_MARKER_START("schedule");
+    
+    //std::string schedule;
+    //schedule = "schedule"+std::to_string(threadId);
+    //LIKWID_MARKER_REGISTER(schedule.c_str());
+    //LIKWID_MARKER_START(schedule.c_str());
+#endif    
+
     myTPSched->policy();
+
+#ifdef LIKWID_PERFMON
+    LIKWID_MARKER_STOP("schedule");
+    //LIKWID_MARKER_STOP(schedule.c_str());
+
+#ifdef LIKWID_DEBUG
+    int nevents =10;
+    double events[10];
+    double time;
+    int count;
+
+    LIKWID_MARKER_GET("schedule",&nevents,events,&time,&count);
+    //LIKWID_MARKER_GET(schedule.c_str(),&nevents,events,&time,&count);
+    std::cout<<"region schedule measure "<< nevents<<" events, total measurement time is "<< time<<std::endl;
+    std::cout<<"region was called "<<count<<" times"<<" by thread "<<threadId<<std::endl;
+    for (int i=0; i<nevents;++i){
+        std::cout<<"event "<<i<<": "<<events[i]<<std::endl;
+    }   
+    std::cout<<""<<std::endl;
+#endif
+#endif    
     return 0;
 }
 
