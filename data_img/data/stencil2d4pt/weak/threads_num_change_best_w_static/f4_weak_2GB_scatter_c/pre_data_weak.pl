@@ -7,7 +7,7 @@ use strict;
 ##my @vals = (1,3,5);
 
 #my @kernels = qw/StencilCudaCpu StencilCudaGpu StencilCudaHybrid3/;
-my @kernels = qw/StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybridS StencilCudaHybrid3/;
+my @kernels = qw/StencilSEQ StencilCUDA StencilCudaCpu StencilCudaGpu StencilCudaHybrid3S StencilCudaHybrid3/;
 
 
 
@@ -27,7 +27,8 @@ my $n_rept=20;
 my $startPos=8;
 my $endPos = $n_rept+$startPos-1;
 my $sz_start = 1000;
-my $sz_end = 50000;	
+#my $sz_end = 50000;	
+my $sz_end = 45000;
 my $sz_step = 2000; 
 
 
