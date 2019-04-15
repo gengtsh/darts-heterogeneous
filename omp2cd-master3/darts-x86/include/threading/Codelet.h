@@ -105,6 +105,13 @@ public:
          * Set the dependence counter of the codelet
          */
     virtual void setDep(uint32_t dep);
+    
+    /**
+				 * Method: setDep and Reset value
+         * Set the dependence and Reset counter of the codelet
+         */
+    //gengtsh 
+    virtual void setSync(uint32_t dep,uint32_t reset);
 
     /**
 				 * Method: resetCodelet

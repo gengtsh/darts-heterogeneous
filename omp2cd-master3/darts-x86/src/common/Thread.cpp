@@ -1,6 +1,8 @@
 #include "Thread.h"
 #include <iostream>
 
+
+
 using namespace darts;
 
 Thread::Thread(void)
@@ -37,7 +39,6 @@ bool Thread::run()
     //int rc = pthread_create( &thread_, NULL, function_, argument_ );
     if (rc != 0)
         return false;
-
     return true;
 #else
 
@@ -47,6 +48,7 @@ bool Thread::run()
 
     threadHandle_ = CreateThread(0, 0, function,
         argument, 0, &thread_);
+    
 
     if (threadHandle_ == 0)
         return false;
@@ -117,6 +119,7 @@ bool Thread::setAffinity(int cpu, hwloc_topology_t _topology)
 
 Thread::~Thread(void)
 {
+
 #ifndef _MSC_VER
     pthread_attr_destroy(&attr);
 #endif

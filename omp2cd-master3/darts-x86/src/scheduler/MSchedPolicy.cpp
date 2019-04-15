@@ -8,6 +8,8 @@
 #include "getClock.h"
 #endif
 
+//#define DEBUG_MC_POLICY 
+
 uint64_t MCSleepTime;
 
 namespace darts {
@@ -141,7 +143,10 @@ bool MicroGpuStandard(MScheduler* mSched)
         Codelet* tempCodelet =mSched->isUsingGpu() ? mSched->popGpu():mSched->pop();
       
 		while (tempCodelet && mSched->alive()) {
-            ThreadedProcedure* checkTP = tempCodelet->getTP();
+#ifdef DEBUG_MC_POLICY
+			std::cout<<"MC: pop new tempCodelet!"<<std::endl;
+#endif
+			ThreadedProcedure* checkTP = tempCodelet->getTP();
             bool deleteTP = (checkTP) ? checkTP->checkParent() : false;
             tempCodelet->fire();
             

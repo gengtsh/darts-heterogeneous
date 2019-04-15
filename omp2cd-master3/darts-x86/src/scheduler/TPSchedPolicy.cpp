@@ -11,6 +11,7 @@
 uint64_t TPSleepTime;
 
 #define MUST_USE_GPU(field) ((field)& 0x4)
+//#define DEBUG_TP_POLICY 
 
 namespace darts {
 inline void cleanupOrSleep(bool scheduled, TPScheduler* myTPS,
@@ -57,7 +58,8 @@ bool TPPushFull(TPScheduler* myTPS)
             delete tempClosure;
         }
         Codelet* tempCodelet = myTPS->popCodelet();
-        while (tempCodelet && myTPS->alive()) {
+
+		while (tempCodelet && myTPS->alive()) {
             bool fail = true;
             for (size_t i = 0; i < myTPS->getNumSub(); i++) {
                 MScheduler* myCDS = static_cast<MScheduler*>(myTPS->getSubScheduler(tempCodelet->getID() % myTPS->getNumSub()));
@@ -66,7 +68,7 @@ bool TPPushFull(TPScheduler* myTPS)
                     break;
                 }
             }
-            if (fail == false)
+			if (fail == false)
                 tempCodelet = myTPS->popCodelet();
 
             if (tempCodelet)
@@ -268,8 +270,12 @@ bool TPGpuPushFull(TPScheduler* myTPS)
             delete tempClosure;
         }
         Codelet* tempCodelet = myTPS->popCodelet();
+	
 		while (tempCodelet && myTPS->alive()) {
 		
+#ifdef DEBUG_TP_POLICY
+		std::cout<<"TP: pop new Codelet!" <<std::endl;
+#endif
 			bool fail = true;
 		
 			//std::cout<<"check Codelet is for GPU or not! \n"<<std::endl;	 
@@ -278,8 +284,9 @@ bool TPGpuPushFull(TPScheduler* myTPS)
             
 				MScheduler* myCDS = static_cast<MScheduler*>(myTPS->getSubScheduler(GPU_MC_ID)); //only 1 GPU and GPUID=0
 				
-				//std::cout<<"check GPU is "<<myCDS->isGpuCapable()<<" (0: not available, 1 available) \n"<<std::endl;	 
-			
+#ifdef DEBUG_TP_POLICY
+				std::cout<<"check GPU is "<<myCDS->isGpuCapable()<<" (0: not available, 1 available) \n"<<std::endl;	 
+#endif	
 				if (myCDS->isGpuCapable()){
 					myCDS->setUsingGpu(true);
 				
@@ -296,8 +303,10 @@ bool TPGpuPushFull(TPScheduler* myTPS)
 			std::size_t numSub = myTPS->getNumSub()-1;// -1 : 1 GPU
 			uint32_t subSchedId = Id%numSub +1;
 			//std::size_t numSub = myTPS->getNumSub();
-			//uint32_t subSchedId = Id%numSub;
-			//std::cout<<"numSub:"<<numSub<<",subSchedId:"<<subSchedId<<"\n"<<std::endl;			
+			//uint32_t subSchedId = Id%numSub ;
+#ifdef DEBUG_TP_POLICY
+			std::cout<<"Id:"<<Id<<",numSub:"<<numSub<<",subSchedId:"<<subSchedId<<"\n"<<std::endl;
+#endif
 			MScheduler* myCDS = static_cast<MScheduler*>(myTPS->getSubScheduler(subSchedId ));
 			myCDS->setUsingGpu(false);
 			//std::cout<<"push codelet to CPU core !\n"<<std::endl;	

@@ -107,6 +107,11 @@ void Codelet::setDep(uint32_t dep)
     sync_.initSyncSlot(dep, this->sync_.getReset());
 }
 
+void Codelet::setSync(uint32_t dep, uint32_t reset)
+{
+    sync_.initSyncSlot(dep, reset);
+}
+
 void Codelet::resetCodelet(void)
 {
     sync_.resetCounter();
