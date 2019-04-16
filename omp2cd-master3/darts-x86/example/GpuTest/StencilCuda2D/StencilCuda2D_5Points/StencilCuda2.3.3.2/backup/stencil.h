@@ -3,7 +3,7 @@
 
 //#define VERIFICATION 
 //#define CUDA_DARTS_DEBUG
-//#define CUDA_ERROR_CHECKING
+#define CUDA_ERROR_CHECKING
 //#define VERIFICATION_PRINT 
 //#define CUDA_CUDA_DEBUG
 
@@ -12,7 +12,6 @@
 #include <cuda_runtime.h>
 #include<device_launch_parameters.h>
 #include<cmath>
-#include<stdio.h>
 
 extern "C"
 {
@@ -95,9 +94,6 @@ inline int fRR2(int id, int dim){
 }
 
 #define RT(ID) fRR2((int)ID,(int)NUMREC)
-#define BASEMIN 3
-
-
 
 inline void chooseSmaller(int *arrnSmaller,int *arrnFirst, int *arrnSecond, int offset1,int offset2,int offset3,int offset4){
    
@@ -114,19 +110,9 @@ inline void cmpsAndassign(int *arrnNew,int *arrnFirst, int *arrnSecond, int *arr
 }
 
 
-//inline void calcarrnDivCeil(int *arrnDivCeil, int *arrnFirst,int *arrnSecond){
-//    for(int i=0;i<DIM;++i){
-//        arrnDivCeil[i] = std::ceil(1.0*arrnFirst[i]/arrnSecond[i]);
-//    }
-//}
-
 inline void calcarrnDivCeil(int *arrnDivCeil, int *arrnFirst,int *arrnSecond){
     for(int i=0;i<DIM;++i){
-        if(arrnFirst[i]==BASEMIN){
-            arrnDivCeil[i] = 1;
-        }else{
-            arrnDivCeil[i] = std::ceil(1.0*arrnFirst[i]/arrnSecond[i]);
-        }
+        arrnDivCeil[i] = std::ceil(1.0*arrnFirst[i]/arrnSecond[i]);
     }
 }
 

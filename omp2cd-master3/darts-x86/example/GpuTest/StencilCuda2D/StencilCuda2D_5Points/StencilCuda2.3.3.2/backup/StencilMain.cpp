@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 
 	vector<uint64_t>timings;
     Runtime* rt;
-	bool hard = true;
+	bool hard = false;
     outerStart = getTime();
 	bool IsStatic = true;
     //ThreadAffinity affin(g_nCU, g_nSU, COMPACT, TPROUNDROBIN, MCSTANDARD);

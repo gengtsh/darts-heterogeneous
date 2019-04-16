@@ -1332,9 +1332,8 @@ Stencil2D4ptCpuLoopCD::fire(void)
 	double *src = h_src+cpuPos+pos;
 	double *dst = h_dst+cpuPos+pos;
 	
-	int nRowsChunk		= (((posy+1)*cpuBlockDimy+1)>=cpuRows2)?(cpuRows2-posy*cpuBlockDimy-1) : (cpuBlockDimy+1) ;
-	int nColsChunk		= (((posx+1)*cpuBlockDimx+1)>=cpuCols2)?(cpuCols2-posx*cpuBlockDimx-1) : (cpuBlockDimx+1) ;
-
+	int nRowsChunk		= (((posy+1)*cpuBlockDimy)>=cpuRows2)?(cpuRows2-posy*cpuBlockDimy-1) : (cpuBlockDimy+1) ;
+	int nColsChunk		= (((posx+1)*cpuBlockDimx)>=cpuCols2)?(cpuCols2-posx*cpuBlockDimx-1):(cpuBlockDimx+1) ;
 #ifdef CUDA_DARTS_DEBUG
 
 	pthread_mutex_lock(&mutex2);
@@ -1342,35 +1341,18 @@ Stencil2D4ptCpuLoopCD::fire(void)
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuPosy:"<<cpuPosy<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuPos:"<<cpuPos<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: posx:"<<posx<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: posy:"<<posy<<std::endl;
+	std::cout<<"CpuLoop37["<<Id<<"]: posx:"<<posx<<std::endl;
     std::cout<<"CpuLoop37["<<Id<<"]: pos:"<<pos<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: nRowsChunk:"<<nRowsChunk<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: nColsChunk:"<<nColsChunk<<std::endl;
 	std::cout<<"CpuLoop37["<<Id<<"]: cpuRows:"<<FRAME(nRowsCpu)<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: cpuBlockDimx:"<<cpuBlockDimx<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: cpuBlockDimy:"<<cpuBlockDimy<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: cpuRows2:"<<cpuRows2<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: cpuCols2:"<<cpuCols2<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: arrnEdge[0]:" <<arrnEdge[0]<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: arrnEdge[1]:"<<arrnEdge[1]<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: src: "<<*(src+nCols)<<std::endl;
-	std::cout<<"CpuLoop37["<<Id<<"]: dst: "<<*(dst+nCols)<<std::endl;
     pthread_mutex_unlock(&mutex2);
 #endif
-    computeBlock_stencil25(dst,src,nRows,nCols,nRowsChunk,nColsChunk);
+
+	computeBlock_stencil25(dst,src,nRows,nCols,nRowsChunk,nColsChunk);
+
 
 #ifdef CUDA_DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"CpuLoop37["<<Id<<"]: dst: "<<*(dst+nCols)<<std::endl;
-    pthread_mutex_unlock(&mutex2);
-#endif
-#ifdef CUDA_DARTS_DEBUG
-    std::cout<<"CpuLoop37["<<Id<<"]: finish! "<<std::endl;
-    if (Id == 99){
-
-	    std::cout<<"CpuLoop37["<<Id<<"]: src: "<<*(src+nCols+48)<<std::endl;
-	    std::cout<<"CpuLoop37["<<Id<<"]: dst: "<<*(dst+nCols+48)<<std::endl;
-    }
 //	std::cout<<"dst:"<<std::endl;
 //	std::cout<<std::setprecision(3)<<std::endl;
 //	int tr = (nRows_bk<10)?nRows_bk:10;

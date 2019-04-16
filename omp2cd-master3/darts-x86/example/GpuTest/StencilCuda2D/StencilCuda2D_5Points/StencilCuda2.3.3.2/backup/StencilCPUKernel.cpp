@@ -71,4 +71,3 @@ void computeBlock_stencil25(double *dst,double *src,size_t n_rows,size_t n_cols,
         }
     }
 }
-

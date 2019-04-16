@@ -133,10 +133,10 @@ DEF_TP(StencilTP)
 #endif
         if(IsStatic == true){
                 
-            //if(nRows>=17000){
+            if(nRows>=17000){
 		        nRowsGpuBase =2000;
 	            nRowsCpuBase =2000;
-            //}
+            }
 
         }else{
 
@@ -292,9 +292,10 @@ DEF_TP(StencilTP)
                 }
 
 			}else{
-
-
-				    if((req_size <  gpuMemMax)&&(hard == false)){
+				if (hard == true){
+					
+				}else{
+				    if(req_size <  gpuMemMax){
 						nCPU = 0;
 					    nGPU = 1;
                         nRowsGpu = nRows;
@@ -335,16 +336,14 @@ DEF_TP(StencilTP)
                         //uint64_t t1 = nRowsGpuMax*ggInitR;
                         //uint64_t t2= nRows*gpuInitR;
                         //nRowsGpu = t1;
-                        //nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
-                        nRowsGpu =(t1<gpuMemMax)?((t1<nRows)?t1:nRows ):gpuMemMax;
+                        nRowsGpu = (t1<gpuMemMax)?t1:gpuMemMax;
                         //nRowsGpu = (t2<t1)?t2:t1;
                         
                         uint64_t t3=nRowsCpuBase;
                         //uint64_t t3=nRows*cpuInitR;
 						//uint64_t t3 = nRowsGpu*cpuInitR;
 						//uint64_t t3 = nRowsGpu*cgInitR;
-                        //uint64_t t4 = nRows-nRowsGpu+2;
-                        uint64_t t4 =((nRows-nRowsGpu)>0)?(nRows-nRowsGpu+2):0;
+                        uint64_t t4 = nRows-nRowsGpu+2;
                         nRowsCpu = (t4<=t3)?t4:t3 ;
 						nRowsLeft = (t4<=t3)?0:(nRows-nRowsGpu-nRowsCpu+4);
                         gpuPos = 0;
@@ -359,19 +358,12 @@ DEF_TP(StencilTP)
                         arrnCpuEdge[1] = nRowsCpu;
                         chooseSmaller(arrnCpuTile,arrnCpuEdge,arrnCpuGridTileBase,0,0,0,0);
                         chooseSmaller(arrnCpuBlock,arrnCpuEdge,arrnCpuTile,-2,0,0,-2);
-                        
+
                         calcarrnDivCeil(arrnCpuGrid,arrnCpuEdge,arrnCpuBlock); 
 
                         int cpuGridDimx = arrnCpuGrid[0]; 
 			            int cpuGridDimy = arrnCpuGrid[1]; 
                         
-#ifdef CUDA_DARTS_DEBUG
-
-		                std::cout<<"arrnCpuTiley = "<<arrnCpuTile[1]<<std::endl;
-		                std::cout<<"arrnCpuBlocky = "<<arrnCpuBlock[1]<<std::endl;
-		                std::cout<<"cpuGridDimx = "<<cpuGridDimx<<std::endl;
-		                std::cout<<"cpuGridDimy = "<<cpuGridDimy<<std::endl;
-#endif 
 			            nCPU = cpuGridDimx*cpuGridDimy;
                         if(IsStatic == true){
                             CpuLoop = new Stencil2D4ptCpuLoopCD[nCPU];
@@ -379,14 +371,8 @@ DEF_TP(StencilTP)
                         CpuSync = Stencil2D4ptCpuSyncCD{nCPU,nCPU,this,SHORTWAIT};
                         GpuKernelHybridWithStreams  =  Stencil2D4ptGpuKernelHybridWithStreamsCD(0,1,this,GPUMETA);
                         add(&GpuKernelHybridWithStreams);	
-                    
-                        int deps =0;
-                        if((nCPU >0)&&(nGPU>0)){
-                            deps = 2;
-                        }else{
-                            deps = 1;
-                        }
-                        Swap = Stencil2D4ptSwapCD{deps,deps,this,SHORTWAIT};
+                       
+                        Swap = Stencil2D4ptSwapCD{2,2,this,SHORTWAIT};
 
                     }
 		
@@ -403,6 +389,8 @@ DEF_TP(StencilTP)
 						CpuLoop[i] = Stencil2D4ptCpuLoopCD{0,1,this,SHORTWAIT,i};
 						add(CpuLoop + i);
 					}
+				}
+
 			}	
 
 		}
