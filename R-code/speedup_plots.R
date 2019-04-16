@@ -93,3 +93,42 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
     theme(strip.text = element_text(size=20))
 ggsave(paste("./speedUpZoom.pdf",sep=""), Graph, device = pdf, height=18, width=9)
 
+
+
+setwd("~/GIT/darts-heterogeneous/data_img/data/stencil2d4pt/weak/threads_number_equals_to_machines_threads_w_static/f4_weak_2GB_c")
+
+temp <- read.csv("31_1_weak_speedup.csv",header = TRUE)
+
+speedup <- c(temp$StencilCudaHybrid3S11, temp$StencilCudaHybrid3S12, temp$StencilCudaHybrid3S21,
+             temp$StencilCudaHybrid3S22, temp$StencilCudaHybrid3_IDAWL)
+
+size <- c(temp$X.size, temp$X.size, temp$X.size,
+          temp$X.size, temp$X.size) 
+
+apps <- c(rep("StencilCudaHybrid3S11",25), rep("StencilCudaHybrid3S12",25),
+          rep("StencilCudaHybrid3S21",25), rep("StencilCudaHybrid3S22", 25), rep("StencilCudaHybrid3_IDAWL",25))
+
+df <- data.frame(cbind(size, apps, speedup))
+
+df <- df[df$apps != "StencilSEQ",]
+df$speedup <- as.numeric(as.character(df$speedup))
+Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
+    geom_line(size=1.5) +
+    geom_point(cex=3.5) +
+    xlab("Size of the Problem") + 
+    theme_bw() +
+    scale_colour_manual(values=cbbPalette) +
+    ylab("Speedup (baseline = CPU-Sequential)" ) +
+    theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
+    theme(axis.title = element_text(family = "Times", face="bold", size=20)) +
+    theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
+    theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=30, hjust=1)) +
+    theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
+    theme(legend.text  = element_text(family = "Times", face="bold", size=16)) +
+    theme(legend.direction = "horizontal", 
+          legend.position = "bottom",
+          legend.key=element_rect(size=5),
+          legend.key.size = unit(3, "lines")) +
+    guides(col = guide_legend(nrow = 2))
+
+ggsave(paste("./speedUp_dynamic.pdf",sep=""), Graph, device = pdf, height=7, width=10)
