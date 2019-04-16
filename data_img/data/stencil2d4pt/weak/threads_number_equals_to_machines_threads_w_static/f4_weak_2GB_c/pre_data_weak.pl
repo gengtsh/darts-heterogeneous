@@ -8,7 +8,7 @@ use strict;
 
 #my @kernels = qw/StencilCudaCpu StencilCudaGpu StencilCudaHybrid3/;
 #my @kernels = qw/StencilSEQ StencilCudaHybrid3S11 StencilCudaHybrid3S12 StencilCudaHybrid3S21 StencilCudaHybrid3S StencilCudaHybrid3/;
-my @kernels = qw/StencilSEQ StencilCudaHybrid3S11 StencilCudaHybrid3S12 StencilCudaHybrid3S21 StencilCudaHybrid3S22 StencilCudaHybrid3_DAWL StencilCudaHybrid3_IDAWL/;
+my @kernels = qw/StencilSEQ StencilCudaHybrid3S11 StencilCudaHybrid3S12 StencilCudaHybrid3S21 StencilCudaHybrid3S22 StencilCudaHybrid3S24 StencilCudaHybrid3S42 StencilCudaHybrid3S44 StencilCudaHybrid3_DAWL StencilCudaHybrid3_IDAWL/;
 
 
 
