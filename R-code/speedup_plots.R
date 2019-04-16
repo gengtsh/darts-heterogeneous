@@ -112,6 +112,7 @@ df <- data.frame(cbind(size, apps, speedup))
 
 df <- df[df$apps != "StencilSEQ",]
 df$speedup <- as.numeric(as.character(df$speedup))
+df$size <- as.numeric(as.character(df$size))
 Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, linetype = apps)) + 
     geom_line(size=1.5) +
     geom_point(cex=3.5) +
@@ -122,7 +123,7 @@ Graph <- ggplot(data=df, aes(x=size, y=speedup, group=apps, col=apps, pch=apps, 
     theme(plot.title = element_text(family = "Times", face="bold", size=40)) +
     theme(axis.title = element_text(family = "Times", face="bold", size=20)) +
     theme(axis.text  = element_text(family = "Times", face="bold", size=15, colour = "Black")) +
-    theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=30, hjust=1)) +
+    theme(axis.text.x= element_text(family = "Times", face="bold", size=15, colour = "Black", angle=0, hjust=1)) +
     theme(legend.title  = element_text(family = "Times", face="bold", size=0)) +
     theme(legend.text  = element_text(family = "Times", face="bold", size=16)) +
     theme(legend.direction = "horizontal", 
