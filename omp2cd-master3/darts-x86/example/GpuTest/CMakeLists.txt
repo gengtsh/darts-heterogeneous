@@ -1,4 +1,5 @@
 #add_subdirectory (TestS1)
+#add_subdirectory (TestGroups)
 #add_subdirectory (Hello)
 #add_subdirectory (Hello2)
 #add_subdirectory (vectorAdd)
@@ -16,4 +17,5 @@
 #add_subdirectory (StencilCuda2.4)
 add_subdirectory (StencilCuda2D)
 add_subdirectory (StencilCuda3D)
+add_subdirectory (Spmv)
 
