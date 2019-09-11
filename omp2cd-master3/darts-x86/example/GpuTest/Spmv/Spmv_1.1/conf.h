@@ -8,6 +8,7 @@
 
 //#define DARTS_DEBUG_VAL
 
+//#define CUDA_RECORD
 
 static const int BLOCK_SIZE = 128;
 static const int WARP_SIZE = 32;

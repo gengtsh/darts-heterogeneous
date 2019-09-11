@@ -132,23 +132,28 @@ void csrTestScalar(ResultDatabase* resultDB, OptionParser* op, CSRMM<floatType> 
     floatType *d_vec = csrDevice->getVec();
     floatType *d_out = csrDevice->getOut();
 
+#ifdef CUDA_RECORD
     // Setup events for timing
-    ///cudaEvent_t start, stop;
-    ///CUDA_SAFE_CALL(cudaEventCreate(&start));
-    ///CUDA_SAFE_CALL(cudaEventCreate(&stop));
+    cudaEvent_t start, stop;
+    CUDA_SAFE_CALL(cudaEventCreate(&start));
+    CUDA_SAFE_CALL(cudaEventCreate(&stop));
    
     // Transfer data to device
-    ///CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+    CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+#endif
     CUDA_SAFE_CALL(cudaMemcpy(d_val, h_val,   numNonZeroes * sizeof(floatType),cudaMemcpyHostToDevice));
     CUDA_SAFE_CALL(cudaMemcpy(d_cols, h_cols, numNonZeroes * sizeof(int),cudaMemcpyHostToDevice));
     CUDA_SAFE_CALL(cudaMemcpy(d_rowDelimiters, h_rowDelimiters,(numRows+1) * sizeof(int), cudaMemcpyHostToDevice));
-    ///CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
-    ///CUDA_SAFE_CALL(cudaEventSynchronize(stop));
+    
+#ifdef CUDA_RECORD
+    CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
+    CUDA_SAFE_CALL(cudaEventSynchronize(stop));
 
 
-    ///float iTransferTime, oTransferTime;
-    ///CUDA_SAFE_CALL(cudaEventElapsedTime(&iTransferTime, start, stop));
-    ///iTransferTime *= 1.e-3;
+    float iTransferTime, oTransferTime;
+    CUDA_SAFE_CALL(cudaEventElapsedTime(&iTransferTime, start, stop));
+    iTransferTime *= 1.e-3;
+#endif
     // Bind texture for position
     string suffix;
     if (sizeof(floatType) == sizeof(float)){
@@ -164,11 +169,13 @@ void csrTestScalar(ResultDatabase* resultDB, OptionParser* op, CSRMM<floatType> 
     int iters  = op->getOptionInt("iterations");
     
 
-    ///// Results description info
-    ///char atts[TEMP_BUFFER_SIZE];
-    ///sprintf(atts, "%d_elements_%d_rows",numNonZeroes, numRows);
-    ///string prefix = "";
-    ///double gflop = 2 * (double) numNonZeroes / 1e9;
+#ifdef CUDA_RECORD
+    // Results description info
+    char atts[TEMP_BUFFER_SIZE];
+    sprintf(atts, "%d_elements_%d_rows",numNonZeroes, numRows);
+    string prefix = "";
+    double gflop = 2 * (double) numNonZeroes / 1e9;
+#endif
 
 #ifdef DARTS_DEBUG
     cout << "CSR Scalar Kernel\n";
@@ -178,7 +185,10 @@ void csrTestScalar(ResultDatabase* resultDB, OptionParser* op, CSRMM<floatType> 
     //for (int k=0; k<passes; k++)
     //{
         // Run Scalar Kernel
-        ///CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+    
+#ifdef CUDA_RECORD
+        CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+#endif
         //for (int j = 0; j < iters; j++)
         //{
             if(suffix == "-DP"){
@@ -189,29 +199,36 @@ void csrTestScalar(ResultDatabase* resultDB, OptionParser* op, CSRMM<floatType> 
             (d_val, d_cols, d_rowDelimiters, numRows, d_out,secStart);
             }
         //}
-        ///CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
-        ///CUDA_SAFE_CALL(cudaEventSynchronize(stop));
-        ///float scalarKernelTime;
-        ///CUDA_SAFE_CALL(cudaEventElapsedTime(&scalarKernelTime, start, stop));
+       
+#ifdef CUDA_RECORD
+        CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
+        CUDA_SAFE_CALL(cudaEventSynchronize(stop));
+        float scalarKernelTime;
+        CUDA_SAFE_CALL(cudaEventElapsedTime(&scalarKernelTime, start, stop));
         // Transfer data back to host
-        ///CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+        CUDA_SAFE_CALL(cudaEventRecord(start, 0));
+#endif
         CUDA_SAFE_CALL(cudaMemcpy(h_out, d_out, numRows * sizeof(floatType),cudaMemcpyDeviceToHost));
-        ///CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
-        ///CUDA_SAFE_CALL(cudaEventSynchronize(stop));
-        ///CUDA_SAFE_CALL(cudaEventElapsedTime(&oTransferTime, start, stop));
         
+#ifdef CUDA_RECORD
+        CUDA_SAFE_CALL(cudaEventRecord(stop, 0));
+        CUDA_SAFE_CALL(cudaEventSynchronize(stop));
+        CUDA_SAFE_CALL(cudaEventElapsedTime(&oTransferTime, start, stop));
+#endif
         cudaThreadSynchronize();
-        ///oTransferTime *= 1.e-3;
+        
+#ifdef CUDA_RECORD
+        oTransferTime *= 1.e-3;
 
-        ///scalarKernelTime = (scalarKernelTime / (float)iters) * 1.e-3;
-        ///double totalTransfer = iTransferTime + oTransferTime;
-        ///string startPoint = std::to_string(csrDevice->getStartPoint());
-        ///string testName = prefix+"CSR-Scalar"+suffix+"-startPoint-"+startPoint;
+        scalarKernelTime = (scalarKernelTime / (float)iters) * 1.e-3;
+        double totalTransfer = iTransferTime + oTransferTime;
+        string startPoint = std::to_string(csrDevice->getStartPoint());
+        string testName = prefix+"CSR-Scalar"+suffix+"-startPoint-"+startPoint;
     
-        ///resultDB->AddResult(testName, atts, "Gflop/s",gflop/(scalarKernelTime));
-        ///resultDB->AddResult(testName, atts, "Gflop/s",gflop / (scalarKernelTime+totalTransfer));
+        resultDB->AddResult(testName, atts, "Gflop/s",gflop/(scalarKernelTime));
+        resultDB->AddResult(testName, atts, "Gflop/s",gflop / (scalarKernelTime+totalTransfer));
         //resultDB->AddResult(testName+"_PCIe", atts, "Gflop/s",gflop / (scalarKernelTime+totalTransfer));
-
+#endif
     //}
 }
 
