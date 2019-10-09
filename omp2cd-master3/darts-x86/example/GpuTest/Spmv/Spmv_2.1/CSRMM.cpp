@@ -165,7 +165,7 @@ void CSRMM<T>::allocateDevice(void){
       // Allocate device (GPU) memory
       CUDA_SAFE_CALL(cudaMalloc(&val,  numNonZeroes * sizeof(T)));
       CUDA_SAFE_CALL(cudaMalloc(&cols, numNonZeroes * sizeof(int)));
-      CUDA_SAFE_CALL(cudaMalloc(&rowDelimiters, (NSTREAM+numRows+1) * sizeof(int)));
+      CUDA_SAFE_CALL(cudaMalloc(&rowDelimiters, (MAXSTREAM+numRows+1) * sizeof(int)));
       CUDA_SAFE_CALL(cudaMalloc(&vec,  numRows * sizeof(T)));
       CUDA_SAFE_CALL(cudaMalloc(&out,  numRows * sizeof(T)));
 }
@@ -177,7 +177,7 @@ void CSRMM<T>::allocateDevice(int numNonZeroes, int numRows){
       // Allocate device (GPU) memory
       CUDA_SAFE_CALL(cudaMalloc(&val,  numNonZeroes * sizeof(T)));
       CUDA_SAFE_CALL(cudaMalloc(&cols, numNonZeroes * sizeof(int)));
-      CUDA_SAFE_CALL(cudaMalloc(&rowDelimiters, (NSTREAM+numRows+1) * sizeof(int)));
+      CUDA_SAFE_CALL(cudaMalloc(&rowDelimiters, (MAXSTREAM+numRows+1) * sizeof(int)));
       CUDA_SAFE_CALL(cudaMalloc(&vec,  numRows * sizeof(T)));
       CUDA_SAFE_CALL(cudaMalloc(&out,  numRows * sizeof(T)));
 }

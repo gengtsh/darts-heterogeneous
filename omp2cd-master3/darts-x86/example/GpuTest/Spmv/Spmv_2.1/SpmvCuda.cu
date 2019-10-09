@@ -350,7 +350,7 @@ void SHOC_csrStreamTestScalar(ResultDatabase* resultDB, OptionParser* op, CSRMM<
     //CUDA_SAFE_CALL(cudaThreadSynchronize());
     CUDA_SAFE_CALL(cudaDeviceSynchronize());
 
-    std::cout<<"h_our addr: "<<h_out<<",h_out[1]="<<h_out[1]<<std::endl; 
+    //std::cout<<"h_out addr: "<<h_out<<",h_out[1]="<<h_out[1]<<std::endl; 
     
     delete [] sNumRows ;
     delete [] sNumNonZeroes ;
@@ -587,7 +587,7 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
     cout << "CSR Stream Scalar Kernel\n";
 #endif
 
-    int nStream = NSTREAM;
+    int nStream = 32;// less than MAXSTREAM
     cudaStream_t *stream;
     cudaEvent_t  *cuEvent;
     stream = new cudaStream_t[nStream];
@@ -600,15 +600,28 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
     int *srStart   = new int[nStream];
     int *soStart   = new int[nStream];
     int *ssStart   = new int[nStream];
-    
-    int nBlocks ; 
+   
+    floatType **d_val_sec               = new floatType*[nStream];
+    floatType **d_out_sec               = new floatType*[nStream]; 
+    int **d_cols_sec                    = new int*[nStream];
+    int **d_rowDelimiters_sec           = new int*[nStream];
+
+    floatType **h_val_sec               = new floatType*[nStream];
+    floatType **h_out_sec               = new floatType*[nStream]; 
+    int **h_cols_sec                    = new int*[nStream];
+    int **h_rowDelimiters_sec           = new int*[nStream];
+
+    int *nBlocks_sec                    = new int[nStream]; 
 
     /* cusparse APIs */
-    //int devId;
-    //cudaDeviceProp prop;
-    //CUDA_SAFE_CALL(cudaGetDevice(&devId));
-    //CUDA_SAFE_CALL(cudaGetDeviceProperties( &prop, devId)) ;
-
+ 
+#ifdef DARTS_DEBUG
+    int devId;
+    cudaDeviceProp prop;
+    CUDA_SAFE_CALL(cudaGetDevice(&devId));
+    CUDA_SAFE_CALL(cudaGetDeviceProperties( &prop, devId)) ;
+    std::cout<<"cuda device async Eng count: "<<prop.asyncEngineCount<<std::endl;
+#endif
 
 #if CUDA_V10
     /* create matrix and vec descriptor */
@@ -619,9 +632,9 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
     cusparseHandle_t *handle = new cusparseHandle_t [nStream] ;
     for(int i=0; i<nStream; ++i){
         //CUDA_SAFE_CALL(cudaStreamCreateWithFlags(&stream[i],cudaStreamNonBlocking));
+        //CUDA_SAFE_CALL(cudaEventCreateWithFlags(&cuEvent[i],cudaEventDisableTiming));
         CUDA_SAFE_CALL(cudaStreamCreate(&stream[i]));
         CUDA_SAFE_CALL(cudaEventCreate(&cuEvent[i]));
-        //CUDA_SAFE_CALL(cudaEventCreateWithFlags(&cuEvent[i],cudaEventDisableTiming));
     
         sNumRows[i]     = (i==(nStream-1))?(numRows-i*chunk):(chunk);
         if(sNumRows[i] == 0) continue;
@@ -631,13 +644,26 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
         soStart[i]     = i*chunk;
         ssStart[i]     = h_rowDelimiters[i*chunk];
 
+
+        d_val_sec[i]              = d_val + svcStart[i] ;
+        d_cols_sec[i]             = d_cols + svcStart[i];
+        d_rowDelimiters_sec[i]   = d_rowDelimiters + srStart[i] ;
+        d_out_sec[i]              = d_out + soStart[i]; 
+
+        h_val_sec[i]              = h_val + svcStart[i];
+        h_cols_sec[i]             = h_cols + svcStart[i];
+        h_rowDelimiters_sec[i]    = h_rowDelimiters + soStart[i];
+        h_out_sec[i]              = h_out + soStart[i]; 
+        nBlocks_sec[i]            = ceil(sNumRows[i]/(float)BLOCK_SIZE) ; 
+
         CUSPARSE_SAFE_CALL(cusparseCreate(&handle[i]));
+        CUSPARSE_SAFE_CALL(cusparseSetStream(handle[i],stream[i]));
 
 #if CUDA_V10
         /*create sparse matrix A in CSR format */
-        CUSPARSE_SAFE_CALL(cusparseCreateCsr(&matA[i],sNumRows[i],numCols,sNumNonZeroes[i],d_rowDelimiters+soStart[i],d_cols+svcStart[i],d_val+svcStart[i],CUSPARSE_INDEX_32I,CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO,cuValueType));
+        CUSPARSE_SAFE_CALL(cusparseCreateCsr(&matA[i],sNumRows[i],numCols,sNumNonZeroes[i],d_rowDelimiters_sec[i],d_cols_sec[i],d_val_sec[i],CUSPARSE_INDEX_32I,CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO,cuValueType));
         /*create dense vector Y */
-        CUSPARSE_SAFE_CALL(cusparseCreateDnVec(&vecY[i],sNumRows[i],d_out+soStart[i],cuValueType));
+        CUSPARSE_SAFE_CALL(cusparseCreateDnVec(&vecY[i],sNumRows[i],d_out_sec[i],cuValueType));
 
 #endif
     }
@@ -671,9 +697,7 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
     int sNumRowDelimiter = 0;
     for(int i=0; i<nStream; ++i){
      
-        CUSPARSE_SAFE_CALL(cusparseSetStream(handle[i],stream[i])); 
         //CUSPARSE_SAFE_CALL(cusparseSetStream(handle,stream[i])); 
-        nBlocks = ceil(sNumRows[i]/(float)BLOCK_SIZE);
 #ifdef DARTS_DEBUG
         std::cout<<"stream: "<<i<<std::endl;
         std::cout<<"svcStart["<<i<<"] = "<<svcStart[i]<<",srStart["<<i<<"] = "<<srStart[i]<<",soStart["<<i<<"] = "<<soStart[i]<<",sNumRows["<<i<<"] = "<<sNumRows[i]<<",sNumNonZeroes["<<i<<"] = "<<sNumNonZeroes[i]<<std::endl;
@@ -683,7 +707,7 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
         CUDA_SAFE_CALL(cudaMemcpyAsync(d_cols+ svcStart[i], h_cols+svcStart[i], sNumNonZeroes[i] * sizeof(int),cudaMemcpyHostToDevice,stream[i]));
         CUDA_SAFE_CALL(cudaMemcpyAsync(d_rowDelimiters + srStart[i], h_rowDelimiters+soStart[i],(sNumRows[i]+1) * sizeof(int), cudaMemcpyHostToDevice,stream[i]));
         
-        minusVal<<<nBlocks,BLOCK_SIZE,0,stream[i]>>>(d_rowDelimiters+srStart[i],ssStart[i],sNumRows[i]+1); 
+        minusVal<<<nBlocks_sec[i],BLOCK_SIZE,0,stream[i]>>>(d_rowDelimiters_sec[i],ssStart[i],sNumRows[i]+1); 
 
 
 #if CUDA_V10
@@ -693,10 +717,9 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
 #elif CUDA_V9
 
         if(suffix == "-DP"){
-            CUSPARSE_SAFE_CALL(cusparseDcsrmv(handle[i],CUSPARSE_OPERATION_NON_TRANSPOSE,sNumRows[i],numCols,sNumNonZeroes[i],(const double *)&alpha,descr,(const double *)(d_val+svcStart[i]),d_rowDelimiters+srStart[i],d_cols+svcStart[i],(const double*)d_vec,(const double*)&beta,(double*)(d_out+soStart[i])));
+            CUSPARSE_SAFE_CALL(cusparseDcsrmv(handle[i],CUSPARSE_OPERATION_NON_TRANSPOSE,sNumRows[i],numCols,sNumNonZeroes[i],(const double *)&alpha,descr,(const double *)(d_val_sec[i]),d_rowDelimiters_sec[i],d_cols_sec[i],(const double*)d_vec,(const double*)&beta,(double*)(d_out_sec[i])));
         }else{
-            CUSPARSE_SAFE_CALL(cusparseScsrmv(handle[i],CUSPARSE_OPERATION_NON_TRANSPOSE,sNumRows[i],numCols,sNumNonZeroes[i],(const float *)&alpha,descr,(const float *)(d_val+svcStart[i]),d_rowDelimiters+srStart[i],d_cols+svcStart[i],(const float*)d_vec,(const float*)&beta,(float*)(d_out+soStart[i])));
-        
+            CUSPARSE_SAFE_CALL(cusparseScsrmv(handle[i],CUSPARSE_OPERATION_NON_TRANSPOSE,sNumRows[i],numCols,sNumNonZeroes[i],(const float *)&alpha,descr,(const float *)(d_val_sec[i]),d_rowDelimiters_sec[i],d_cols_sec[i],(const float*)d_vec,(const float*)&beta,(float*)(d_out_sec[i])));
         }
 #endif
 
@@ -716,7 +739,7 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
         //CUDA_SAFE_CALL(cudaEventRecord(cuEvent[i],stream[i]));
         //CUDA_SAFE_CALL(cudaStreamWaitEvent(stream[i],cuEvent[i],0));
         
-        CUDA_SAFE_CALL(cudaMemcpyAsync(h_out+soStart[i], d_out+soStart[i], sNumRows[i] * sizeof(floatType),cudaMemcpyDeviceToHost,stream[i]));
+        CUDA_SAFE_CALL(cudaMemcpyAsync(h_out_sec[i], d_out_sec[i], sNumRows[i] * sizeof(floatType),cudaMemcpyDeviceToHost,stream[i]));
 
 #ifdef DARTS_DEBUG 
         //CUDA_SAFE_CALL(cudaDeviceSynchronize());
@@ -760,7 +783,17 @@ void CuSparse_csrStreamTest(ResultDatabase* resultDB, OptionParser* op, CSRMM<fl
     delete [] svcStart;
     delete [] srStart; 
     delete [] ssStart; 
+    delete [] d_val_sec;           
+    delete [] d_cols_sec;          
+    delete [] d_rowDelimiters_sec;
+    delete [] d_out_sec;          
 
+    delete [] h_val_sec;           
+    delete [] h_cols_sec;           
+    delete [] h_rowDelimiters_sec;
+    delete [] h_out_sec;           
+    delete [] nBlocks_sec; 
+    
     for(int i=0; i<nStream; ++i){
         CUDA_SAFE_CALL(cudaStreamDestroy(stream[i]));
         CUDA_SAFE_CALL(cudaEventDestroy(cuEvent[i]));

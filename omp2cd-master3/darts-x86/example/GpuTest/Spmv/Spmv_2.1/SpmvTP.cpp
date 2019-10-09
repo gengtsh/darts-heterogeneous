@@ -46,8 +46,6 @@ SpmvCpuCD::fire(void)
 
     spmvCPU(csrHost);
 
-
-    
     double *refOut = FRAME(refOut);
     double *out = csrHost->getOut();
     int numRows = csrHost->getNumRows();
@@ -145,27 +143,13 @@ SpmvCpuSyncCD::fire(void)
         CSRMM<double>*csrDevice = &FRAME(csrDevice);
         int gpuNumRows = FRAME(totalNumRows);
         
-        //gpuNumRows = 20000;
+        //gpuNumRows = 5000;
         FRAME(gpuNumRows) = gpuNumRows;
         csrDevice->assignNumRows(gpuNumRows);
         
         __sync_fetch_and_sub(&FRAME(numRowsLeft),gpuNumRows); 
-        
-        if(FRAME(IsSHOC == true)){
-
-            if(FRAME(IsStream)==false){
-                SYNC(spmvGpuSHOCCsr);
-            }else{
-                SYNC(spmvGpuSHOCCsrStream);
-            }
-        }else if(FRAME(IsCuSparse == true)){
-
-            if(FRAME(IsStream)==false){
-                SYNC(spmvGpuCuSparseCsr);
-            }else{
-                SYNC(spmvGpuCuSparseCsrStream);
-            }
-        }
+       
+        SYNC(spmvGpuCsr);
     }else if(config == "hybrid"){
 
         //adjust csr based on the groups
@@ -200,22 +184,8 @@ SpmvCpuSyncCD::fire(void)
         csrDevice->assignNumRows(gpuNumRows);
   
         __sync_fetch_and_sub(&FRAME(numRowsLeft),gpuNumRows); 
-       
-        if(FRAME(IsSHOC == true)){
-
-            if(FRAME(IsStream)==false){
-                SYNC(spmvGpuSHOCCsr);
-            }else{
-                SYNC(spmvGpuSHOCCsrStream);
-            }
-        }else if(FRAME(IsCuSparse == true)){
-
-            if(FRAME(IsStream)==false){
-                SYNC(spmvGpuCuSparseCsr);
-            }else{
-                SYNC(spmvGpuCuSparseCsrStream);
-            }
-        }
+      
+        SYNC(spmvGpuCsr);
 
         if(FRAME(avCnt)>0){
 
@@ -535,15 +505,16 @@ SpmvCpuLoopSyncCD::fire(void)
     EXIT_TP();
 }
 
+
 extern "C"
-void SpmvGpuSHOCCsrCD::fire(void){
+void SpmvGpuCsrCD::fire(void){
 #ifdef DARTS_DEBUG
     pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuSHOCCsr!"<<std::endl;	
+	std::cout<<"Invoke SpmvGpuCsr!"<<std::endl;	
     pthread_mutex_unlock(&mutex2);
 #endif
 	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuSHOCCsr);
+	RESET(spmvGpuCsr);
     
     RecordDatabase *recordDB = FRAME(recordDB);
     ResultDatabase *resultDB = FRAME(resultDB);
@@ -562,8 +533,19 @@ void SpmvGpuSHOCCsrCD::fire(void){
     uint64_t rdStart = getTime();
 #endif
 
-
-    SHOC_csrTestScalar(resultDB,op,csrHost,csrDevice); 
+    if(FRAME(IsSHOC) == true){
+        if(FRAME(IsStream) == true){
+            SHOC_csrStreamTestScalar(resultDB,op,csrHost,csrDevice); 
+        }else {
+            SHOC_csrTestScalar(resultDB,op,csrHost,csrDevice); 
+        }
+    }else if(FRAME(IsCuSparse) == true){
+        if(FRAME(IsStream) == true){
+            CuSparse_csrStreamTest(resultDB,op,csrHost,csrDevice); 
+        }else {
+            CuSparse_csrTest(resultDB,op,csrHost,csrDevice); 
+        }
+    }
 
 
 #ifdef DARTS_RECORD
@@ -596,7 +578,7 @@ void SpmvGpuSHOCCsrCD::fire(void){
     }
 #endif
 
-    SYNC(spmvGpuSHOCCsrCheck);
+    SYNC(spmvGpuCsrCheck);
 
 #ifdef DARTS_RECORD
     recordDB->addToAllProc(rdEnd-rdStart);
@@ -605,7 +587,7 @@ void SpmvGpuSHOCCsrCD::fire(void){
 
 #ifdef DARTS_DEBUG_CE
     pthread_mutex_lock(&mutex2);
-	std::cout<<"SpmvGpuSHOCCsr!"<<std::endl;	
+	std::cout<<"SpmvGpuCsr!"<<std::endl;	
     pthread_mutex_unlock(&mutex2);
 #endif
 
@@ -614,14 +596,14 @@ void SpmvGpuSHOCCsrCD::fire(void){
 }
 
 extern "C"
-void SpmvGpuSHOCCsrCheckCD::fire(void){
+void SpmvGpuCsrCheckCD::fire(void){
 #ifdef DARTS_DEBUG
     pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuSHOCCsrCheck!"<<std::endl;	
+	std::cout<<"Invoke SpmvGpuCsrCheck!"<<std::endl;	
     pthread_mutex_unlock(&mutex2);
 #endif
 	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuSHOCCsrCheck);
+	RESET(spmvGpuCsrCheck);
 
     CSRMM<double>*csrHost   = &FRAME(csrHost);
     CSRMM<double>*csrDevice = &FRAME(csrDevice);
@@ -661,7 +643,7 @@ void SpmvGpuSHOCCsrCheckCD::fire(void){
         std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
 #endif
    
-        SYNC(spmvGpuSHOCCsr);
+        SYNC(spmvGpuCsr);
 
     }else {
         //=========(config == "hybrid")=======//
@@ -691,7 +673,7 @@ void SpmvGpuSHOCCsrCheckCD::fire(void){
         pthread_mutex_unlock(&mutex2);
 #endif
         if (IsNext == true){
-            SYNC(spmvGpuSHOCCsr);
+            SYNC(spmvGpuCsr);
         }
 
 #ifdef DARTS_DEBUG
@@ -706,523 +688,6 @@ void SpmvGpuSHOCCsrCheckCD::fire(void){
 
 }
 
-
-extern "C"
-void SpmvGpuSHOCCsrStreamCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuSHOCCsrStream!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuSHOCCsrStream);
-    
-    RecordDatabase *recordDB = FRAME(recordDB);
-    ResultDatabase *resultDB = FRAME(resultDB);
-    OptionParser *op = FRAME(op);
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-
-
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-    std::cout<<"startPoint: "<<csrDevice->getStartPoint()<<", numRows: "<<csrDevice->getNumRows()<<", numNonZeroes: "<<csrDevice->getNumNonZeroes()<<std::endl;
-    pthread_mutex_unlock(&mutex2);
-#endif
-   
-#ifdef DARTS_RECORD
-    uint64_t rdStart = getTime();
-#endif
-
-    //SHOC_csrTestScalar(resultDB,op,csrHost,csrDevice); 
-    SHOC_csrStreamTestScalar(resultDB,op,csrHost,csrDevice); 
-
-
-#ifdef DARTS_RECORD
-    uint64_t rdEnd = getTime();
-#endif
-
-
-#ifdef DARTS_DEBUG_VAL  
-    int startPoint = csrDevice->getStartPoint();
-    int *h_rowDelimiters = csrHost->getRowDelimiters()+startPoint;
-    double *h_val = csrHost->getVal()+h_rowDelimiters[0];
-    int *h_cols= csrHost->getCols()+h_rowDelimiters[0];
-    double *h_out = csrHost->getOut()+startPoint;
-    std::cout<<"h_val addr = "<<h_val<<std::endl;
-    std::cout<<"h_cols addr = "<<h_cols<<std::endl;
-    std::cout<<"h_out addr = "<<h_out<<std::endl;
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_val["<<i<<"] = "<<h_val[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_cols["<<i<<"] = "<<h_cols[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_rowDelimiters["<<i<<"] = "<<h_rowDelimiters[i]<<std::endl;
-    }
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_out["<<i<<"] = "<<h_out[i]<<std::endl;
-    }
-#endif
-
-    SYNC(spmvGpuSHOCCsrStreamCheck);
-
-
-#ifdef DARTS_RECORD
-    recordDB->addToAllProc(rdEnd-rdStart);
-    std::cout<<"gpu stream time: "<<rdEnd-rdStart<<std::endl;
-#endif
-
-#ifdef DARTS_DEBUG_CE
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"SpmvGpuSHOCCsrStream!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-
-    EXIT_TP();
-
-}
-
-extern "C"
-void SpmvGpuSHOCCsrStreamCheckCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuSHOCCsrStreamCheck!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuSHOCCsrStreamCheck);
-
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-   
-    int sz = csrDevice->getNumRows();
-
-    string config = FRAME(config);
-    if(config == "gpu" ){
-
-        int numRowsLeft         =FRAME( numRowsLeft      );
-        if(numRowsLeft == 0){
-            SYNC(midSync);
-            EXIT_TP();
-        }
-        //int totalNumRows        =FRAME( totalNumRows     );
-        //int nRows = (numRowsLeft > FRAME(gpuNumRows))?FRAME(gpuNumRows): numRowsLeft;
-        //int newStart = totalNumRows - numRowsLeft;
-
-
-#ifdef DARTS_DEBUG
-        
-        int oldStart = csrDevice->getStartPoint();
-        int oldNumRows = csrDevice->getNumRows();
-        std::cout<<"totalNumRows: "<<FRAME(totalNumRows)<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-        std::cout<<"old start: "<< oldStart<<", oldNumRows: "<<oldNumRows<<std::endl;
-#endif
-        //csrDevice->assignStartPoint(newStart);
-        //int *rowDelimiters = csrHost->getRowDelimiters();
-        //csrDevice->assignNumRows(nRows);
-        //
-        //__sync_fetch_and_sub(&FRAME(numRowsLeft),nRows);
-
-        calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft), csrHost,csrDevice, "gpu");
-
-#ifdef DARTS_DEBUG
-        std::cout<<"device: new start: "<< csrDevice->getStartPoint()<<", newNumRows: "<<csrDevice->getNumRows()<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-#endif
-   
-        SYNC(spmvGpuSHOCCsrStream);
-
-    }else {
-        //=========(config == "hybrid")=======//
-        bool IsNext = false;
-        pthread_mutex_lock(&mutex1);
-        __sync_synchronize();
-       
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync before: numRowsLeft = "<< FRAME(numRowsLeft)<<", numNonZeroesLeft: "<<FRAME(numNonZeroesLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if(FRAME(numRowsLeft) == 0){
-            SYNC(midSync);
-            IsNext = false;
-        }else{
-            IsNext = calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft),csrHost,csrDevice, "gpu");
-            
-        }
-        
-        __sync_synchronize();
-        pthread_mutex_unlock(&mutex1);
-        
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu IsNext = "<<IsNext<<std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if (IsNext == true){
-            SYNC(spmvGpuSHOCCsrStream);
-        }
-
-#ifdef DARTS_DEBUG
-
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync after: numRowsLeft = "<< FRAME(numRowsLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-    }
-   
-    EXIT_TP();
-
-}
-
-extern "C"
-void SpmvGpuCuSparseCsrCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuCuSparseCsr!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuCuSparseCsr);
-    
-    RecordDatabase *recordDB = FRAME(recordDB);
-    ResultDatabase *resultDB = FRAME(resultDB);
-    OptionParser *op = FRAME(op);
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-
-    
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-    std::cout<<"startPoint: "<<csrDevice->getStartPoint()<<", numRows: "<<csrDevice->getNumRows()<<", numNonZeroes: "<<csrDevice->getNumNonZeroes()<<std::endl;
-    pthread_mutex_unlock(&mutex2);
-#endif
-   
-#ifdef DARTS_RECORD
-    uint64_t rdStart = getTime();
-#endif
-
-
-    CuSparse_csrTest(resultDB,op,csrHost,csrDevice); 
-
-
-#ifdef DARTS_RECORD
-    uint64_t rdEnd = getTime();
-#endif
-
-
-#ifdef DARTS_DEBUG_VAL  
-    int startPoint = csrDevice->getStartPoint();
-    int *h_rowDelimiters = csrHost->getRowDelimiters()+startPoint;
-    double *h_val = csrHost->getVal()+h_rowDelimiters[0];
-    int *h_cols= csrHost->getCols()+h_rowDelimiters[0];
-    double *h_out = csrHost->getOut()+startPoint;
-    std::cout<<"h_val addr = "<<h_val<<std::endl;
-    std::cout<<"h_cols addr = "<<h_cols<<std::endl;
-    std::cout<<"h_out addr = "<<h_out<<std::endl;
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_val["<<i<<"] = "<<h_val[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_cols["<<i<<"] = "<<h_cols[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_rowDelimiters["<<i<<"] = "<<h_rowDelimiters[i]<<std::endl;
-    }
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_out["<<i<<"] = "<<h_out[i]<<std::endl;
-    }
-#endif
-
-    SYNC(spmvGpuCuSparseCsrCheck);
-
-#ifdef DARTS_RECORD
-    recordDB->addToAllProc(rdEnd-rdStart);
-    std::cout<<"gpu time: "<<rdEnd-rdStart<<std::endl;
-#endif
-
-#ifdef DARTS_DEBUG_CE
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"SpmvGpuCuSparseCsr!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-
-    EXIT_TP();
-
-}
-
-extern "C"
-void SpmvGpuCuSparseCsrCheckCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuCuSparseCsrCheck!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuCuSparseCsrCheck);
-
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-   
-    int sz = csrDevice->getNumRows();
-
-    string config = FRAME(config);
-    if(config == "gpu" ){
-
-        int numRowsLeft         =FRAME( numRowsLeft      );
-        if(numRowsLeft == 0){
-            SYNC(midSync);
-            EXIT_TP();
-        }
-        //int totalNumRows        =FRAME( totalNumRows     );
-        //int nRows = (numRowsLeft > FRAME(gpuNumRows))?FRAME(gpuNumRows): numRowsLeft;
-        //int newStart = totalNumRows - numRowsLeft;
-
-#ifdef DARTS_DEBUG
-        
-        int oldStart = csrDevice->getStartPoint();
-        int oldNumRows = csrDevice->getNumRows();
-        std::cout<<"totalNumRows: "<<FRAME(totalNumRows)<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-        std::cout<<"old start: "<< oldStart<<", oldNumRows: "<<oldNumRows<<std::endl;
-#endif
-        //csrDevice->assignStartPoint(newStart);
-        //int *rowDelimiters = csrHost->getRowDelimiters();
-        //csrDevice->assignNumRows(nRows);
-        //
-        //__sync_fetch_and_sub(&FRAME(numRowsLeft),nRows);
-
-        calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft), csrHost,csrDevice, "gpu");
-
-#ifdef DARTS_DEBUG
-        std::cout<<"device: new start: "<< csrDevice->getStartPoint()<<", newNumRows: "<<csrDevice->getNumRows()<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-#endif
-   
-        SYNC(spmvGpuCuSparseCsr);
-
-    }else {
-        //=========(config == "hybrid")=======//
-        bool IsNext = false;
-        pthread_mutex_lock(&mutex1);
-        __sync_synchronize();
-       
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync before: numRowsLeft = "<< FRAME(numRowsLeft)<<", numNonZeroesLeft: "<<FRAME(numNonZeroesLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if(FRAME(numRowsLeft) == 0){
-            SYNC(midSync);
-            IsNext = false;
-        }else{
-            IsNext = calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft),csrHost,csrDevice, "gpu");
-            
-        }
-        
-        __sync_synchronize();
-        pthread_mutex_unlock(&mutex1);
-        
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu IsNext = "<<IsNext<<std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if (IsNext == true){
-            SYNC(spmvGpuCuSparseCsr);
-        }
-
-#ifdef DARTS_DEBUG
-
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync after: numRowsLeft = "<< FRAME(numRowsLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-    }
-   
-    EXIT_TP();
-
-}
-
-
-extern "C"
-void SpmvGpuCuSparseCsrStreamCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuCuSparseCsrStream!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuCuSparseCsrStream);
-    
-    RecordDatabase *recordDB = FRAME(recordDB);
-    ResultDatabase *resultDB = FRAME(resultDB);
-    OptionParser *op = FRAME(op);
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-
-
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-    std::cout<<"startPoint: "<<csrDevice->getStartPoint()<<", numRows: "<<csrDevice->getNumRows()<<", numNonZeroes: "<<csrDevice->getNumNonZeroes()<<std::endl;
-    pthread_mutex_unlock(&mutex2);
-#endif
-   
-#ifdef DARTS_RECORD
-    uint64_t rdStart = getTime();
-#endif
-
-    CuSparse_csrStreamTest(resultDB,op,csrHost,csrDevice); 
-
-
-#ifdef DARTS_RECORD
-    uint64_t rdEnd = getTime();
-#endif
-
-
-#ifdef DARTS_DEBUG_VAL  
-    int startPoint = csrDevice->getStartPoint();
-    int *h_rowDelimiters = csrHost->getRowDelimiters()+startPoint;
-    double *h_val = csrHost->getVal()+h_rowDelimiters[0];
-    int *h_cols= csrHost->getCols()+h_rowDelimiters[0];
-    double *h_out = csrHost->getOut()+startPoint;
-    std::cout<<"h_val addr = "<<h_val<<std::endl;
-    std::cout<<"h_cols addr = "<<h_cols<<std::endl;
-    std::cout<<"h_out addr = "<<h_out<<std::endl;
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_val["<<i<<"] = "<<h_val[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_cols["<<i<<"] = "<<h_cols[i]<<std::endl;
-    }
-
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_rowDelimiters["<<i<<"] = "<<h_rowDelimiters[i]<<std::endl;
-    }
-    for(size_t i=0; i< 20; ++i){
-        std::cout<<"h_out["<<i<<"] = "<<h_out[i]<<std::endl;
-    }
-#endif
-
-    SYNC(spmvGpuCuSparseCsrStreamCheck);
-
-
-#ifdef DARTS_RECORD
-    recordDB->addToAllProc(rdEnd-rdStart);
-    std::cout<<"gpu stream time: "<<rdEnd-rdStart<<std::endl;
-#endif
-
-#ifdef DARTS_DEBUG_CE
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"SpmvGpuCuSparseCsrStream!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-
-    EXIT_TP();
-
-}
-
-extern "C"
-void SpmvGpuCuSparseCsrStreamCheckCD::fire(void){
-#ifdef DARTS_DEBUG
-    pthread_mutex_lock(&mutex2);
-	std::cout<<"Invoke SpmvGpuCuSparseCsrStreamCheck!"<<std::endl;	
-    pthread_mutex_unlock(&mutex2);
-#endif
-	LOAD_FRAME(SpmvTP);
-	RESET(spmvGpuCuSparseCsrStreamCheck);
-
-    CSRMM<double>*csrHost   = &FRAME(csrHost);
-    CSRMM<double>*csrDevice = &FRAME(csrDevice);
-   
-    int sz = csrDevice->getNumRows();
-
-    string config = FRAME(config);
-    if(config == "gpu" ){
-
-        int numRowsLeft         =FRAME( numRowsLeft      );
-        if(numRowsLeft == 0){
-            SYNC(midSync);
-            EXIT_TP();
-        }
-        //int totalNumRows        =FRAME( totalNumRows     );
-        //int nRows = (numRowsLeft > FRAME(gpuNumRows))?FRAME(gpuNumRows): numRowsLeft;
-        //int newStart = totalNumRows - numRowsLeft;
-
-
-#ifdef DARTS_DEBUG
-        
-        int oldStart = csrDevice->getStartPoint();
-        int oldNumRows = csrDevice->getNumRows();
-        std::cout<<"totalNumRows: "<<FRAME(totalNumRows)<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-        std::cout<<"old start: "<< oldStart<<", oldNumRows: "<<oldNumRows<<std::endl;
-#endif
-        //csrDevice->assignStartPoint(newStart);
-        //int *rowDelimiters = csrHost->getRowDelimiters();
-        //csrDevice->assignNumRows(nRows);
-        //
-        //__sync_fetch_and_sub(&FRAME(numRowsLeft),nRows);
-
-        calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft), csrHost,csrDevice, "gpu");
-
-#ifdef DARTS_DEBUG
-        std::cout<<"device: new start: "<< csrDevice->getStartPoint()<<", newNumRows: "<<csrDevice->getNumRows()<<std::endl;
-        std::cout<<"numRowsLeft: "<<FRAME(numRowsLeft)<<std::endl;
-#endif
-   
-        SYNC(spmvGpuCuSparseCsrStream);
-
-    }else {
-        //=========(config == "hybrid")=======//
-        bool IsNext = false;
-        pthread_mutex_lock(&mutex1);
-        __sync_synchronize();
-       
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync before: numRowsLeft = "<< FRAME(numRowsLeft)<<", numNonZeroesLeft: "<<FRAME(numNonZeroesLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if(FRAME(numRowsLeft) == 0){
-            SYNC(midSync);
-            IsNext = false;
-        }else{
-            IsNext = calcStaticNext(FRAME(totalNumRows), FRAME(numRowsLeft),csrHost,csrDevice, "gpu");
-            
-        }
-        
-        __sync_synchronize();
-        pthread_mutex_unlock(&mutex1);
-        
-#ifdef DARTS_DEBUG
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu IsNext = "<<IsNext<<std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-        if (IsNext == true){
-            SYNC(spmvGpuCuSparseCsrStream);
-        }
-
-#ifdef DARTS_DEBUG
-
-        pthread_mutex_lock(&mutex2);
-        std::cout<<"gpu sync after: numRowsLeft = "<< FRAME(numRowsLeft)<<", gpu rowStartPoint: "<<csrDevice->getStartPoint()<< std::endl;
-        pthread_mutex_unlock(&mutex2);
-#endif
-    }
-   
-    EXIT_TP();
-
-}
 
 void
 MidSyncCD::fire(void)

@@ -47,17 +47,8 @@ DEF_CODELET_ITER(SpmvCpuGroupLoopCD,0,SHORTWAIT);
 DEF_CODELET_ITER(SpmvCpuGroupLoopSyncCD,0,SHORTWAIT);
 
 
-DEF_CODELET(SpmvGpuSHOCCsrCD,0,SHORTWAIT);
-DEF_CODELET(SpmvGpuSHOCCsrCheckCD,0,SHORTWAIT);
-
-DEF_CODELET(SpmvGpuSHOCCsrStreamCD,0,SHORTWAIT);
-DEF_CODELET(SpmvGpuSHOCCsrStreamCheckCD,0,SHORTWAIT);
-
-DEF_CODELET(SpmvGpuCuSparseCsrCD,0,SHORTWAIT);
-DEF_CODELET(SpmvGpuCuSparseCsrCheckCD,0,SHORTWAIT);
-
-DEF_CODELET(SpmvGpuCuSparseCsrStreamCD,0,SHORTWAIT);
-DEF_CODELET(SpmvGpuCuSparseCsrStreamCheckCD,0,SHORTWAIT);
+DEF_CODELET(SpmvGpuCsrCD,0,SHORTWAIT);
+DEF_CODELET(SpmvGpuCsrCheckCD,0,SHORTWAIT);
 
 
 DEF_CODELET(MidSyncCD,2,LONGWAIT);
@@ -104,17 +95,9 @@ DEF_TP(SpmvTP)
     
     SpmvCpuGroupLoopCD *spmvCpuGroupLoop = NULL;
     SpmvCpuGroupLoopSyncCD *spmvCpuGroupLoopSync=NULL;
-    
-    SpmvGpuSHOCCsrCD spmvGpuSHOCCsr;
-    SpmvGpuSHOCCsrCheckCD spmvGpuSHOCCsrCheck;
-    SpmvGpuSHOCCsrStreamCD spmvGpuSHOCCsrStream;
-    SpmvGpuSHOCCsrStreamCheckCD spmvGpuSHOCCsrStreamCheck;
-    
-    SpmvGpuCuSparseCsrCD spmvGpuCuSparseCsr;
-    SpmvGpuCuSparseCsrCheckCD spmvGpuCuSparseCsrCheck;
    
-    SpmvGpuCuSparseCsrStreamCD spmvGpuCuSparseCsrStream;
-    SpmvGpuCuSparseCsrStreamCheckCD spmvGpuCuSparseCsrStreamCheck;
+    SpmvGpuCsrCD spmvGpuCsr;
+    SpmvGpuCsrCheckCD spmvGpuCsrCheck;
 
     SyncCD	sync;
     Codelet *signalUp;
@@ -281,62 +264,14 @@ DEF_TP(SpmvTP)
 
             //========= gpu codelet (gpu and hybrid)======// 
             if(config != "cpu"){
-
-                if(IsSHOC == true){
-                    if(IsStream == false){
 #ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuSHOCCsr!"<<std::endl;
+                std::cout<<"add spmvGpuCsr!"<<std::endl;
 #endif
-                        spmvGpuSHOCCsr = SpmvGpuSHOCCsrCD{dep,1,this,GPUMETA};
-                        add(&spmvGpuSHOCCsr);
+                spmvGpuCsr = SpmvGpuCsrCD{dep,1,this,GPUMETA};
+                add(&spmvGpuCsr);
                 
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuSHOCCsrCheck!"<<std::endl;
-#endif
-                        spmvGpuSHOCCsrCheck = SpmvGpuSHOCCsrCheckCD{1,1,this,GPUMETA};
-                    }else{
+                spmvGpuCsrCheck = SpmvGpuCsrCheckCD{1,1,this,GPUMETA};
 
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuSHOCCsrStream!"<<std::endl;
-#endif
-                        spmvGpuSHOCCsrStream = SpmvGpuSHOCCsrStreamCD{dep,1,this,GPUMETA};
-                        add(&spmvGpuSHOCCsrStream);
-                
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuSHOCCsrStreamCheck!"<<std::endl;
-#endif
-                        spmvGpuSHOCCsrStreamCheck = SpmvGpuSHOCCsrStreamCheckCD{1,1,this,GPUMETA};
-
-                    }
-                }else if(IsCuSparse == true){
-
-                    if(IsStream == false){
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuCuSparseCsr!"<<std::endl;
-#endif
-                        spmvGpuCuSparseCsr = SpmvGpuCuSparseCsrCD{dep,1,this,GPUMETA};
-                        add(&spmvGpuCuSparseCsr);
-                
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuCuSparseCsrCheck!"<<std::endl;
-#endif
-                        spmvGpuCuSparseCsrCheck = SpmvGpuCuSparseCsrCheckCD{1,1,this,GPUMETA};
-                    }else{
-
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuCuSparseCsrStream!"<<std::endl;
-#endif
-                        spmvGpuCuSparseCsrStream = SpmvGpuCuSparseCsrStreamCD{dep,1,this,GPUMETA};
-                        add(&spmvGpuCuSparseCsrStream);
-                
-#ifdef DARTS_DEBUG
-                        std::cout<<"add spmvGpuCuSparseCsrStreamCheck!"<<std::endl;
-#endif
-                        spmvGpuCuSparseCsrStreamCheck = SpmvGpuCuSparseCsrStreamCheckCD{1,1,this,GPUMETA};
-
-                    }
-
-                }
             }
 
 

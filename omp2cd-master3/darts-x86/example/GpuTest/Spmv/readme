@@ -1,4 +1,4 @@
 spmv1.1 : SHOC csr no streaming
 spmv1.2 : SHOC csr with streaming
-spmv2.1 : cuSparse csr w/ streaming
-spmv2.2 : cuSparse bcsr w/ streaming
+spmv2.1 : SHOC/cuSparse csr w/ streaming
+spmv2.2 : SHOC/cuSparse bcsr w/ streaming

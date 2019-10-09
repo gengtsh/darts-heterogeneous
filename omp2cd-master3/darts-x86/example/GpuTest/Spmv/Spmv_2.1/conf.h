@@ -15,6 +15,6 @@
 
 static const int BLOCK_SIZE = 128;
 static const int WARP_SIZE = 32;
-static const int NSTREAM   = 128;
+static const int MAXSTREAM   = 256;
 
 #endif
